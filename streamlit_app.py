@@ -1,3 +1,8 @@
+# ============================================================
+# BRANDPULSE AI
+# Spotify Brand Reputation Intelligence System
+# ============================================================
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -26,158 +31,429 @@ st.set_page_config(
 # CUSTOM CSS
 # ============================================================
 
-st.markdown(
+st.html(
     """
-    <style>
+<style>
 
-    /* Main page */
-    .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 3rem;
-        max-width: 1450px;
-    }
+/* ==========================================================
+   MAIN PAGE
+   ========================================================== */
 
-    /* Hero */
-    .hero {
-        padding: 32px 36px;
-        border-radius: 24px;
-        margin-bottom: 24px;
+.block-container {
+    padding-top: 1.4rem;
+    padding-bottom: 3rem;
+    max-width: 1450px;
+}
 
-        background:
-            radial-gradient(
-                circle at top right,
-                rgba(29, 185, 84, 0.28),
-                transparent 35%
-            ),
-            linear-gradient(
-                135deg,
-                #181D25,
-                #101319
-            );
 
-        border:
-            1px solid rgba(
-                255,
-                255,
-                255,
-                0.08
-            );
-    }
+/* ==========================================================
+   HERO
+   ========================================================== */
 
-    .hero-badge {
-        display: inline-block;
-        padding: 6px 12px;
+.hero {
+    padding: 36px 40px;
+    border-radius: 26px;
+    margin-bottom: 24px;
 
-        border-radius: 999px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(29, 185, 84, 0.30),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at bottom left,
+            rgba(31, 111, 235, 0.12),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #181D25,
+            #101319
+        );
 
-        background:
-            rgba(29, 185, 84, 0.13);
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
 
-        color: #55E487;
+    box-shadow:
+        0 15px 40px rgba(
+            0,
+            0,
+            0,
+            0.25
+        );
+}
 
-        font-size: 13px;
-        font-weight: 600;
 
-        margin-bottom: 14px;
-    }
+.hero-badge {
+    display: inline-block;
 
-    .hero-title {
-        font-size: 42px;
-        font-weight: 800;
-        margin: 0;
-        line-height: 1.05;
-    }
+    padding: 7px 13px;
 
-    .hero-subtitle {
-        color: #A9B1BC;
-        font-size: 16px;
+    border-radius: 999px;
 
-        max-width: 850px;
+    background:
+        rgba(29, 185, 84, 0.13);
 
-        margin-top: 14px;
-        margin-bottom: 0;
-    }
+    border:
+        1px solid rgba(
+            29,
+            185,
+            84,
+            0.30
+        );
 
-    /* Section heading */
-    .section-label {
-        color: #8F99A8;
-        font-size: 12px;
+    color: #55E487;
 
-        font-weight: 700;
-        letter-spacing: 1.3px;
+    font-size: 12px;
+    font-weight: 700;
 
-        text-transform: uppercase;
+    letter-spacing: 1px;
 
-        margin-bottom: 3px;
-    }
+    margin-bottom: 16px;
+}
 
-    /* Status pill */
-    .status-online {
-        display: inline-block;
 
-        padding: 5px 10px;
+.hero-title {
+    font-size: 46px;
+    font-weight: 800;
 
-        border-radius: 999px;
+    margin: 0;
 
-        color: #55E487;
+    line-height: 1.05;
 
-        background:
-            rgba(29, 185, 84, 0.12);
+    color: #F7F9FC;
+}
 
-        font-size: 12px;
-        font-weight: 600;
-    }
 
-    /* Feature card */
-    .feature-card {
-        padding: 20px;
+.hero-highlight {
+    color: #55E487;
+}
 
-        border-radius: 18px;
 
-        background: #171B22;
+.hero-subtitle {
+    color: #A9B1BC;
 
-        border:
-            1px solid rgba(
-                255,
-                255,
-                255,
-                0.07
-            );
+    font-size: 16px;
+    line-height: 1.7;
 
-        min-height: 145px;
-    }
+    max-width: 850px;
 
-    .feature-icon {
-        font-size: 25px;
-        margin-bottom: 10px;
-    }
+    margin-top: 16px;
+    margin-bottom: 0;
+}
 
-    .feature-title {
-        font-size: 17px;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
 
-    .feature-text {
-        color: #9CA6B3;
-        font-size: 13px;
-        line-height: 1.5;
-    }
+/* ==========================================================
+   FEATURE CARDS
+   ========================================================== */
 
-    /* Small hint */
-    .hint-text {
-        color: #8993A0;
-        font-size: 13px;
-    }
+.feature-card {
 
-    /* Remove excessive top whitespace */
-    header[data-testid="stHeader"] {
-        background: transparent;
-    }
+    padding: 21px;
 
-    </style>
-    """,
-    unsafe_allow_html=True
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #171B22,
+            #14181E
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    min-height: 160px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.feature-card:hover {
+
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(
+            29,
+            185,
+            84,
+            0.45
+        );
+}
+
+
+.feature-icon {
+
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background:
+        rgba(
+            29,
+            185,
+            84,
+            0.10
+        );
+
+    font-size: 23px;
+
+    margin-bottom: 13px;
+}
+
+
+.feature-title {
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    margin-bottom: 7px;
+
+    color: #F3F5F7;
+}
+
+
+.feature-text {
+
+    color: #9CA6B3;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
+
+.sidebar-brand {
+
+    font-size: 23px;
+
+    font-weight: 800;
+
+    margin-bottom: 3px;
+}
+
+
+.sidebar-subtitle {
+
+    color: #919BA8;
+
+    font-size: 12px;
+
+    margin-bottom: 15px;
+}
+
+
+.section-label {
+
+    color: #7E8998;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 4px;
+}
+
+
+.status-online {
+
+    display: inline-block;
+
+    padding: 6px 11px;
+
+    border-radius: 999px;
+
+    color: #55E487;
+
+    background:
+        rgba(
+            29,
+            185,
+            84,
+            0.12
+        );
+
+    border:
+        1px solid rgba(
+            29,
+            185,
+            84,
+            0.20
+        );
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   INFORMATION TEXT
+   ========================================================== */
+
+.hint-text {
+
+    color: #8993A0;
+
+    font-size: 13px;
+}
+
+
+/* ==========================================================
+   REPUTATION LABEL
+   ========================================================== */
+
+.reputation-positive {
+
+    padding: 13px 17px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(
+            29,
+            185,
+            84,
+            0.10
+        );
+
+    border:
+        1px solid rgba(
+            29,
+            185,
+            84,
+            0.20
+        );
+
+    color: #55E487;
+
+    font-weight: 700;
+}
+
+
+.reputation-mixed {
+
+    padding: 13px 17px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(
+            245,
+            183,
+            49,
+            0.10
+        );
+
+    border:
+        1px solid rgba(
+            245,
+            183,
+            49,
+            0.20
+        );
+
+    color: #F5B731;
+
+    font-weight: 700;
+}
+
+
+.reputation-negative {
+
+    padding: 13px 17px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(
+            255,
+            76,
+            76,
+            0.10
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            76,
+            76,
+            0.20
+        );
+
+    color: #FF7070;
+
+    font-weight: 700;
+}
+
+
+/* ==========================================================
+   STREAMLIT SMALL IMPROVEMENTS
+   ========================================================== */
+
+header[data-testid="stHeader"] {
+    background: transparent;
+}
+
+
+/* Make tabs easier to read */
+
+button[data-baseweb="tab"] {
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+/* Dataframe rounding */
+
+[data-testid="stDataFrame"] {
+
+    border-radius: 16px;
+
+    overflow: hidden;
+}
+
+
+/* File uploader */
+
+[data-testid="stFileUploader"] {
+
+    border-radius: 16px;
+}
+
+</style>
+"""
 )
 
 
@@ -186,10 +462,17 @@ st.markdown(
 # ============================================================
 
 if "prediction_results" not in st.session_state:
-    st.session_state.prediction_results = None
+
+    st.session_state[
+        "prediction_results"
+    ] = None
+
 
 if "analysis_summary" not in st.session_state:
-    st.session_state.analysis_summary = None
+
+    st.session_state[
+        "analysis_summary"
+    ] = None
 
 
 # ============================================================
@@ -198,184 +481,257 @@ if "analysis_summary" not in st.session_state:
 
 with st.sidebar:
 
-    st.markdown("## 🎧 BrandPulse AI")
+    st.html(
+        """
+<div class="sidebar-brand">
+    🎧 BrandPulse AI
+</div>
 
-    st.caption(
-        "AI-Assisted Brand Reputation "
-        "Decision-Support System"
+<div class="sidebar-subtitle">
+    Brand Reputation Intelligence Platform
+</div>
+"""
     )
 
     st.divider()
 
-    st.markdown(
-        '<div class="section-label">'
-        'DEPLOYMENT MODEL'
-        '</div>',
-        unsafe_allow_html=True
+
+    # --------------------------------------------------------
+    # MODEL INFORMATION
+    # --------------------------------------------------------
+
+    st.html(
+        """
+<div class="section-label">
+    DEPLOYMENT MODEL
+</div>
+"""
     )
 
     st.markdown("### DistilBERT")
 
     st.caption(
-        "Binary sentiment classification"
+        "Transformer-based binary "
+        "sentiment classification"
     )
 
-    st.markdown(
-        '<span class="status-online">'
-        '● Model Online'
-        '</span>',
-        unsafe_allow_html=True
+    st.html(
+        """
+<span class="status-online">
+    ● Model Online
+</span>
+"""
     )
+
 
     st.divider()
 
-    st.markdown(
-        '<div class="section-label">'
-        'CLASSIFICATION'
-        '</div>',
-        unsafe_allow_html=True
+
+    # --------------------------------------------------------
+    # CLASSIFICATION
+    # --------------------------------------------------------
+
+    st.html(
+        """
+<div class="section-label">
+    CLASSIFICATION
+</div>
+"""
     )
 
-    st.write("🟢 Positive")
-    st.write("🔴 Negative")
+    st.write(
+        "🟢 Positive"
+    )
+
+    st.write(
+        "🔴 Negative"
+    )
+
 
     st.divider()
 
-    st.markdown(
-        '<div class="section-label">'
-        'SYSTEM PIPELINE'
-        '</div>',
-        unsafe_allow_html=True
+
+    # --------------------------------------------------------
+    # PIPELINE
+    # --------------------------------------------------------
+
+    st.html(
+        """
+<div class="section-label">
+    SYSTEM PIPELINE
+</div>
+"""
     )
 
     st.markdown(
         """
-        **1.** Upload reviews  
-        **2.** DistilBERT prediction  
-        **3.** Reputation analysis  
-        **4.** Issue detection  
-        **5.** Management intelligence
-        """
+**1.** Upload customer reviews
+
+**2.** DistilBERT sentiment prediction
+
+**3.** Brand reputation analysis
+
+**4.** Customer issue detection
+
+**5.** Management intelligence
+"""
     )
 
+
     st.divider()
+
+
+    # --------------------------------------------------------
+    # PROJECT INFORMATION
+    # --------------------------------------------------------
 
     st.caption(
-        "Final Year Project • "
+        "Final Year Project"
+    )
+
+    st.caption(
         "Online Review-Based Brand "
-        "Reputation Prediction"
+        "Reputation Prediction Using "
+        "NLP Techniques"
     )
 
 
 # ============================================================
-# HERO
+# HERO SECTION
 # ============================================================
 
-st.markdown(
+st.html(
     """
-    <div class="hero">
+<div class="hero">
 
-        <div class="hero-badge">
-            AI BRAND INTELLIGENCE
-        </div>
-
-        <div class="hero-title">
-            BrandPulse AI
-        </div>
-
-        <p class="hero-subtitle">
-            Transform Spotify customer reviews into
-            actionable brand reputation intelligence
-            using DistilBERT sentiment classification,
-            issue analysis and AI-assisted management
-            insights.
-        </p>
-
+    <div class="hero-badge">
+        AI BRAND INTELLIGENCE
     </div>
-    """,
-    unsafe_allow_html=True
+
+    <div class="hero-title">
+        Brand<span class="hero-highlight">Pulse</span> AI
+    </div>
+
+    <p class="hero-subtitle">
+        Transform Spotify customer reviews into actionable
+        brand reputation intelligence using DistilBERT sentiment
+        classification, customer issue analysis and AI-assisted
+        management insights.
+    </p>
+
+</div>
+"""
 )
 
 
 # ============================================================
-# QUICK FEATURE CARDS
+# FEATURE CARDS
 # ============================================================
 
-feature1, feature2, feature3, feature4 = st.columns(4)
+feature1, feature2, feature3, feature4 = (
+    st.columns(
+        4,
+        gap="medium"
+    )
+)
+
 
 with feature1:
 
-    st.markdown(
+    st.html(
         """
-        <div class="feature-card">
-            <div class="feature-icon">🧠</div>
-            <div class="feature-title">
-                DistilBERT AI
-            </div>
-            <div class="feature-text">
-                Transformer-based sentiment
-                classification for Spotify reviews.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
+<div class="feature-card">
+
+    <div class="feature-icon">
+        🧠
+    </div>
+
+    <div class="feature-title">
+        DistilBERT AI
+    </div>
+
+    <div class="feature-text">
+        Transformer-based sentiment classification
+        identifies positive and negative customer
+        opinions.
+    </div>
+
+</div>
+"""
     )
 
 
 with feature2:
 
-    st.markdown(
+    st.html(
         """
-        <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <div class="feature-title">
-                Reputation Analytics
-            </div>
-            <div class="feature-text">
-                Convert sentiment predictions into
-                measurable brand reputation insights.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
+<div class="feature-card">
+
+    <div class="feature-icon">
+        📊
+    </div>
+
+    <div class="feature-title">
+        Reputation Analytics
+    </div>
+
+    <div class="feature-text">
+        Convert sentiment predictions into measurable
+        brand reputation indicators and customer
+        sentiment summaries.
+    </div>
+
+</div>
+"""
     )
 
 
 with feature3:
 
-    st.markdown(
+    st.html(
         """
-        <div class="feature-card">
-            <div class="feature-icon">🔎</div>
-            <div class="feature-title">
-                Issue Intelligence
-            </div>
-            <div class="feature-text">
-                Identify recurring technical,
-                subscription and customer issues.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
+<div class="feature-card">
+
+    <div class="feature-icon">
+        🔎
+    </div>
+
+    <div class="feature-title">
+        Issue Intelligence
+    </div>
+
+    <div class="feature-text">
+        Identify common technical, subscription,
+        playback and customer experience problems
+        from negative reviews.
+    </div>
+
+</div>
+"""
     )
 
 
 with feature4:
 
-    st.markdown(
+    st.html(
         """
-        <div class="feature-card">
-            <div class="feature-icon">💡</div>
-            <div class="feature-title">
-                AI Management
-            </div>
-            <div class="feature-text">
-                Department-level recommendations
-                will be generated by LLM managers.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
+<div class="feature-card">
+
+    <div class="feature-icon">
+        💡
+    </div>
+
+    <div class="feature-title">
+        AI Management
+    </div>
+
+    <div class="feature-text">
+        Role-based LLM department managers will later
+        transform findings into business recommendations.
+    </div>
+
+</div>
+"""
     )
 
 
@@ -386,7 +742,11 @@ st.write("")
 # MAIN NAVIGATION
 # ============================================================
 
-single_tab, batch_tab, dashboard_tab = st.tabs(
+(
+    single_tab,
+    batch_tab,
+    dashboard_tab
+) = st.tabs(
     [
         "🧪 Single Review",
         "📂 Batch Intelligence",
@@ -396,29 +756,35 @@ single_tab, batch_tab, dashboard_tab = st.tabs(
 
 
 # ============================================================
+# TAB 1
 # SINGLE REVIEW
 # ============================================================
 
 with single_tab:
 
-    st.markdown("## Review Sentiment Laboratory")
+    st.markdown(
+        "## Review Sentiment Laboratory"
+    )
 
     st.caption(
-        "Test your deployed DistilBERT model "
-        "with an individual Spotify review."
+        "Test the deployed DistilBERT model "
+        "using an individual Spotify review."
     )
 
-    left, right = st.columns(
-        [1.5, 1],
-        gap="large"
+
+    left_column, right_column = (
+        st.columns(
+            [1.6, 1],
+            gap="large"
+        )
     )
 
 
     # --------------------------------------------------------
-    # INPUT
+    # REVIEW INPUT
     # --------------------------------------------------------
 
-    with left:
+    with left_column:
 
         with st.container(
             border=True
@@ -428,38 +794,45 @@ with single_tab:
                 "### ✍️ Customer Review"
             )
 
-            review_text = st.text_area(
-                "Review text",
-                placeholder=(
-                    "Example: Spotify keeps crashing "
-                    "after the latest update and "
-                    "playback randomly stops."
-                ),
-                height=190,
-                label_visibility="collapsed"
+            review_text = (
+                st.text_area(
+                    "Customer review",
+                    placeholder=(
+                        "Example: Spotify keeps "
+                        "crashing after the latest "
+                        "update and playback randomly "
+                        "stops."
+                    ),
+                    height=190,
+                    label_visibility="collapsed"
+                )
             )
 
-            st.markdown(
-                '<span class="hint-text">'
-                'Enter an English-language Spotify review.'
-                '</span>',
-                unsafe_allow_html=True
+            st.html(
+                """
+<span class="hint-text">
+    Enter an English-language Spotify review.
+</span>
+"""
             )
 
             st.write("")
 
-            predict_button = st.button(
-                "✨ Analyse Sentiment",
-                type="primary",
-                width="stretch"
+            predict_button = (
+                st.button(
+                    "✨ Analyse Sentiment",
+                    type="primary",
+                    use_container_width=True,
+                    key="predict_single_review"
+                )
             )
 
 
     # --------------------------------------------------------
-    # RESULT
+    # PREDICTION RESULT
     # --------------------------------------------------------
 
-    with right:
+    with right_column:
 
         with st.container(
             border=True
@@ -469,12 +842,14 @@ with single_tab:
                 "### 🎯 AI Prediction"
             )
 
+
             if predict_button:
 
                 if not review_text.strip():
 
                     st.warning(
-                        "Enter a review before analysing."
+                        "Please enter a review "
+                        "before analysing."
                     )
 
                 else:
@@ -486,24 +861,34 @@ with single_tab:
 
                         try:
 
-                            result = predict_sentiment(
-                                review_text
+                            result = (
+                                predict_sentiment(
+                                    review_text
+                                )
                             )
 
                             sentiment = (
-                                result["sentiment"]
+                                result[
+                                    "sentiment"
+                                ]
                                 .lower()
                             )
 
                             confidence = (
-                                result["confidence"]
+                                result[
+                                    "confidence"
+                                ]
                                 * 100
                             )
 
-                            if sentiment == "positive":
+
+                            if (
+                                sentiment
+                                == "positive"
+                            ):
 
                                 st.success(
-                                    "### 🟢 Positive"
+                                    "🟢 Positive Sentiment"
                                 )
 
                                 st.write(
@@ -512,16 +897,23 @@ with single_tab:
                                     "experience."
                                 )
 
-                            elif sentiment == "negative":
+
+                            elif (
+                                sentiment
+                                == "negative"
+                            ):
 
                                 st.error(
-                                    "### 🔴 Negative"
+                                    "🔴 Negative Sentiment"
                                 )
 
                                 st.write(
                                     "The review indicates "
-                                    "customer dissatisfaction."
+                                    "customer dissatisfaction "
+                                    "that may affect brand "
+                                    "perception."
                                 )
+
 
                             else:
 
@@ -529,31 +921,45 @@ with single_tab:
                                     sentiment.title()
                                 )
 
+
                             st.metric(
                                 "Model Confidence",
-                                f"{confidence:.2f}%",
-                                border=True
+                                f"{confidence:.2f}%"
                             )
+
+
+                            st.caption(
+                                "Confidence represents "
+                                "the model's output "
+                                "probability and does not "
+                                "guarantee prediction "
+                                "correctness."
+                            )
+
 
                         except Exception as error:
 
                             st.error(
-                                "Prediction could not "
-                                "be completed."
+                                "The prediction could "
+                                "not be completed."
                             )
 
-                            st.exception(error)
+                            st.exception(
+                                error
+                            )
+
 
             else:
 
                 st.info(
-                    "Your sentiment prediction "
-                    "will appear here."
+                    "Enter a customer review "
+                    "and select Analyse Sentiment."
                 )
 
 
 # ============================================================
-# BATCH ANALYSIS
+# TAB 2
+# BATCH INTELLIGENCE
 # ============================================================
 
 with batch_tab:
@@ -563,8 +969,9 @@ with batch_tab:
     )
 
     st.caption(
-        "Analyse multiple Spotify reviews "
-        "from CSV or Excel."
+        "Upload CSV or Excel review data "
+        "for large-scale sentiment and "
+        "brand reputation analysis."
     )
 
 
@@ -577,7 +984,7 @@ with batch_tab:
 
 
     # --------------------------------------------------------
-    # UPLOAD AREA
+    # FILE UPLOAD
     # --------------------------------------------------------
 
     with upload_column:
@@ -592,7 +999,7 @@ with batch_tab:
 
             uploaded_file = (
                 st.file_uploader(
-                    "Upload dataset",
+                    "Upload review dataset",
                     type=[
                         "csv",
                         "xlsx"
@@ -607,7 +1014,7 @@ with batch_tab:
 
 
     # --------------------------------------------------------
-    # INFORMATION
+    # DATA FORMAT INFORMATION
     # --------------------------------------------------------
 
     with information_column:
@@ -621,9 +1028,9 @@ with batch_tab:
             )
 
             st.write(
-                "Your file only needs one "
-                "column containing customer "
-                "review text."
+                "Your file needs at least "
+                "one column containing "
+                "customer review text."
             )
 
             st.code(
@@ -634,24 +1041,36 @@ with batch_tab:
             )
 
 
+    # --------------------------------------------------------
+    # PROCESS UPLOADED FILE
+    # --------------------------------------------------------
+
     if uploaded_file is not None:
 
         try:
 
-            if (
+            file_name = (
                 uploaded_file.name
                 .lower()
-                .endswith(".csv")
+            )
+
+
+            if file_name.endswith(
+                ".csv"
             ):
 
-                uploaded_df = pd.read_csv(
-                    uploaded_file
+                uploaded_df = (
+                    pd.read_csv(
+                        uploaded_file
+                    )
                 )
 
             else:
 
-                uploaded_df = pd.read_excel(
-                    uploaded_file
+                uploaded_df = (
+                    pd.read_excel(
+                        uploaded_file
+                    )
                 )
 
 
@@ -661,44 +1080,67 @@ with batch_tab:
                 "### Dataset Preview"
             )
 
-            preview_col1, preview_col2 = (
+
+            preview_column, stats_column = (
                 st.columns(
-                    [3, 1]
+                    [3, 1],
+                    gap="medium"
                 )
             )
 
 
-            with preview_col1:
+            # ------------------------------------------------
+            # DATA PREVIEW
+            # ------------------------------------------------
+
+            with preview_column:
 
                 st.dataframe(
                     uploaded_df.head(10),
-                    width="stretch",
+                    use_container_width=True,
                     hide_index=True
                 )
 
 
-            with preview_col2:
+            # ------------------------------------------------
+            # DATASET INFORMATION
+            # ------------------------------------------------
+
+            with stats_column:
 
                 st.metric(
                     "Total Rows",
-                    f"{len(uploaded_df):,}",
-                    border=True
+                    f"{len(uploaded_df):,}"
                 )
 
                 st.metric(
                     "Columns",
                     len(
                         uploaded_df.columns
-                    ),
-                    border=True
+                    )
                 )
 
 
-            review_column = st.selectbox(
-                "Select review-text column",
-                uploaded_df.columns.tolist()
+            # ------------------------------------------------
+            # REVIEW COLUMN SELECTION
+            # ------------------------------------------------
+
+            review_column = (
+                st.selectbox(
+                    "Select the column "
+                    "containing review text:",
+                    options=(
+                        uploaded_df
+                        .columns
+                        .tolist()
+                    )
+                )
             )
 
+
+            # ------------------------------------------------
+            # CLEAN VALID REVIEWS
+            # ------------------------------------------------
 
             valid_reviews = (
                 uploaded_df[
@@ -709,28 +1151,39 @@ with batch_tab:
                 .str.strip()
             )
 
-            valid_reviews = valid_reviews[
-                valid_reviews != ""
-            ]
+
+            valid_reviews = (
+                valid_reviews[
+                    valid_reviews != ""
+                ]
+            )
 
 
             st.metric(
-                "Valid Reviews Ready for Analysis",
-                f"{len(valid_reviews):,}",
-                border=True
+                "Valid Reviews Ready",
+                f"{len(valid_reviews):,}"
             )
 
+
+            # ------------------------------------------------
+            # RUN ANALYSIS
+            # ------------------------------------------------
 
             if st.button(
                 "🚀 Run Brand Intelligence Analysis",
                 type="primary",
-                width="stretch"
+                use_container_width=True,
+                key="run_batch_analysis"
             ):
 
-                if len(valid_reviews) == 0:
+                if (
+                    len(valid_reviews)
+                    == 0
+                ):
 
                     st.warning(
-                        "No valid reviews found."
+                        "No valid reviews "
+                        "were found."
                     )
 
                 else:
@@ -742,10 +1195,16 @@ with batch_tab:
 
                         try:
 
+                            # --------------------------------
+                            # STEP 1
+                            # DISTILBERT
+                            # --------------------------------
+
                             st.write(
-                                "🧠 Running "
-                                "DistilBERT predictions..."
+                                "🧠 Running DistilBERT "
+                                "sentiment predictions..."
                             )
+
 
                             prediction_list = (
                                 predict_batch(
@@ -754,10 +1213,11 @@ with batch_tab:
                                 )
                             )
 
-                            st.write(
-                                "📊 Calculating "
-                                "reputation indicators..."
-                            )
+
+                            # --------------------------------
+                            # STEP 2
+                            # CREATE DATAFRAME
+                            # --------------------------------
 
                             prediction_df = (
                                 pd.DataFrame(
@@ -765,22 +1225,42 @@ with batch_tab:
                                 )
                             )
 
+
+                            st.write(
+                                "📊 Calculating brand "
+                                "reputation indicators..."
+                            )
+
+
+                            # --------------------------------
+                            # STEP 3
+                            # ANALYSIS
+                            # --------------------------------
+
                             (
                                 analysed_df,
                                 summary
-                            ) = analyse_predictions(
-                                prediction_df
+                            ) = (
+                                analyse_predictions(
+                                    prediction_df
+                                )
                             )
 
+
                             st.write(
-                                "🔎 Identifying "
+                                "🔎 Identifying recurring "
                                 "customer issues..."
                             )
 
 
+                            # --------------------------------
+                            # SAVE SESSION RESULTS
+                            # --------------------------------
+
                             st.session_state[
                                 "prediction_results"
                             ] = analysed_df
+
 
                             st.session_state[
                                 "analysis_summary"
@@ -796,13 +1276,13 @@ with batch_tab:
                                 expanded=False
                             )
 
+
                         except Exception as error:
 
                             status.update(
-                                label=(
-                                    "Analysis failed"
-                                ),
-                                state="error"
+                                label="Analysis failed",
+                                state="error",
+                                expanded=True
                             )
 
                             st.exception(
@@ -813,14 +1293,17 @@ with batch_tab:
         except Exception as error:
 
             st.error(
-                "Unable to read the uploaded file."
+                "The uploaded file "
+                "could not be read."
             )
 
-            st.exception(error)
+            st.exception(
+                error
+            )
 
 
     # --------------------------------------------------------
-    # RESULTS TABLE
+    # DISPLAY RESULTS
     # --------------------------------------------------------
 
     if (
@@ -830,12 +1313,6 @@ with batch_tab:
         is not None
     ):
 
-        results = (
-            st.session_state[
-                "prediction_results"
-            ].copy()
-        )
-
         st.divider()
 
         st.markdown(
@@ -843,9 +1320,21 @@ with batch_tab:
         )
 
 
-        display_results = (
-            results.copy()
+        results_df = (
+            st.session_state[
+                "prediction_results"
+            ].copy()
         )
+
+
+        # ----------------------------------------------------
+        # CONVERT CONFIDENCE TO %
+        # ----------------------------------------------------
+
+        display_results = (
+            results_df.copy()
+        )
+
 
         display_results[
             "confidence"
@@ -856,6 +1345,10 @@ with batch_tab:
             * 100
         ).round(2)
 
+
+        # ----------------------------------------------------
+        # FRIENDLY COLUMN NAMES
+        # ----------------------------------------------------
 
         display_results.rename(
             columns={
@@ -875,36 +1368,49 @@ with batch_tab:
         )
 
 
+        # ----------------------------------------------------
+        # RESULT TABLE
+        # ----------------------------------------------------
+
         st.dataframe(
             display_results,
-            width="stretch",
+            use_container_width=True,
             hide_index=True
         )
 
 
-        download_data = (
+        # ----------------------------------------------------
+        # DOWNLOAD
+        # ----------------------------------------------------
+
+        csv_data = (
             display_results
             .to_csv(
                 index=False
             )
-            .encode("utf-8")
+            .encode(
+                "utf-8"
+            )
         )
 
 
         st.download_button(
-            "⬇️ Download Analysis Results",
-            data=download_data,
+            label=(
+                "⬇️ Download Analysis Results"
+            ),
+            data=csv_data,
             file_name=(
                 "spotify_brand_"
                 "reputation_analysis.csv"
             ),
             mime="text/csv",
-            width="stretch"
+            use_container_width=True
         )
 
 
 # ============================================================
-# REPUTATION DASHBOARD
+# TAB 3
+# BRAND REPUTATION DASHBOARD
 # ============================================================
 
 with dashboard_tab:
@@ -914,8 +1420,9 @@ with dashboard_tab:
     )
 
     st.caption(
-        "Executive overview derived from "
-        "DistilBERT review predictions."
+        "Executive-level brand reputation "
+        "overview derived from DistilBERT "
+        "review predictions."
     )
 
 
@@ -926,6 +1433,10 @@ with dashboard_tab:
     )
 
 
+    # --------------------------------------------------------
+    # NO ANALYSIS YET
+    # --------------------------------------------------------
+
     if summary is None:
 
         with st.container(
@@ -933,61 +1444,65 @@ with dashboard_tab:
         ):
 
             st.info(
-                "📂 Run a Batch Intelligence "
-                "analysis first to generate "
-                "the dashboard."
+                "📂 Run Batch Intelligence "
+                "first to generate the "
+                "reputation dashboard."
             )
 
 
     else:
 
-        # ----------------------------------------------------
-        # KPI CARDS
-        # ----------------------------------------------------
+        # ====================================================
+        # KPI SECTION
+        # ====================================================
 
-        metric1, metric2, metric3, metric4 = (
-            st.columns(4)
+        (
+            metric1,
+            metric2,
+            metric3,
+            metric4
+        ) = st.columns(
+            4,
+            gap="medium"
         )
 
 
         metric1.metric(
             "Reviews Analysed",
-            f"{summary['total_reviews']:,}",
-            border=True
+            f"{summary['total_reviews']:,}"
         )
 
 
         metric2.metric(
             "Positive Reviews",
-            f"{summary['positive_reviews']:,}",
-            border=True
+            f"{summary['positive_reviews']:,}"
         )
 
 
         metric3.metric(
             "Negative Reviews",
-            f"{summary['negative_reviews']:,}",
-            border=True
+            f"{summary['negative_reviews']:,}"
         )
 
 
         metric4.metric(
             "Brand Reputation Score",
-            f"{summary['reputation_score']}%",
-            border=True
+            f"{summary['reputation_score']}%"
         )
 
 
         st.write("")
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # REPUTATION STATUS
-        # ----------------------------------------------------
+        # ====================================================
 
-        score = summary[
-            "reputation_score"
-        ]
+        score = float(
+            summary[
+                "reputation_score"
+            ]
+        )
 
 
         with st.container(
@@ -1001,46 +1516,87 @@ with dashboard_tab:
 
             if score >= 80:
 
-                st.success(
-                    "Very Positive Brand Reputation"
+                st.html(
+                    """
+<div class="reputation-positive">
+    🟢 Very Positive Brand Reputation
+</div>
+"""
                 )
+
 
             elif score >= 60:
 
-                st.success(
-                    "Positive Brand Reputation"
+                st.html(
+                    """
+<div class="reputation-positive">
+    🟢 Positive Brand Reputation
+</div>
+"""
                 )
+
 
             elif score >= 40:
 
-                st.warning(
-                    "Mixed Brand Reputation"
+                st.html(
+                    """
+<div class="reputation-mixed">
+    🟡 Mixed Brand Reputation
+</div>
+"""
                 )
+
 
             elif score >= 20:
 
-                st.error(
-                    "Negative Brand Reputation"
+                st.html(
+                    """
+<div class="reputation-negative">
+    🔴 Negative Brand Reputation
+</div>
+"""
                 )
+
 
             else:
 
-                st.error(
-                    "Very Negative Brand Reputation"
+                st.html(
+                    """
+<div class="reputation-negative">
+    🔴 Very Negative Brand Reputation
+</div>
+"""
                 )
 
 
+            st.write("")
+
+
             st.progress(
-                int(score)
+                int(
+                    max(
+                        0,
+                        min(
+                            100,
+                            score
+                        )
+                    )
+                )
+            )
+
+
+            st.caption(
+                f"Current Reputation Score: "
+                f"{score:.2f}%"
             )
 
 
         st.write("")
 
 
-        # ----------------------------------------------------
-        # CHARTS
-        # ----------------------------------------------------
+        # ====================================================
+        # CHART SECTION
+        # ====================================================
 
         chart_left, chart_right = (
             st.columns(
@@ -1049,6 +1605,10 @@ with dashboard_tab:
             )
         )
 
+
+        # ----------------------------------------------------
+        # SENTIMENT CHART
+        # ----------------------------------------------------
 
         with chart_left:
 
@@ -1061,31 +1621,35 @@ with dashboard_tab:
                 )
 
 
-                sentiment_df = pd.DataFrame(
-                    {
-                        "Sentiment": [
-                            "Positive",
-                            "Negative"
-                        ],
-
-                        "Reviews": [
-                            summary[
-                                "positive_reviews"
+                sentiment_df = (
+                    pd.DataFrame(
+                        {
+                            "Sentiment": [
+                                "Positive",
+                                "Negative"
                             ],
 
-                            summary[
-                                "negative_reviews"
+                            "Reviews": [
+                                summary[
+                                    "positive_reviews"
+                                ],
+
+                                summary[
+                                    "negative_reviews"
+                                ]
                             ]
-                        ]
-                    }
+                        }
+                    )
                 )
 
 
-                sentiment_chart = px.pie(
-                    sentiment_df,
-                    names="Sentiment",
-                    values="Reviews",
-                    hole=0.62
+                sentiment_chart = (
+                    px.pie(
+                        sentiment_df,
+                        names="Sentiment",
+                        values="Reviews",
+                        hole=0.62
+                    )
                 )
 
 
@@ -1096,15 +1660,20 @@ with dashboard_tab:
                         t=20,
                         b=10
                     ),
+
                     legend_title_text=""
                 )
 
 
                 st.plotly_chart(
                     sentiment_chart,
-                    width="stretch"
+                    use_container_width=True
                 )
 
+
+        # ----------------------------------------------------
+        # ISSUE CHART
+        # ----------------------------------------------------
 
         with chart_right:
 
@@ -1126,19 +1695,24 @@ with dashboard_tab:
 
                 if issue_counts:
 
-                    issue_df = pd.DataFrame(
-                        [
-                            {
-                                "Issue":
+                    issue_df = (
+                        pd.DataFrame(
+                            [
+                                {
+                                    "Issue":
+                                        issue,
+
+                                    "Mentions":
+                                        count
+                                }
+
+                                for (
                                     issue,
-
-                                "Mentions":
                                     count
-                            }
-
-                            for issue, count
-                            in issue_counts.items()
-                        ]
+                                )
+                                in issue_counts.items()
+                            ]
+                        )
                     )
 
 
@@ -1151,11 +1725,13 @@ with dashboard_tab:
                     )
 
 
-                    issue_chart = px.bar(
-                        issue_df,
-                        x="Mentions",
-                        y="Issue",
-                        orientation="h"
+                    issue_chart = (
+                        px.bar(
+                            issue_df,
+                            x="Mentions",
+                            y="Issue",
+                            orientation="h"
+                        )
                     )
 
 
@@ -1171,32 +1747,40 @@ with dashboard_tab:
 
                     st.plotly_chart(
                         issue_chart,
-                        width="stretch"
+                        use_container_width=True
                     )
+
 
                 else:
 
                     st.info(
-                        "No issue categories found."
+                        "No issue categories "
+                        "were detected."
                     )
 
 
-        # ----------------------------------------------------
-        # WORD INTELLIGENCE
-        # ----------------------------------------------------
+        # ====================================================
+        # CUSTOMER VOICE
+        # ====================================================
 
         st.markdown(
             "## Customer Voice Intelligence"
         )
 
 
-        words1, words2 = st.columns(
-            2,
-            gap="large"
+        positive_words_column, negative_words_column = (
+            st.columns(
+                2,
+                gap="large"
+            )
         )
 
 
-        with words1:
+        # ----------------------------------------------------
+        # POSITIVE WORDS
+        # ----------------------------------------------------
+
+        with positive_words_column:
 
             with st.container(
                 border=True
@@ -1206,20 +1790,46 @@ with dashboard_tab:
                     "### 💚 Positive Customer Voice"
                 )
 
-                positive_df = pd.DataFrame(
-                    summary[
-                        "top_positive_words"
-                    ]
-                )
 
-                st.dataframe(
-                    positive_df,
-                    width="stretch",
-                    hide_index=True
+                positive_words_df = (
+                    pd.DataFrame(
+                        summary[
+                            "top_positive_words"
+                        ]
+                    )
                 )
 
 
-        with words2:
+                if not positive_words_df.empty:
+
+                    positive_words_df.rename(
+                        columns={
+                            "word": "Word",
+                            "count": "Frequency"
+                        },
+                        inplace=True
+                    )
+
+
+                    st.dataframe(
+                        positive_words_df,
+                        use_container_width=True,
+                        hide_index=True
+                    )
+
+
+                else:
+
+                    st.info(
+                        "No positive words available."
+                    )
+
+
+        # ----------------------------------------------------
+        # NEGATIVE WORDS
+        # ----------------------------------------------------
+
+        with negative_words_column:
 
             with st.container(
                 border=True
@@ -1229,22 +1839,44 @@ with dashboard_tab:
                     "### 🚨 Negative Customer Voice"
                 )
 
-                negative_df = pd.DataFrame(
-                    summary[
-                        "top_negative_words"
-                    ]
-                )
 
-                st.dataframe(
-                    negative_df,
-                    width="stretch",
-                    hide_index=True
+                negative_words_df = (
+                    pd.DataFrame(
+                        summary[
+                            "top_negative_words"
+                        ]
+                    )
                 )
 
 
-        # ----------------------------------------------------
-        # NEGATIVE REVIEWS
-        # ----------------------------------------------------
+                if not negative_words_df.empty:
+
+                    negative_words_df.rename(
+                        columns={
+                            "word": "Word",
+                            "count": "Frequency"
+                        },
+                        inplace=True
+                    )
+
+
+                    st.dataframe(
+                        negative_words_df,
+                        use_container_width=True,
+                        hide_index=True
+                    )
+
+
+                else:
+
+                    st.info(
+                        "No negative words available."
+                    )
+
+
+        # ====================================================
+        # REVIEWS REQUIRING ATTENTION
+        # ====================================================
 
         st.markdown(
             "## Reviews Requiring Attention"
@@ -1264,7 +1896,10 @@ with dashboard_tab:
 
             if negative_reviews:
 
-                for index, review in enumerate(
+                for (
+                    index,
+                    review
+                ) in enumerate(
                     negative_reviews,
                     start=1
                 ):
@@ -1277,6 +1912,7 @@ with dashboard_tab:
                             review
                         )
 
+
             else:
 
                 st.success(
@@ -1285,9 +1921,15 @@ with dashboard_tab:
                 )
 
 
-        st.caption(
-            "Brand Reputation Score is a "
-            "project-defined indicator based "
-            "on the proportion of positive "
-            "DistilBERT classifications."
+        # ====================================================
+        # METHODOLOGY NOTE
+        # ====================================================
+
+        st.info(
+            "The Brand Reputation Score is a "
+            "project-defined indicator calculated "
+            "from the proportion of positive "
+            "DistilBERT predictions. It should "
+            "not be interpreted as a universal "
+            "industry-standard reputation metric."
         )
