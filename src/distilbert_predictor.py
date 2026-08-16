@@ -12,6 +12,10 @@ MAX_LENGTH = 96
 
 @st.cache_resource
 def load_distilbert_model():
+    """
+    Load the final DistilBERT model from
+    Hugging Face only once per Streamlit session.
+    """
 
     model_repository = st.secrets[
         "HF_MODEL_REPO"
@@ -36,56 +40,124 @@ def load_distilbert_model():
         )
     )
 
+    device = torch.device(
+        "cuda"
+        if torch.cuda.is_available()
+        else "cpu"
+    )
+
+    model.to(device)
     model.eval()
 
-    return tokenizer, model
+    return tokenizer, model, device
 
 
 def predict_sentiment(text):
+    """
+    Predict a single review.
+    """
 
-    tokenizer, model = (
+    results = predict_batch(
+        [str(text)],
+        batch_size=1
+    )
+
+    return results[0]
+
+
+def predict_batch(
+    reviews,
+    batch_size=16
+):
+    """
+    Predict multiple Spotify reviews
+    using DistilBERT in batches.
+    """
+
+    tokenizer, model, device = (
         load_distilbert_model()
     )
 
-    inputs = tokenizer(
-        str(text),
-        return_tensors="pt",
-        truncation=True,
-        padding=True,
-        max_length=MAX_LENGTH
-    )
+    all_results = []
 
-    with torch.no_grad():
+    total_reviews = len(reviews)
 
-        outputs = model(
-            **inputs
+    for start_index in range(
+        0,
+        total_reviews,
+        batch_size
+    ):
+
+        batch_reviews = reviews[
+            start_index:
+            start_index + batch_size
+        ]
+
+        inputs = tokenizer(
+            batch_reviews,
+            return_tensors="pt",
+            truncation=True,
+            padding=True,
+            max_length=MAX_LENGTH
         )
 
-    probabilities = torch.softmax(
-        outputs.logits,
-        dim=-1
-    )
+        inputs = {
+            key: value.to(device)
+            for key, value
+            in inputs.items()
+        }
 
-    predicted_id = int(
-        probabilities.argmax(
+        with torch.no_grad():
+
+            outputs = model(
+                **inputs
+            )
+
+        probabilities = torch.softmax(
+            outputs.logits,
             dim=-1
-        ).item()
-    )
+        )
 
-    confidence = float(
-        probabilities[
-            0,
-            predicted_id
-        ].item()
-    )
+        predicted_ids = (
+            probabilities.argmax(
+                dim=-1
+            )
+        )
 
-    sentiment = (
-        model.config.id2label[
-            predicted_id
-        ]
-    )
+        confidence_values = (
+            probabilities.max(
+                dim=-1
+            ).values
+        )
 
-    return {
-        "sentiment": sentiment,
-        "confidence": confidence
-    }
+        for (
+            review,
+            predicted_id,
+            confidence
+        ) in zip(
+            batch_reviews,
+            predicted_ids,
+            confidence_values
+        ):
+
+            label_id = int(
+                predicted_id.item()
+            )
+
+            sentiment = (
+                model.config.id2label[
+                    label_id
+                ]
+            )
+
+            all_results.append({
+                "review_text": review,
+                "predicted_sentiment": (
+                    sentiment.lower()
+                ),
+                "confidence": float(
+                    confidence.item()
+                )
+            })
+
+    return all_results
