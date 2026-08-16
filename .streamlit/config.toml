@@ -1,0 +1,15 @@
+[theme]
+
+base = "dark"
+
+primaryColor = "#1DB954"
+
+backgroundColor = "#0E1117"
+
+secondaryBackgroundColor = "#171B22"
+
+textColor = "#F5F7FA"
+
+baseRadius = "large"
+
+showWidgetBorder = true
