@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment files
+.env
+
+# API credentials
+secrets.toml
+.streamlit/secrets.toml
+
+# Temporary files
+*.tmp
+*.log
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Large ML artifacts
+*.bin
+*.pt
+*.pth
+*.ckpt
+
+# Local datasets
+data/
