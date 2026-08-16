@@ -3,3 +3,7 @@ torch
 transformers
 huggingface_hub
 safetensors
+pandas
+numpy
+openpyxl
+plotly
