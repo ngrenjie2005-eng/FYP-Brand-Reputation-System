@@ -163,13 +163,13 @@ The other notebooks reuse the preprocessed datasets saved by the earlier workflo
 
 `FYP_Single_Algorithm.ipynb` is the main notebook for:
 
-- dataset preparation;
-- full text preprocessing;
-- data exploration;
-- feature representation;
-- individual machine-learning experiments;
-- deep-learning experiments;
-- model comparison.
+- Dataset preparation;
+- Full text preprocessing;
+- Data exploration;
+- Feature representation;
+- Individual machine-learning experiments;
+- Deep-learning experiments;
+- Model comparison.
 
 This notebook should normally be executed **first** when reproducing the complete project workflow.
 
@@ -183,22 +183,22 @@ The preprocessing stage prepares the raw Spotify reviews before they are used fo
 
 The workflow includes operations such as:
 
-- text normalisation;
-- lowercasing;
-- contraction expansion;
-- slang and abbreviation normalisation;
-- spelling-related normalisation;
-- repeated-character normalisation;
-- repeated-punctuation handling;
+- Text normalisation;
+- Lowercasing;
+- Contraction expansion;
+- Slang and abbreviation normalisation;
+- Spelling-related normalisation;
+- Repeated-character normalisation;
+- Repeated-punctuation handling;
 - URL removal;
 - HTML removal;
-- mention handling;
-- hashtag normalisation;
-- emoji handling;
-- language filtering;
-- duplicate removal;
-- short-review handling;
-- creation of processed review datasets.
+- Mention handling;
+- Hashtag normalisation;
+- Emoji handling;
+- Language filtering;
+- Duplicate removal;
+- Short-review handling;
+- Creation of processed review datasets.
 
 The processed datasets are then saved for reuse by the DistilBERT and Hybrid notebooks.
 
@@ -455,14 +455,14 @@ The required dataset paths must therefore be valid before executing the Hybrid n
 
 Depending on the experimental configuration, the notebook may include:
 
-- loading saved processed datasets;
-- loading selected feature representations;
-- loading or training selected models;
-- generating model predictions;
-- combining selected prediction outputs;
-- implementing hybrid or fusion approaches;
-- evaluating hybrid results;
-- comparing hybrid and individual-model performance.
+- Loading saved processed datasets;
+- Loading selected feature representations;
+- Loading or training selected models;
+- Generating model predictions;
+- Combining selected prediction outputs;
+- Implementing hybrid or fusion approaches;
+- Evaluating hybrid results;
+- Comparing hybrid and individual-model performance.
 
 ---
 
@@ -1153,17 +1153,17 @@ Deep-learning and transformer experiments may be difficult to run using CPU-only
 
 Possible improvements to the experimental notebook workflow include:
 
-- centralising dataset paths in one configuration cell;
-- automatically validating required input files;
-- adding package-version information;
-- exporting experiment configurations automatically;
-- adding clearer experiment identifiers;
-- automatically saving model metrics;
-- integrating experiment tracking;
-- reducing repeated code between experiments;
-- creating a separate preprocessing notebook;
-- improving model reproducibility;
-- adding automated deployment preparation.
+- Centralising dataset paths in one configuration cell;
+- Automatically validating required input files;
+- Adding package-version information;
+- Exporting experiment configurations automatically;
+- Adding clearer experiment identifiers;
+- Automatically saving model metrics;
+- Integrating experiment tracking;
+- Reducing repeated code between experiments;
+- Creating a separate preprocessing notebook;
+- Improving model reproducibility;
+- Adding automated deployment preparation.
 
 ---
 
@@ -1231,10 +1231,10 @@ BrandPulse AI
 
 Users reproducing the work should therefore:
 
-1. update all Google Drive paths;
-2. run or obtain the preprocessing outputs from the Single Algorithm notebook;
-3. ensure the required CSV/XLSX files exist;
-4. run the DistilBERT and/or Hybrid experiments using those saved files;
-5. avoid placing sensitive API credentials directly in notebook code.
+1. Update all Google Drive paths;
+2. Run or obtain the preprocessing outputs from the Single Algorithm notebook;
+3. Ensure the required CSV/XLSX files exist;
+4. Run the DistilBERT and/or Hybrid experiments using those saved files;
+5. Avoid placing sensitive API credentials directly in notebook code.
 
 This structure helps maintain consistency between the different modelling experiments while keeping the preprocessing workflow centralised.
