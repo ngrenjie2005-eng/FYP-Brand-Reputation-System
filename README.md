@@ -1,35 +1,94 @@
-# Online Review-Based Brand Reputation Prediction Using NLP Techniques
+# 🎧 BrandPulse AI
+## Online Review-Based Brand Reputation Prediction Using NLP Techniques
 
-## Final Year Project
+BrandPulse AI is a Final Year Project (FYP) that applies Natural Language Processing (NLP), machine learning, transformer-based sentiment classification, and Large Language Models (LLMs) to analyse online customer reviews and transform them into brand reputation intelligence.
 
-This repository contains the development and cloud deployment of an AI-assisted brand reputation analysis system using Spotify online reviews.
+The current implementation focuses on **Spotify application reviews**. A trained **DistilBERT sentiment classification model** predicts whether customer reviews are positive or negative. The prediction results are then processed into brand reputation indicators, issue categories, customer-voice insights, and department-specific management recommendations.
 
-## Model Development
+The system is deployed as a cloud-based interactive dashboard using **Streamlit Community Cloud**.
 
-Three categories of modelling experiments were conducted:
+---
 
-1. Single Algorithm Models
-2. DistilBERT
-3. Hybrid Feature Representation
+# 📌 Project Overview
 
-The experimental notebooks are available in the `notebooks` folder.
+Traditional sentiment analysis mainly determines whether a customer opinion is positive or negative. BrandPulse AI extends this approach by converting sentiment predictions into information that can support management decision-making.
 
-## Deployment Model
+The system consists of three main intelligence layers:
 
-DistilBERT is currently selected for testing in the deployed brand reputation analysis system.
+1. **Predictive Intelligence**
+   - DistilBERT sentiment classification
+   - Positive and negative review prediction
+   - Prediction confidence
 
-## Planned System
+2. **Brand Reputation Analytics**
+   - Sentiment distribution
+   - Brand Reputation Score
+   - Customer issue categorisation
+   - Frequent positive and negative terms
+   - Reviews requiring management attention
 
-The final system will include:
+3. **Generative AI Management Intelligence**
+   - Department-specific AI managers
+   - Evidence-based management recommendations
+   - Executive-level report consolidation
 
-- Spotify review upload
-- DistilBERT sentiment prediction
-- Positive and negative review analysis
-- Brand reputation visualization
-- Issue analysis
-- AI department manager reports
-- Executive management recommendations
+---
 
-## Deployment
+# 🎯 Project Objectives
 
-The application will be deployed using Streamlit Community Cloud.
+The objectives of BrandPulse AI are to:
+
+- classify Spotify customer reviews using NLP techniques;
+- identify positive and negative customer sentiment;
+- transform sentiment predictions into brand-level reputation indicators;
+- identify common customer issues from negative reviews;
+- provide different management departments with relevant customer insights;
+- generate evidence-based improvement recommendations using LLMs;
+- consolidate department-level recommendations into an executive report;
+- provide an interactive cloud-based visualisation platform.
+
+---
+
+# 🧠 System Architecture
+
+```text
+                    Customer Reviews
+                          │
+                          ▼
+                 Streamlit Cloud App
+                          │
+                          ▼
+                    DistilBERT Model
+                  Hosted on Hugging Face
+                          │
+                          ▼
+              Positive / Negative Prediction
+                          │
+                          ▼
+               Brand Reputation Analytics
+                          │
+          ┌───────────────┼────────────────┐
+          │               │                │
+          ▼               ▼                ▼
+    Reputation Score   Issue Analysis   Customer Voice
+          │               │                │
+          └───────────────┼────────────────┘
+                          │
+                          ▼
+                AI Management Council
+                          │
+       ┌──────────────────┼────────────────────┐
+       │                  │                    │
+       ▼                  ▼                    ▼
+   Gemini Managers   OpenRouter Managers   Department Reports
+       │                  │                    │
+       └──────────────────┼────────────────────┘
+                          │
+                          ▼
+                   Executive Manager
+                          │
+                          ▼
+             Executive Reputation Report
+                          │
+                          ▼
+                  DOCX / PDF Export
