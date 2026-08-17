@@ -1933,3 +1933,334 @@ with dashboard_tab:
             "not be interpreted as a universal "
             "industry-standard reputation metric."
         )
+
+        # ============================================================
+# DEVELOPER TEST
+# GEMINI + OPENROUTER
+# TEMPORARY SECTION
+# ============================================================
+
+st.divider()
+
+st.markdown(
+    "## 🧪 LLM Connection Test"
+)
+
+st.caption(
+    "Temporary developer section used to verify "
+    "Gemini and OpenRouter connectivity before "
+    "building the AI Management Council."
+)
+
+
+# ============================================================
+# TEST INFORMATION
+# ============================================================
+
+with st.container(
+    border=True
+):
+
+    st.markdown(
+        "### Connected LLM Services"
+    )
+
+    provider_col1, provider_col2 = (
+        st.columns(2)
+    )
+
+
+    with provider_col1:
+
+        st.markdown(
+            "#### ✨ Gemini"
+        )
+
+        st.write(
+            "Provider: Google Gemini API"
+        )
+
+        st.write(
+            "Configured model:"
+        )
+
+        st.code(
+            st.secrets.get(
+                "GEMINI_MODEL",
+                "Not configured"
+            ),
+            language=None
+        )
+
+
+    with provider_col2:
+
+        st.markdown(
+            "#### 🌐 OpenRouter"
+        )
+
+        st.write(
+            "Provider: OpenRouter"
+        )
+
+        st.write(
+            "Requested model/router:"
+        )
+
+        st.code(
+            st.secrets.get(
+                "OPENROUTER_MODEL",
+                "Not configured"
+            ),
+            language=None
+        )
+
+
+st.write("")
+
+
+# ============================================================
+# TEST PROMPT
+# ============================================================
+
+with st.container(
+    border=True
+):
+
+    st.markdown(
+        "### 📝 Test Prompt"
+    )
+
+    test_prompt = st.text_area(
+        "Enter a test message",
+        value=(
+            "Reply with a short sentence confirming "
+            "that the API connection is working."
+        ),
+        height=100
+    )
+
+    test_button = st.button(
+        "🚀 Test Gemini + OpenRouter",
+        type="primary",
+        use_container_width=True,
+        key="test_both_llm_connections"
+    )
+
+
+# ============================================================
+# RUN BOTH TESTS
+# ============================================================
+
+if test_button:
+
+    if not test_prompt.strip():
+
+        st.warning(
+            "Please enter a test prompt."
+        )
+
+    else:
+
+        st.markdown(
+            "## Test Results"
+        )
+
+        gemini_column, openrouter_column = (
+            st.columns(
+                2,
+                gap="large"
+            )
+        )
+
+
+        # ====================================================
+        # GEMINI TEST
+        # ====================================================
+
+        with gemini_column:
+
+            with st.container(
+                border=True
+            ):
+
+                st.markdown(
+                    "### ✨ Gemini"
+                )
+
+                try:
+
+                    with st.spinner(
+                        "Connecting to Gemini..."
+                    ):
+
+                        gemini_result = (
+                            call_gemini(
+                                system_prompt=(
+                                    "You are a connection-test "
+                                    "assistant. Respond clearly "
+                                    "and briefly."
+                                ),
+
+                                user_prompt=(
+                                    test_prompt
+                                )
+                            )
+                        )
+
+
+                    st.success(
+                        "Gemini connection successful!"
+                    )
+
+
+                    st.markdown(
+                        "#### Response"
+                    )
+
+                    st.write(
+                        gemini_result[
+                            "content"
+                        ]
+                    )
+
+
+                    st.divider()
+
+
+                    info_col1, info_col2 = (
+                        st.columns(2)
+                    )
+
+
+                    info_col1.metric(
+                        "Provider",
+                        gemini_result[
+                            "provider"
+                        ]
+                    )
+
+
+                    info_col2.metric(
+                        "Model",
+                        gemini_result[
+                            "model"
+                        ]
+                    )
+
+
+                except Exception as error:
+
+                    st.error(
+                        "Gemini connection failed."
+                    )
+
+                    st.exception(
+                        error
+                    )
+
+
+        # ====================================================
+        # OPENROUTER TEST
+        # ====================================================
+
+        with openrouter_column:
+
+            with st.container(
+                border=True
+            ):
+
+                st.markdown(
+                    "### 🌐 OpenRouter Free"
+                )
+
+                try:
+
+                    with st.spinner(
+                        "Connecting to OpenRouter..."
+                    ):
+
+                        openrouter_result = (
+                            call_openrouter(
+                                system_prompt=(
+                                    "You are a connection-test "
+                                    "assistant. Respond clearly "
+                                    "and briefly."
+                                ),
+
+                                user_prompt=(
+                                    test_prompt
+                                )
+                            )
+                        )
+
+
+                    st.success(
+                        "OpenRouter connection successful!"
+                    )
+
+
+                    st.markdown(
+                        "#### Response"
+                    )
+
+                    st.write(
+                        openrouter_result[
+                            "content"
+                        ]
+                    )
+
+
+                    st.divider()
+
+
+                    info_col1, info_col2 = (
+                        st.columns(2)
+                    )
+
+
+                    info_col1.metric(
+                        "Provider",
+                        openrouter_result[
+                            "provider"
+                        ]
+                    )
+
+
+                    info_col2.metric(
+                        "Actual Model",
+                        openrouter_result[
+                            "model"
+                        ]
+                    )
+
+
+                    st.caption(
+                        "The actual OpenRouter model may "
+                        "change because the application "
+                        "requests openrouter/free."
+                    )
+
+
+                except Exception as error:
+
+                    st.error(
+                        "OpenRouter connection failed."
+                    )
+
+                    st.exception(
+                        error
+                    )
+
+
+        # ====================================================
+        # FINAL CONNECTION SUMMARY
+        # ====================================================
+
+        st.write("")
+
+        st.info(
+            "If both panels show a successful connection, "
+            "the LLM service layer is ready for the "
+            "AI Management Council."
+        )
