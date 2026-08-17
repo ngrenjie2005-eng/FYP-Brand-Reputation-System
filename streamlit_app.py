@@ -7,15 +7,15 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from src.analysis import analyse_predictions
+from src.analysis import (
+    analyse_predictions
+)
 
 from src.distilbert_predictor import (
     predict_sentiment,
     predict_batch,
 )
 
-# IMPORTANT:
-# These imports fix the NameError shown in your screenshot.
 from src.llm_service import (
     call_gemini,
     call_openrouter,
@@ -23,7 +23,7 @@ from src.llm_service import (
 
 
 # ============================================================
-# PAGE CONFIGURATION
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -35,16 +35,12 @@ st.set_page_config(
 
 
 # ============================================================
-# CUSTOM CSS
+# CSS
 # ============================================================
 
 st.html(
     """
 <style>
-
-/* ----------------------------------------------------------
-   MAIN PAGE
-   ---------------------------------------------------------- */
 
 .block-container {
     padding-top: 1.4rem;
@@ -53,24 +49,25 @@ st.html(
 }
 
 
-/* ----------------------------------------------------------
-   HERO
-   ---------------------------------------------------------- */
+/* HERO */
 
 .hero {
+
     padding: 36px 40px;
+
     border-radius: 26px;
+
     margin-bottom: 24px;
 
     background:
         radial-gradient(
             circle at top right,
-            rgba(29, 185, 84, 0.30),
+            rgba(29,185,84,0.30),
             transparent 38%
         ),
         radial-gradient(
             circle at bottom left,
-            rgba(31, 111, 235, 0.12),
+            rgba(31,111,235,0.12),
             transparent 30%
         ),
         linear-gradient(
@@ -80,56 +77,49 @@ st.html(
         );
 
     border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.08
-        );
+        1px solid
+        rgba(255,255,255,0.08);
 
     box-shadow:
-        0 15px 40px rgba(
-            0,
-            0,
-            0,
-            0.25
-        );
+        0 15px 40px
+        rgba(0,0,0,0.25);
 }
 
 
 .hero-badge {
+
     display: inline-block;
+
     padding: 7px 13px;
+
     border-radius: 999px;
 
     background:
-        rgba(29, 185, 84, 0.13);
+        rgba(29,185,84,0.13);
 
     border:
-        1px solid rgba(
-            29,
-            185,
-            84,
-            0.30
-        );
+        1px solid
+        rgba(29,185,84,0.30);
 
     color: #55E487;
 
     font-size: 12px;
+
     font-weight: 700;
 
     letter-spacing: 1px;
+
     margin-bottom: 16px;
 }
 
 
 .hero-title {
+
     font-size: 46px;
+
     font-weight: 800;
 
     margin: 0;
-
-    line-height: 1.05;
 
     color: #F7F9FC;
 }
@@ -141,23 +131,23 @@ st.html(
 
 
 .hero-subtitle {
+
     color: #A9B1BC;
 
     font-size: 16px;
+
     line-height: 1.7;
 
     max-width: 850px;
 
     margin-top: 16px;
-    margin-bottom: 0;
 }
 
 
-/* ----------------------------------------------------------
-   FEATURE CARDS
-   ---------------------------------------------------------- */
+/* FEATURE CARDS */
 
 .feature-card {
+
     padding: 21px;
 
     border-radius: 20px;
@@ -170,52 +160,29 @@ st.html(
         );
 
     border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.07
-        );
+        1px solid
+        rgba(255,255,255,0.07);
 
     min-height: 160px;
-
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease;
-}
-
-
-.feature-card:hover {
-    transform: translateY(-3px);
-
-    border-color:
-        rgba(
-            29,
-            185,
-            84,
-            0.45
-        );
 }
 
 
 .feature-icon {
+
     width: 45px;
+
     height: 45px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     border-radius: 13px;
 
     background:
-        rgba(
-            29,
-            185,
-            84,
-            0.10
-        );
+        rgba(29,185,84,0.10);
 
     font-size: 23px;
 
@@ -224,16 +191,17 @@ st.html(
 
 
 .feature-title {
+
     font-size: 17px;
+
     font-weight: 700;
 
     margin-bottom: 7px;
-
-    color: #F3F5F7;
 }
 
 
 .feature-text {
+
     color: #9CA6B3;
 
     font-size: 13px;
@@ -242,29 +210,18 @@ st.html(
 }
 
 
-/* ----------------------------------------------------------
-   SIDEBAR
-   ---------------------------------------------------------- */
+/* SIDEBAR */
 
 .sidebar-brand {
+
     font-size: 23px;
 
     font-weight: 800;
-
-    margin-bottom: 3px;
-}
-
-
-.sidebar-subtitle {
-    color: #919BA8;
-
-    font-size: 12px;
-
-    margin-bottom: 15px;
 }
 
 
 .section-label {
+
     color: #7E8998;
 
     font-size: 11px;
@@ -274,12 +231,11 @@ st.html(
     letter-spacing: 1.3px;
 
     text-transform: uppercase;
-
-    margin-bottom: 4px;
 }
 
 
 .status-online {
+
     display: inline-block;
 
     padding: 6px 11px;
@@ -289,20 +245,7 @@ st.html(
     color: #55E487;
 
     background:
-        rgba(
-            29,
-            185,
-            84,
-            0.12
-        );
-
-    border:
-        1px solid rgba(
-            29,
-            185,
-            84,
-            0.20
-        );
+        rgba(29,185,84,0.12);
 
     font-size: 12px;
 
@@ -310,72 +253,16 @@ st.html(
 }
 
 
-.status-testing {
-    display: inline-block;
-
-    padding: 6px 11px;
-
-    border-radius: 999px;
-
-    color: #60A5FA;
-
-    background:
-        rgba(
-            96,
-            165,
-            250,
-            0.12
-        );
-
-    border:
-        1px solid rgba(
-            96,
-            165,
-            250,
-            0.20
-        );
-
-    font-size: 12px;
-
-    font-weight: 600;
-}
-
-
-/* ----------------------------------------------------------
-   INFORMATION
-   ---------------------------------------------------------- */
-
-.hint-text {
-    color: #8993A0;
-
-    font-size: 13px;
-}
-
-
-/* ----------------------------------------------------------
-   REPUTATION STATUS
-   ---------------------------------------------------------- */
+/* REPUTATION */
 
 .reputation-positive {
+
     padding: 13px 17px;
 
     border-radius: 12px;
 
     background:
-        rgba(
-            29,
-            185,
-            84,
-            0.10
-        );
-
-    border:
-        1px solid rgba(
-            29,
-            185,
-            84,
-            0.20
-        );
+        rgba(29,185,84,0.10);
 
     color: #55E487;
 
@@ -384,25 +271,13 @@ st.html(
 
 
 .reputation-mixed {
+
     padding: 13px 17px;
 
     border-radius: 12px;
 
     background:
-        rgba(
-            245,
-            183,
-            49,
-            0.10
-        );
-
-    border:
-        1px solid rgba(
-            245,
-            183,
-            49,
-            0.20
-        );
+        rgba(245,183,49,0.10);
 
     color: #F5B731;
 
@@ -411,25 +286,13 @@ st.html(
 
 
 .reputation-negative {
+
     padding: 13px 17px;
 
     border-radius: 12px;
 
     background:
-        rgba(
-            255,
-            76,
-            76,
-            0.10
-        );
-
-    border:
-        1px solid rgba(
-            255,
-            76,
-            76,
-            0.20
-        );
+        rgba(255,76,76,0.10);
 
     color: #FF7070;
 
@@ -437,31 +300,8 @@ st.html(
 }
 
 
-/* ----------------------------------------------------------
-   STREAMLIT IMPROVEMENTS
-   ---------------------------------------------------------- */
-
 header[data-testid="stHeader"] {
     background: transparent;
-}
-
-
-button[data-baseweb="tab"] {
-    font-size: 14px;
-
-    font-weight: 600;
-}
-
-
-[data-testid="stDataFrame"] {
-    border-radius: 16px;
-
-    overflow: hidden;
-}
-
-
-[data-testid="stFileUploader"] {
-    border-radius: 16px;
 }
 
 </style>
@@ -470,19 +310,13 @@ button[data-baseweb="tab"] {
 
 
 # ============================================================
-# HELPER
+# SECRET HELPER
 # ============================================================
 
 def read_secret(
     key,
-    default="Not configured",
+    default="Not configured"
 ):
-    """
-    Read a Streamlit secret safely.
-
-    Used only to display configured MODEL NAMES.
-    Never display API keys.
-    """
 
     try:
         return st.secrets[key]
@@ -534,19 +368,16 @@ with st.sidebar:
 <div class="sidebar-brand">
     🎧 BrandPulse AI
 </div>
-
-<div class="sidebar-subtitle">
-    Brand Reputation Intelligence Platform
-</div>
 """
+    )
+
+    st.caption(
+        "Brand Reputation "
+        "Intelligence Platform"
     )
 
     st.divider()
 
-
-    # --------------------------------------------------------
-    # DISTILBERT
-    # --------------------------------------------------------
 
     st.html(
         """
@@ -556,14 +387,11 @@ with st.sidebar:
 """
     )
 
+
     st.markdown(
         "### DistilBERT"
     )
 
-    st.caption(
-        "Transformer-based binary "
-        "sentiment classification"
-    )
 
     st.html(
         """
@@ -573,12 +401,9 @@ with st.sidebar:
 """
     )
 
+
     st.divider()
 
-
-    # --------------------------------------------------------
-    # LLM SERVICES
-    # --------------------------------------------------------
 
     st.html(
         """
@@ -588,28 +413,18 @@ with st.sidebar:
 """
     )
 
+
     st.write(
-        "✨ Gemini"
+        "✨ Gemini 3.7 Flash"
     )
 
     st.write(
         "🌐 OpenRouter Free"
     )
 
-    st.html(
-        """
-<span class="status-testing">
-    ● Connection Testing
-</span>
-"""
-    )
 
     st.divider()
 
-
-    # --------------------------------------------------------
-    # CLASSIFICATION
-    # --------------------------------------------------------
 
     st.html(
         """
@@ -619,6 +434,7 @@ with st.sidebar:
 """
     )
 
+
     st.write(
         "🟢 Positive"
     )
@@ -627,45 +443,18 @@ with st.sidebar:
         "🔴 Negative"
     )
 
-    st.divider()
-
-
-    # --------------------------------------------------------
-    # PIPELINE
-    # --------------------------------------------------------
-
-    st.html(
-        """
-<div class="section-label">
-    SYSTEM PIPELINE
-</div>
-"""
-    )
-
-    st.markdown(
-        """
-**1.** Upload customer reviews
-
-**2.** DistilBERT prediction
-
-**3.** Reputation analysis
-
-**4.** Customer issue detection
-
-**5.** AI management intelligence
-"""
-    )
 
     st.divider()
+
 
     st.caption(
         "Final Year Project"
     )
 
     st.caption(
-        "Online Review-Based Brand "
-        "Reputation Prediction Using "
-        "NLP Techniques"
+        "Online Review-Based "
+        "Brand Reputation Prediction "
+        "Using NLP Techniques"
     )
 
 
@@ -691,7 +480,7 @@ st.html(
         actionable brand reputation intelligence
         using DistilBERT sentiment classification,
         customer issue analysis and AI-assisted
-        management insights.
+        management intelligence.
 
     </p>
 
@@ -705,10 +494,7 @@ st.html(
 # ============================================================
 
 feature1, feature2, feature3, feature4 = (
-    st.columns(
-        4,
-        gap="medium",
-    )
+    st.columns(4)
 )
 
 
@@ -727,11 +513,8 @@ with feature1:
     </div>
 
     <div class="feature-text">
-
-        Transformer-based sentiment classification
-        identifies positive and negative customer
-        opinions.
-
+        Transformer-based sentiment
+        classification.
     </div>
 
 </div>
@@ -754,10 +537,8 @@ with feature2:
     </div>
 
     <div class="feature-text">
-
-        Convert sentiment predictions into
-        measurable brand reputation indicators.
-
+        Convert predictions into
+        measurable reputation indicators.
     </div>
 
 </div>
@@ -780,11 +561,8 @@ with feature3:
     </div>
 
     <div class="feature-text">
-
-        Identify recurring technical,
-        subscription, playback and customer
-        experience issues.
-
+        Identify recurring customer
+        complaints and issues.
     </div>
 
 </div>
@@ -807,10 +585,8 @@ with feature4:
     </div>
 
     <div class="feature-text">
-
-        Gemini and OpenRouter support future
-        department-level management analysis.
-
+        Gemini and OpenRouter support
+        management-level analysis.
     </div>
 
 </div>
@@ -822,14 +598,14 @@ st.write("")
 
 
 # ============================================================
-# MAIN NAVIGATION
+# MAIN TABS
 # ============================================================
 
 (
     single_tab,
     batch_tab,
     dashboard_tab,
-    llm_test_tab,
+    llm_test_tab
 ) = st.tabs(
     [
         "🧪 Single Review",
@@ -841,8 +617,7 @@ st.write("")
 
 
 # ============================================================
-# TAB 1
-# SINGLE REVIEW
+# TAB 1 — SINGLE REVIEW
 # ============================================================
 
 with single_tab:
@@ -851,70 +626,43 @@ with single_tab:
         "## Review Sentiment Laboratory"
     )
 
-    st.caption(
-        "Test the deployed DistilBERT "
-        "model using an individual "
-        "Spotify review."
-    )
 
-
-    left_column, right_column = (
+    review_left, review_right = (
         st.columns(
-            [1.6, 1],
-            gap="large",
+            [1.5, 1]
         )
     )
 
 
-    # --------------------------------------------------------
-    # INPUT
-    # --------------------------------------------------------
-
-    with left_column:
+    with review_left:
 
         with st.container(
             border=True
         ):
 
-            st.markdown(
-                "### ✍️ Customer Review"
-            )
-
-            review_text = st.text_area(
-                "Customer review",
-                placeholder=(
-                    "Example: Spotify keeps "
-                    "crashing after the latest "
-                    "update and playback "
-                    "randomly stops."
-                ),
-                height=190,
-                label_visibility="collapsed",
-            )
-
-            st.html(
-                """
-<span class="hint-text">
-    Enter an English-language Spotify review.
-</span>
-"""
-            )
-
-            st.write("")
-
-            predict_button = st.button(
-                "✨ Analyse Sentiment",
-                type="primary",
-                width="stretch",
-                key="predict_single_review",
+            review_text = (
+                st.text_area(
+                    "Customer Review",
+                    height=180,
+                    placeholder=(
+                        "Example: The application "
+                        "keeps crashing after "
+                        "the latest update."
+                    )
+                )
             )
 
 
-    # --------------------------------------------------------
-    # RESULT
-    # --------------------------------------------------------
+            analyse_single = (
+                st.button(
+                    "✨ Analyse Sentiment",
+                    type="primary",
+                    width="stretch"
+                )
+            )
 
-    with right_column:
+
+    with review_right:
 
         with st.container(
             border=True
@@ -925,23 +673,22 @@ with single_tab:
             )
 
 
-            if predict_button:
+            if analyse_single:
 
                 if not review_text.strip():
 
                     st.warning(
-                        "Please enter a review "
-                        "before analysing."
+                        "Enter a review first."
                     )
+
 
                 else:
 
-                    with st.spinner(
-                        "DistilBERT is analysing "
-                        "the review..."
-                    ):
+                    try:
 
-                        try:
+                        with st.spinner(
+                            "Analysing..."
+                        ):
 
                             result = (
                                 predict_sentiment(
@@ -950,99 +697,72 @@ with single_tab:
                             )
 
 
-                            sentiment = (
-                                result[
-                                    "sentiment"
-                                ]
-                                .lower()
+                        sentiment = (
+                            result[
+                                "sentiment"
+                            ]
+                            .lower()
+                        )
+
+
+                        confidence = (
+                            result[
+                                "confidence"
+                            ]
+                            * 100
+                        )
+
+
+                        if (
+                            sentiment
+                            == "positive"
+                        ):
+
+                            st.success(
+                                "🟢 Positive"
                             )
 
 
-                            confidence = (
-                                result[
-                                    "confidence"
-                                ]
-                                * 100
-                            )
-
-
-                            if (
-                                sentiment
-                                == "positive"
-                            ):
-
-                                st.success(
-                                    "🟢 Positive Sentiment"
-                                )
-
-                                st.write(
-                                    "The review reflects "
-                                    "a favourable customer "
-                                    "experience."
-                                )
-
-
-                            elif (
-                                sentiment
-                                == "negative"
-                            ):
-
-                                st.error(
-                                    "🔴 Negative Sentiment"
-                                )
-
-                                st.write(
-                                    "The review indicates "
-                                    "customer dissatisfaction "
-                                    "that may affect brand "
-                                    "perception."
-                                )
-
-
-                            else:
-
-                                st.info(
-                                    sentiment.title()
-                                )
-
-
-                            st.metric(
-                                "Model Confidence",
-                                f"{confidence:.2f}%",
-                            )
-
-
-                            st.caption(
-                                "Confidence represents "
-                                "the model output and "
-                                "does not guarantee "
-                                "prediction correctness."
-                            )
-
-
-                        except Exception as error:
+                        elif (
+                            sentiment
+                            == "negative"
+                        ):
 
                             st.error(
-                                "Prediction could not "
-                                "be completed."
+                                "🔴 Negative"
                             )
 
-                            st.exception(
-                                error
+
+                        else:
+
+                            st.info(
+                                sentiment.title()
                             )
+
+
+                        st.metric(
+                            "Model Confidence",
+                            f"{confidence:.2f}%"
+                        )
+
+
+                    except Exception as error:
+
+                        st.exception(
+                            error
+                        )
 
 
             else:
 
                 st.info(
-                    "Enter a customer review "
-                    "and select Analyse Sentiment."
+                    "Prediction will "
+                    "appear here."
                 )
 
 
 # ============================================================
-# TAB 2
-# BATCH INTELLIGENCE
+# TAB 2 — BATCH
 # ============================================================
 
 with batch_tab:
@@ -1051,169 +771,63 @@ with batch_tab:
         "## Batch Brand Intelligence"
     )
 
-    st.caption(
-        "Upload CSV or Excel review data "
-        "for large-scale sentiment and "
-        "brand reputation analysis."
-    )
 
-
-    upload_column, info_column = (
-        st.columns(
-            [1.7, 1],
-            gap="large",
+    uploaded_file = (
+        st.file_uploader(
+            "Upload customer-review data",
+            type=[
+                "csv",
+                "xlsx"
+            ]
         )
     )
 
-
-    # --------------------------------------------------------
-    # UPLOAD
-    # --------------------------------------------------------
-
-    with upload_column:
-
-        with st.container(
-            border=True
-        ):
-
-            st.markdown(
-                "### 📂 Upload Review Dataset"
-            )
-
-            uploaded_file = (
-                st.file_uploader(
-                    "Upload review dataset",
-                    type=[
-                        "csv",
-                        "xlsx",
-                    ],
-                    label_visibility=(
-                        "collapsed"
-                    ),
-                )
-            )
-
-            st.caption(
-                "Supported formats: "
-                "CSV and XLSX"
-            )
-
-
-    # --------------------------------------------------------
-    # FORMAT INFO
-    # --------------------------------------------------------
-
-    with info_column:
-
-        with st.container(
-            border=True
-        ):
-
-            st.markdown(
-                "### 📌 Required Data"
-            )
-
-            st.write(
-                "Your file needs at least "
-                "one column containing "
-                "customer review text."
-            )
-
-            st.code(
-                "review_text\n"
-                "Spotify is excellent...\n"
-                "The app keeps crashing...",
-                language=None,
-            )
-
-
-    # --------------------------------------------------------
-    # READ FILE
-    # --------------------------------------------------------
 
     if uploaded_file is not None:
 
         try:
 
-            file_name = (
+            if (
                 uploaded_file.name
                 .lower()
-            )
-
-
-            if file_name.endswith(
-                ".csv"
+                .endswith(
+                    ".csv"
+                )
             ):
 
-                uploaded_df = pd.read_csv(
-                    uploaded_file
+                uploaded_df = (
+                    pd.read_csv(
+                        uploaded_file
+                    )
                 )
 
 
             else:
 
-                uploaded_df = pd.read_excel(
-                    uploaded_file
+                uploaded_df = (
+                    pd.read_excel(
+                        uploaded_file
+                    )
                 )
 
 
-            st.write("")
-
-            st.markdown(
-                "### Dataset Preview"
+            st.dataframe(
+                uploaded_df.head(10),
+                width="stretch"
             )
 
 
-            preview_column, stats_column = (
-                st.columns(
-                    [3, 1],
-                    gap="medium",
+            review_column = (
+                st.selectbox(
+                    "Select review column",
+                    options=(
+                        uploaded_df
+                        .columns
+                        .tolist()
+                    )
                 )
             )
 
-
-            with preview_column:
-
-                st.dataframe(
-                    uploaded_df.head(10),
-                    width="stretch",
-                    hide_index=True,
-                )
-
-
-            with stats_column:
-
-                st.metric(
-                    "Total Rows",
-                    f"{len(uploaded_df):,}",
-                )
-
-                st.metric(
-                    "Columns",
-                    len(
-                        uploaded_df.columns
-                    ),
-                )
-
-
-            # ------------------------------------------------
-            # SELECT REVIEW COLUMN
-            # ------------------------------------------------
-
-            review_column = st.selectbox(
-                "Select the column "
-                "containing review text:",
-                options=(
-                    uploaded_df
-                    .columns
-                    .tolist()
-                ),
-            )
-
-
-            # ------------------------------------------------
-            # CLEAN VALID REVIEWS
-            # ------------------------------------------------
 
             valid_reviews = (
                 uploaded_df[
@@ -1233,144 +847,94 @@ with batch_tab:
 
 
             st.metric(
-                "Valid Reviews Ready",
-                f"{len(valid_reviews):,}",
+                "Valid Reviews",
+                f"{len(valid_reviews):,}"
             )
 
-
-            # ------------------------------------------------
-            # RUN ANALYSIS
-            # ------------------------------------------------
 
             if st.button(
                 "🚀 Run Brand Intelligence Analysis",
                 type="primary",
-                width="stretch",
-                key="run_batch_analysis",
+                width="stretch"
             ):
 
-                if (
-                    len(valid_reviews)
-                    == 0
-                ):
+                try:
 
-                    st.warning(
-                        "No valid reviews "
-                        "were found."
+                    with st.status(
+                        "Running analysis...",
+                        expanded=True
+                    ) as status:
+
+                        st.write(
+                            "🧠 DistilBERT "
+                            "classification..."
+                        )
+
+
+                        predictions = (
+                            predict_batch(
+                                valid_reviews.tolist(),
+                                batch_size=16
+                            )
+                        )
+
+
+                        prediction_df = (
+                            pd.DataFrame(
+                                predictions
+                            )
+                        )
+
+
+                        st.write(
+                            "📊 Reputation analysis..."
+                        )
+
+
+                        (
+                            analysed_df,
+                            summary
+                        ) = (
+                            analyse_predictions(
+                                prediction_df
+                            )
+                        )
+
+
+                        st.session_state[
+                            "prediction_results"
+                        ] = analysed_df
+
+
+                        st.session_state[
+                            "analysis_summary"
+                        ] = summary
+
+
+                        status.update(
+                            label=(
+                                "Analysis complete"
+                            ),
+                            state="complete",
+                            expanded=False
+                        )
+
+
+                except Exception as error:
+
+                    st.exception(
+                        error
                     )
 
 
-                else:
-
-                    with st.status(
-                        "Running AI analysis...",
-                        expanded=True,
-                    ) as status:
-
-                        try:
-
-                            st.write(
-                                "🧠 Running "
-                                "DistilBERT "
-                                "sentiment "
-                                "predictions..."
-                            )
-
-
-                            prediction_list = (
-                                predict_batch(
-                                    (
-                                        valid_reviews
-                                        .tolist()
-                                    ),
-                                    batch_size=16,
-                                )
-                            )
-
-
-                            prediction_df = (
-                                pd.DataFrame(
-                                    prediction_list
-                                )
-                            )
-
-
-                            st.write(
-                                "📊 Calculating "
-                                "brand reputation "
-                                "indicators..."
-                            )
-
-
-                            (
-                                analysed_df,
-                                summary,
-                            ) = (
-                                analyse_predictions(
-                                    prediction_df
-                                )
-                            )
-
-
-                            st.write(
-                                "🔎 Identifying "
-                                "customer issues..."
-                            )
-
-
-                            st.session_state[
-                                "prediction_results"
-                            ] = analysed_df
-
-
-                            st.session_state[
-                                "analysis_summary"
-                            ] = summary
-
-
-                            status.update(
-                                label=(
-                                    "Brand "
-                                    "intelligence "
-                                    "analysis "
-                                    "complete!"
-                                ),
-                                state="complete",
-                                expanded=False,
-                            )
-
-
-                        except Exception as error:
-
-                            status.update(
-                                label=(
-                                    "Analysis "
-                                    "failed"
-                                ),
-                                state="error",
-                                expanded=True,
-                            )
-
-                            st.exception(
-                                error
-                            )
-
-
         except Exception as error:
-
-            st.error(
-                "The uploaded file "
-                "could not be read."
-            )
 
             st.exception(
                 error
             )
 
 
-    # --------------------------------------------------------
     # RESULTS
-    # --------------------------------------------------------
 
     if (
         st.session_state[
@@ -1379,62 +943,31 @@ with batch_tab:
         is not None
     ):
 
-        st.divider()
-
-        st.markdown(
-            "## Prediction Intelligence"
-        )
-
-
-        results_df = (
+        results = (
             st.session_state[
                 "prediction_results"
             ].copy()
         )
 
 
-        display_results = (
-            results_df.copy()
-        )
-
-
-        display_results[
+        results[
             "confidence"
         ] = (
-            display_results[
+            results[
                 "confidence"
             ]
             * 100
         ).round(2)
 
 
-        display_results.rename(
-            columns={
-                "review_text":
-                    "Review",
-
-                "predicted_sentiment":
-                    "Sentiment",
-
-                "confidence":
-                    "Confidence (%)",
-
-                "issues":
-                    "Detected Issues",
-            },
-            inplace=True,
-        )
-
-
         st.dataframe(
-            display_results,
-            width="stretch",
-            hide_index=True,
+            results,
+            width="stretch"
         )
 
 
         csv_data = (
-            display_results
+            results
             .to_csv(
                 index=False
             )
@@ -1445,36 +978,23 @@ with batch_tab:
 
 
         st.download_button(
-            label=(
-                "⬇️ Download "
-                "Analysis Results"
-            ),
+            "⬇️ Download Results",
             data=csv_data,
             file_name=(
-                "spotify_brand_"
-                "reputation_"
-                "analysis.csv"
+                "brandpulse_results.csv"
             ),
-            mime="text/csv",
-            width="stretch",
+            mime="text/csv"
         )
 
 
 # ============================================================
-# TAB 3
-# REPUTATION DASHBOARD
+# TAB 3 — DASHBOARD
 # ============================================================
 
 with dashboard_tab:
 
     st.markdown(
         "## Brand Reputation Intelligence"
-    )
-
-    st.caption(
-        "Executive-level brand reputation "
-        "overview derived from DistilBERT "
-        "review predictions."
     )
 
 
@@ -1485,504 +1005,186 @@ with dashboard_tab:
     )
 
 
-    # --------------------------------------------------------
-    # NO RESULTS
-    # --------------------------------------------------------
-
     if summary is None:
 
-        with st.container(
-            border=True
-        ):
+        st.info(
+            "Run Batch Intelligence first."
+        )
 
-            st.info(
-                "📂 Run Batch Intelligence "
-                "first to generate the "
-                "reputation dashboard."
-            )
-
-
-    # --------------------------------------------------------
-    # RESULTS EXIST
-    # --------------------------------------------------------
 
     else:
 
-        (
-            metric1,
-            metric2,
-            metric3,
-            metric4,
-        ) = st.columns(
-            4,
-            gap="medium",
+        m1, m2, m3, m4 = (
+            st.columns(4)
         )
 
 
-        metric1.metric(
-            "Reviews Analysed",
-            f"{summary['total_reviews']:,}",
-        )
-
-
-        metric2.metric(
-            "Positive Reviews",
-            f"{summary['positive_reviews']:,}",
-        )
-
-
-        metric3.metric(
-            "Negative Reviews",
-            f"{summary['negative_reviews']:,}",
-        )
-
-
-        metric4.metric(
-            "Brand Reputation Score",
-            (
-                f"{summary['reputation_score']}"
-                "%"
-            ),
-        )
-
-
-        st.write("")
-
-
-        # ----------------------------------------------------
-        # REPUTATION STATUS
-        # ----------------------------------------------------
-
-        score = float(
+        m1.metric(
+            "Reviews",
             summary[
-                "reputation_score"
+                "total_reviews"
             ]
         )
 
 
-        with st.container(
-            border=True
-        ):
-
-            st.markdown(
-                "### 🧭 Reputation Status"
-            )
-
-
-            if score >= 80:
-
-                st.html(
-                    """
-<div class="reputation-positive">
-    🟢 Very Positive Brand Reputation
-</div>
-"""
-                )
+        m2.metric(
+            "Positive",
+            summary[
+                "positive_reviews"
+            ]
+        )
 
 
-            elif score >= 60:
-
-                st.html(
-                    """
-<div class="reputation-positive">
-    🟢 Positive Brand Reputation
-</div>
-"""
-                )
+        m3.metric(
+            "Negative",
+            summary[
+                "negative_reviews"
+            ]
+        )
 
 
-            elif score >= 40:
-
-                st.html(
-                    """
-<div class="reputation-mixed">
-    🟡 Mixed Brand Reputation
-</div>
-"""
-                )
-
-
-            elif score >= 20:
-
-                st.html(
-                    """
-<div class="reputation-negative">
-    🔴 Negative Brand Reputation
-</div>
-"""
-                )
-
-
-            else:
-
-                st.html(
-                    """
-<div class="reputation-negative">
-    🔴 Very Negative Brand Reputation
-</div>
-"""
-                )
-
-
-            st.write("")
-
-
-            st.progress(
-                int(
-                    max(
-                        0,
-                        min(
-                            100,
-                            score,
-                        ),
-                    )
-                )
-            )
-
-
-            st.caption(
-                f"Current Reputation Score: "
-                f"{score:.2f}%"
-            )
-
-
-        st.write("")
-
-
-        # ----------------------------------------------------
-        # CHARTS
-        # ----------------------------------------------------
-
-        chart_left, chart_right = (
-            st.columns(
-                2,
-                gap="large",
+        m4.metric(
+            "Reputation Score",
+            (
+                f"{summary['reputation_score']}"
+                "%"
             )
         )
 
 
-        # SENTIMENT CHART
+        sentiment_df = (
+            pd.DataFrame(
+                {
+                    "Sentiment": [
+                        "Positive",
+                        "Negative"
+                    ],
+
+                    "Reviews": [
+                        summary[
+                            "positive_reviews"
+                        ],
+
+                        summary[
+                            "negative_reviews"
+                        ]
+                    ]
+                }
+            )
+        )
+
+
+        chart_left, chart_right = (
+            st.columns(2)
+        )
+
 
         with chart_left:
 
-            with st.container(
-                border=True
-            ):
-
-                st.markdown(
-                    "### Sentiment Distribution"
+            sentiment_chart = (
+                px.pie(
+                    sentiment_df,
+                    names="Sentiment",
+                    values="Reviews",
+                    hole=0.6
                 )
+            )
 
 
-                sentiment_df = (
-                    pd.DataFrame(
-                        {
-                            "Sentiment": [
-                                "Positive",
-                                "Negative",
-                            ],
+            st.plotly_chart(
+                sentiment_chart,
+                width="stretch"
+            )
 
-                            "Reviews": [
-                                summary[
-                                    "positive_reviews"
-                                ],
-
-                                summary[
-                                    "negative_reviews"
-                                ],
-                            ],
-                        }
-                    )
-                )
-
-
-                sentiment_chart = (
-                    px.pie(
-                        sentiment_df,
-                        names="Sentiment",
-                        values="Reviews",
-                        hole=0.62,
-                    )
-                )
-
-
-                sentiment_chart.update_layout(
-                    margin=dict(
-                        l=10,
-                        r=10,
-                        t=20,
-                        b=10,
-                    ),
-                    legend_title_text="",
-                )
-
-
-                st.plotly_chart(
-                    sentiment_chart,
-                    width="stretch",
-                )
-
-
-        # ISSUE CHART
 
         with chart_right:
 
-            with st.container(
-                border=True
-            ):
-
-                st.markdown(
-                    "### Main Reputation Issues"
-                )
-
-
-                issue_counts = (
-                    summary[
-                        "issue_counts"
-                    ]
-                )
-
-
-                if issue_counts:
-
-                    issue_df = (
-                        pd.DataFrame(
-                            [
-                                {
-                                    "Issue":
-                                        issue,
-
-                                    "Mentions":
-                                        count,
-                                }
-
-                                for (
-                                    issue,
-                                    count,
-                                )
-                                in (
-                                    issue_counts
-                                    .items()
-                                )
-                            ]
-                        )
-                    )
-
-
-                    issue_df = (
-                        issue_df
-                        .sort_values(
-                            "Mentions",
-                            ascending=True,
-                        )
-                    )
-
-
-                    issue_chart = (
-                        px.bar(
-                            issue_df,
-                            x="Mentions",
-                            y="Issue",
-                            orientation="h",
-                        )
-                    )
-
-
-                    issue_chart.update_layout(
-                        margin=dict(
-                            l=10,
-                            r=10,
-                            t=20,
-                            b=10,
-                        )
-                    )
-
-
-                    st.plotly_chart(
-                        issue_chart,
-                        width="stretch",
-                    )
-
-
-                else:
-
-                    st.info(
-                        "No issue categories "
-                        "were detected."
-                    )
-
-
-        # ----------------------------------------------------
-        # CUSTOMER VOICE
-        # ----------------------------------------------------
-
-        st.markdown(
-            "## Customer Voice Intelligence"
-        )
-
-
-        (
-            positive_words_column,
-            negative_words_column,
-        ) = st.columns(
-            2,
-            gap="large",
-        )
-
-
-        with positive_words_column:
-
-            with st.container(
-                border=True
-            ):
-
-                st.markdown(
-                    "### 💚 Positive Customer Voice"
-                )
-
-
-                positive_words_df = (
-                    pd.DataFrame(
-                        summary[
-                            "top_positive_words"
-                        ]
-                    )
-                )
-
-
-                if not positive_words_df.empty:
-
-                    positive_words_df.rename(
-                        columns={
-                            "word": "Word",
-                            "count": "Frequency",
-                        },
-                        inplace=True,
-                    )
-
-
-                    st.dataframe(
-                        positive_words_df,
-                        width="stretch",
-                        hide_index=True,
-                    )
-
-
-                else:
-
-                    st.info(
-                        "No positive words "
-                        "available."
-                    )
-
-
-        with negative_words_column:
-
-            with st.container(
-                border=True
-            ):
-
-                st.markdown(
-                    "### 🚨 Negative Customer Voice"
-                )
-
-
-                negative_words_df = (
-                    pd.DataFrame(
-                        summary[
-                            "top_negative_words"
-                        ]
-                    )
-                )
-
-
-                if not negative_words_df.empty:
-
-                    negative_words_df.rename(
-                        columns={
-                            "word": "Word",
-                            "count": "Frequency",
-                        },
-                        inplace=True,
-                    )
-
-
-                    st.dataframe(
-                        negative_words_df,
-                        width="stretch",
-                        hide_index=True,
-                    )
-
-
-                else:
-
-                    st.info(
-                        "No negative words "
-                        "available."
-                    )
-
-
-        # ----------------------------------------------------
-        # NEGATIVE REVIEW EXAMPLES
-        # ----------------------------------------------------
-
-        st.markdown(
-            "## Reviews Requiring Attention"
-        )
-
-
-        with st.container(
-            border=True
-        ):
-
-            negative_reviews = (
+            issues = (
                 summary[
-                    "sample_negative_reviews"
+                    "issue_counts"
                 ]
             )
 
 
-            if negative_reviews:
+            if issues:
 
-                for (
-                    index,
-                    review,
-                ) in enumerate(
-                    negative_reviews,
-                    start=1,
-                ):
+                issue_df = (
+                    pd.DataFrame(
+                        [
+                            {
+                                "Issue":
+                                    issue,
 
-                    with st.expander(
-                        f"⚠️ Customer Issue {index}"
-                    ):
+                                "Mentions":
+                                    count
+                            }
 
-                        st.write(
-                            review
-                        )
-
-
-            else:
-
-                st.success(
-                    "No negative reviews "
-                    "were detected."
+                            for (
+                                issue,
+                                count
+                            )
+                            in issues.items()
+                        ]
+                    )
                 )
+
+
+                issue_chart = (
+                    px.bar(
+                        issue_df,
+                        x="Mentions",
+                        y="Issue",
+                        orientation="h"
+                    )
+                )
+
+
+                st.plotly_chart(
+                    issue_chart,
+                    width="stretch"
+                )
+
+
+        st.markdown(
+            "### 💚 Positive Customer Voice"
+        )
+
+
+        st.dataframe(
+            pd.DataFrame(
+                summary[
+                    "top_positive_words"
+                ]
+            ),
+            width="stretch"
+        )
+
+
+        st.markdown(
+            "### 🚨 Negative Customer Voice"
+        )
+
+
+        st.dataframe(
+            pd.DataFrame(
+                summary[
+                    "top_negative_words"
+                ]
+            ),
+            width="stretch"
+        )
 
 
         st.info(
             "The Brand Reputation Score "
             "is a project-defined indicator "
-            "calculated from the proportion "
-            "of positive DistilBERT "
-            "predictions. It is not a "
-            "universal industry-standard "
-            "reputation metric."
+            "rather than a universal "
+            "industry standard."
         )
 
 
 # ============================================================
-# TAB 4
-# GEMINI + OPENROUTER CONNECTION TEST
+# TAB 4 — LLM CONNECTION TEST
 # ============================================================
 
 with llm_test_tab:
@@ -1991,26 +1193,23 @@ with llm_test_tab:
         "## 🔌 LLM Connection Test"
     )
 
+
     st.caption(
-        "Test Gemini and OpenRouter "
-        "at the same time before "
-        "building the AI Management Council."
+        "Test the Gemini Interactions API "
+        "and OpenRouter Free Router."
     )
 
 
     # --------------------------------------------------------
-    # PROVIDER CONFIGURATION DISPLAY
+    # CURRENT CONFIG
     # --------------------------------------------------------
 
-    gemini_info, openrouter_info = (
-        st.columns(
-            2,
-            gap="large",
-        )
+    provider1, provider2 = (
+        st.columns(2)
     )
 
 
-    with gemini_info:
+    with provider1:
 
         with st.container(
             border=True
@@ -2020,28 +1219,28 @@ with llm_test_tab:
                 "### ✨ Gemini"
             )
 
-            st.write(
-                "Provider:"
-            )
 
             st.write(
-                "Google Gemini API"
+                "Configured Model"
             )
 
-            st.write(
-                "Configured model:"
-            )
 
             st.code(
                 read_secret(
                     "GEMINI_MODEL",
-                    "Not configured",
+                    "Not configured"
                 ),
-                language=None,
+                language=None
             )
 
 
-    with openrouter_info:
+            st.caption(
+                "Uses Google's "
+                "Interactions API."
+            )
+
+
+    with provider2:
 
         with st.container(
             border=True
@@ -2051,345 +1250,256 @@ with llm_test_tab:
                 "### 🌐 OpenRouter Free"
             )
 
-            st.write(
-                "Provider:"
-            )
 
             st.write(
-                "OpenRouter"
+                "Requested Router"
             )
 
-            st.write(
-                "Requested route:"
-            )
 
             st.code(
                 read_secret(
                     "OPENROUTER_MODEL",
-                    "Not configured",
+                    "Not configured"
                 ),
-                language=None,
+                language=None
             )
 
 
-    st.write("")
-
-
-    # --------------------------------------------------------
-    # TEST PROMPT
-    # --------------------------------------------------------
-
-    with st.container(
-        border=True
-    ):
-
-        st.markdown(
-            "### 📝 Connection Test Prompt"
-        )
-
-
-        test_prompt = (
-            st.text_area(
-                "Test prompt",
-                value=(
-                    "Reply with one short "
-                    "sentence confirming "
-                    "that the API connection "
-                    "is working."
-                ),
-                height=110,
-                label_visibility="collapsed",
+            st.caption(
+                "The actual free model "
+                "may change per request."
             )
-        )
-
-
-        test_button = (
-            st.button(
-                "🚀 Test Gemini + OpenRouter",
-                type="primary",
-                width="stretch",
-                key=(
-                    "test_both_"
-                    "llm_connections"
-                ),
-            )
-        )
 
 
     # --------------------------------------------------------
-    # RUN BOTH APIs
+    # PROMPT
+    # --------------------------------------------------------
+
+    test_prompt = (
+        st.text_area(
+            "Test Prompt",
+            value=(
+                "Reply with one short "
+                "sentence confirming that "
+                "the API connection works."
+            ),
+            height=100
+        )
+    )
+
+
+    test_button = (
+        st.button(
+            "🚀 Test Gemini + OpenRouter",
+            type="primary",
+            width="stretch"
+        )
+    )
+
+
+    # --------------------------------------------------------
+    # RUN TESTS
     # --------------------------------------------------------
 
     if test_button:
 
-        if not test_prompt.strip():
+        st.markdown(
+            "## Test Results"
+        )
 
-            st.warning(
-                "Please enter a test prompt."
+
+        gemini_column, router_column = (
+            st.columns(
+                2,
+                gap="large"
             )
+        )
 
 
-        else:
+        # GEMINI
 
-            st.markdown(
-                "## Test Results"
-            )
+        with gemini_column:
 
-
-            gemini_result_column, openrouter_result_column = (
-                st.columns(
-                    2,
-                    gap="large",
-                )
-            )
-
-
-            # =================================================
-            # GEMINI
-            # =================================================
-
-            with gemini_result_column:
-
-                with st.container(
-                    border=True
-                ):
-
-                    st.markdown(
-                        "### ✨ Gemini"
-                    )
-
-
-                    try:
-
-                        with st.spinner(
-                            "Connecting "
-                            "to Gemini..."
-                        ):
-
-                            gemini_result = (
-                                call_gemini(
-                                    system_prompt=(
-                                        "You are a "
-                                        "connection-test "
-                                        "assistant. "
-                                        "Respond clearly "
-                                        "and briefly."
-                                    ),
-                                    user_prompt=(
-                                        test_prompt
-                                    ),
-                                )
-                            )
-
-
-                        st.session_state[
-                            "gemini_test_result"
-                        ] = gemini_result
-
-
-                        st.success(
-                            "Gemini connection "
-                            "successful!"
-                        )
-
-
-                        st.markdown(
-                            "#### Response"
-                        )
-
-
-                        st.write(
-                            gemini_result[
-                                "content"
-                            ]
-                        )
-
-
-                        st.divider()
-
-
-                        provider_col, model_col = (
-                            st.columns(2)
-                        )
-
-
-                        provider_col.metric(
-                            "Provider",
-                            gemini_result[
-                                "provider"
-                            ],
-                        )
-
-
-                        model_col.metric(
-                            "Model",
-                            gemini_result[
-                                "model"
-                            ],
-                        )
-
-
-                    except Exception as error:
-
-                        st.session_state[
-                            "gemini_test_result"
-                        ] = None
-
-
-                        st.error(
-                            "Gemini connection "
-                            "failed."
-                        )
-
-
-                        st.exception(
-                            error
-                        )
-
-
-            # =================================================
-            # OPENROUTER
-            # =================================================
-
-            with openrouter_result_column:
-
-                with st.container(
-                    border=True
-                ):
-
-                    st.markdown(
-                        "### 🌐 OpenRouter Free"
-                    )
-
-
-                    try:
-
-                        with st.spinner(
-                            "Connecting "
-                            "to OpenRouter..."
-                        ):
-
-                            openrouter_result = (
-                                call_openrouter(
-                                    system_prompt=(
-                                        "You are a "
-                                        "connection-test "
-                                        "assistant. "
-                                        "Respond clearly "
-                                        "and briefly."
-                                    ),
-                                    user_prompt=(
-                                        test_prompt
-                                    ),
-                                )
-                            )
-
-
-                        st.session_state[
-                            "openrouter_test_result"
-                        ] = openrouter_result
-
-
-                        st.success(
-                            "OpenRouter connection "
-                            "successful!"
-                        )
-
-
-                        st.markdown(
-                            "#### Response"
-                        )
-
-
-                        st.write(
-                            openrouter_result[
-                                "content"
-                            ]
-                        )
-
-
-                        st.divider()
-
-
-                        provider_col, model_col = (
-                            st.columns(2)
-                        )
-
-
-                        provider_col.metric(
-                            "Provider",
-                            openrouter_result[
-                                "provider"
-                            ],
-                        )
-
-
-                        model_col.metric(
-                            "Actual Model",
-                            openrouter_result[
-                                "model"
-                            ],
-                        )
-
-
-                        st.caption(
-                            "Because the requested "
-                            "route is openrouter/free, "
-                            "the actual model may "
-                            "change between requests."
-                        )
-
-
-                    except Exception as error:
-
-                        st.session_state[
-                            "openrouter_test_result"
-                        ] = None
-
-
-                        st.error(
-                            "OpenRouter connection "
-                            "failed."
-                        )
-
-
-                        st.exception(
-                            error
-                        )
-
-
-            # ------------------------------------------------
-            # OVERALL STATUS
-            # ------------------------------------------------
-
-            st.write("")
-
-
-            if (
-                st.session_state[
-                    "gemini_test_result"
-                ]
-                is not None
-                and
-                st.session_state[
-                    "openrouter_test_result"
-                ]
-                is not None
+            with st.container(
+                border=True
             ):
 
-                st.success(
-                    "✅ Both LLM services are "
-                    "connected successfully. "
-                    "You are ready to build "
-                    "the AI Management Council."
+                st.markdown(
+                    "### ✨ Gemini"
                 )
 
 
-            else:
+                try:
 
-                st.warning(
-                    "At least one LLM service "
-                    "did not connect successfully. "
-                    "Check the error above before "
-                    "continuing."
+                    with st.spinner(
+                        "Testing Gemini..."
+                    ):
+
+                        result = (
+                            call_gemini(
+
+                                system_prompt=(
+                                    "You are a "
+                                    "connection-test "
+                                    "assistant. "
+                                    "Respond briefly."
+                                ),
+
+                                user_prompt=(
+                                    test_prompt
+                                )
+                            )
+                        )
+
+
+                    st.success(
+                        "Gemini connection "
+                        "successful."
+                    )
+
+
+                    st.write(
+                        result[
+                            "content"
+                        ]
+                    )
+
+
+                    st.metric(
+                        "Model",
+                        result[
+                            "model"
+                        ]
+                    )
+
+
+                    st.session_state[
+                        "gemini_test_result"
+                    ] = result
+
+
+                except Exception as error:
+
+                    st.session_state[
+                        "gemini_test_result"
+                    ] = None
+
+
+                    st.error(
+                        "Gemini connection failed."
+                    )
+
+
+                    st.exception(
+                        error
+                    )
+
+
+        # OPENROUTER
+
+        with router_column:
+
+            with st.container(
+                border=True
+            ):
+
+                st.markdown(
+                    "### 🌐 OpenRouter Free"
                 )
+
+
+                try:
+
+                    with st.spinner(
+                        "Testing OpenRouter..."
+                    ):
+
+                        result = (
+                            call_openrouter(
+
+                                system_prompt=(
+                                    "You are a "
+                                    "connection-test "
+                                    "assistant. "
+                                    "Respond briefly."
+                                ),
+
+                                user_prompt=(
+                                    test_prompt
+                                )
+                            )
+                        )
+
+
+                    st.success(
+                        "OpenRouter connection "
+                        "successful."
+                    )
+
+
+                    st.write(
+                        result[
+                            "content"
+                        ]
+                    )
+
+
+                    st.metric(
+                        "Actual Model",
+                        result[
+                            "model"
+                        ]
+                    )
+
+
+                    st.caption(
+                        "Requested route: "
+                        "openrouter/free"
+                    )
+
+
+                    st.session_state[
+                        "openrouter_test_result"
+                    ] = result
+
+
+                except Exception as error:
+
+                    st.session_state[
+                        "openrouter_test_result"
+                    ] = None
+
+
+                    st.error(
+                        "OpenRouter connection failed."
+                    )
+
+
+                    st.exception(
+                        error
+                    )
+
+
+        # ----------------------------------------------------
+        # OVERALL
+        # ----------------------------------------------------
+
+        if (
+            st.session_state[
+                "gemini_test_result"
+            ]
+            is not None
+
+            and
+
+            st.session_state[
+                "openrouter_test_result"
+            ]
+            is not None
+        ):
+
+            st.success(
+                "✅ Gemini and OpenRouter "
+                "are both ready for the "
+                "AI Management Council."
+            )
