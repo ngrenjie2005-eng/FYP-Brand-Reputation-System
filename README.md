@@ -38,14 +38,14 @@ The system consists of three main intelligence layers:
 
 The objectives of BrandPulse AI are to:
 
-- classify Spotify customer reviews using NLP techniques;
-- identify positive and negative customer sentiment;
-- transform sentiment predictions into brand-level reputation indicators;
-- identify common customer issues from negative reviews;
-- provide different management departments with relevant customer insights;
-- generate evidence-based improvement recommendations using LLMs;
-- consolidate department-level recommendations into an executive report;
-- provide an interactive cloud-based visualisation platform.
+- Classify Spotify customer reviews using NLP techniques;
+- Identify positive and negative customer sentiment;
+- Transform sentiment predictions into brand-level reputation indicators;
+- Identify common customer issues from negative reviews;
+- Provide different management departments with relevant customer insights;
+- Generate evidence-based improvement recommendations using LLMs;
+- Consolidate department-level recommendations into an executive report;
+- Provide an interactive cloud-based visualisation platform.
 
 ---
 
