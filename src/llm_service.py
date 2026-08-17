@@ -1,14 +1,22 @@
+# ============================================================
+# BRANDPULSE AI
+# LLM SERVICE
+#
+# Providers:
+# 1. Google Gemini
+# 2. OpenRouter Free Router
+# ============================================================
+
 import json
 
 import requests
 import streamlit as st
 
 from google import genai
-from google.genai import types
 
 
 # ============================================================
-# PROVIDER CONFIGURATION
+# PROVIDER CONSTANTS
 # ============================================================
 
 OPENROUTER_API_URL = (
@@ -18,45 +26,112 @@ OPENROUTER_API_URL = (
 
 
 # ============================================================
+# SECRET HELPER
+# ============================================================
+
+def get_secret(
+    key,
+    default=None
+):
+    """
+    Safely retrieve a Streamlit secret.
+    """
+
+    try:
+        return st.secrets[key]
+
+    except Exception:
+        return default
+
+
+# ============================================================
 # MANAGER ROLES
 # ============================================================
 
 MANAGER_ROLES = {
 
     "Technical Manager": """
-Focus on software reliability, application crashes,
-bugs, playback failures, performance problems,
-stability and technical quality.
+Focus on:
+
+- application crashes
+- software bugs
+- playback failures
+- performance problems
+- reliability
+- stability
+- technical quality
+- application errors
+
+Recommendations must remain within the
+technical/engineering perspective.
 """,
 
     "Product Manager": """
-Focus on product features, usability, navigation,
-playlists, user experience, feature requests and
-product improvement priorities.
+Focus on:
+
+- product features
+- usability
+- user experience
+- navigation
+- playlists
+- feature requests
+- product improvement priorities
+- customer-facing functionality
+
+Recommendations must remain within the
+product-management perspective.
 """,
 
     "Customer Service Manager": """
-Focus on recurring customer complaints, support
-quality, service recovery, customer satisfaction,
-response priorities and customer communication.
+Focus on:
+
+- customer complaints
+- customer support
+- service recovery
+- response priorities
+- customer satisfaction
+- recurring customer difficulties
+- communication with dissatisfied users
+
+Recommendations must remain within the
+customer-service perspective.
 """,
 
     "Marketing Manager": """
-Focus on brand perception, positive customer
-experiences, reputation risks, communication
-strategies, positioning and marketing opportunities.
+Focus on:
+
+- brand perception
+- positive customer experiences
+- reputation strengths
+- reputation risks
+- brand communication
+- customer messaging
+- positioning
+- marketing opportunities
+
+Do not invent competitor information.
 """,
 
     "Subscription Manager": """
-Focus on Premium subscriptions, pricing, billing,
-advertisements, perceived value, subscription
-satisfaction and customer retention.
+Focus on:
+
+- Premium subscription
+- pricing
+- billing
+- advertisements
+- subscription satisfaction
+- perceived value
+- retention-related concerns
+- payment complaints
+
+Recommendations must remain within the
+subscription-management perspective.
 """
 }
 
 
 # ============================================================
-# DEFAULT PROVIDER FOR EACH MANAGER
+# MANAGER → LLM PROVIDER
 # ============================================================
 
 MANAGER_PROVIDERS = {
@@ -79,16 +154,16 @@ MANAGER_PROVIDERS = {
 
 
 # ============================================================
-# COMMON SYSTEM PROMPT
+# COMMON SYSTEM INSTRUCTION
 # ============================================================
 
 COMMON_SYSTEM_PROMPT = """
-You are participating in an AI-assisted brand
-reputation decision-support system.
+You are participating in an AI-assisted
+brand reputation decision-support system.
 
-You will receive structured findings generated from
-Spotify customer reviews that were first classified
-by a trained DistilBERT sentiment model.
+The supplied findings originate from customer
+reviews that were first classified using a
+trained DistilBERT sentiment-classification model.
 
 IMPORTANT RULES:
 
@@ -98,30 +173,67 @@ IMPORTANT RULES:
 
 3. Do not invent customer reviews.
 
-4. Do not claim that a problem causes another problem
-   unless the supplied evidence establishes this.
+4. Do not invent issue counts.
 
-5. Clearly separate observed findings from your
+5. Do not claim causation unless the supplied
+   evidence establishes it.
+
+6. Clearly distinguish observed findings from
    recommendations.
 
-6. Every recommendation should be related to the
+7. Every recommendation must be relevant to the
    department you represent.
 
-7. Treat DistilBERT predictions as model-generated
+8. Treat DistilBERT predictions as model-generated
    estimates rather than unquestionable facts.
 
-8. If the supplied evidence is insufficient, clearly
-   state the limitation.
+9. If evidence is insufficient, explicitly state
+   the limitation.
 
-9. Do not make claims about competitors or market
-   conditions unless that information is supplied.
+10. Do not invent competitor information.
 
-10. Keep recommendations practical and measurable.
+11. Do not invent market information.
+
+12. Keep recommendations practical, measurable
+    and directly related to the supplied evidence.
+
+13. Avoid repeating the same recommendation in
+    several different ways.
+
+14. Use professional business-report language.
 """
 
 
 # ============================================================
-# GEMINI
+# GEMINI CLIENT
+# ============================================================
+
+def create_gemini_client():
+    """
+    Create a Gemini API client using the
+    Streamlit secret.
+    """
+
+    api_key = get_secret(
+        "GEMINI_API_KEY"
+    )
+
+    if not api_key:
+
+        raise ValueError(
+            "GEMINI_API_KEY is missing from "
+            "Streamlit Secrets."
+        )
+
+    client = genai.Client(
+        api_key=api_key
+    )
+
+    return client
+
+
+# ============================================================
+# GEMINI CALL
 # ============================================================
 
 def call_gemini(
@@ -129,51 +241,166 @@ def call_gemini(
     user_prompt
 ):
     """
-    Generate a response using Gemini.
+    Generate text using Google's current
+    Interactions API.
+
+    Gemini 3.x should not use the older
+    temperature/top_p/top_k sampling settings.
     """
 
-    api_key = st.secrets[
-        "GEMINI_API_KEY"
-    ]
+    client = create_gemini_client()
 
-    model_name = st.secrets.get(
+    model_name = get_secret(
         "GEMINI_MODEL",
-        "gemini-2.5-flash"
+        "gemini-3.7-flash"
     )
 
-    client = genai.Client(
-        api_key=api_key
-    )
+    if not model_name:
 
-    response = (
-        client.models.generate_content(
+        model_name = (
+            "gemini-3.7-flash"
+        )
+
+
+    # --------------------------------------------------------
+    # INTERACTIONS API
+    # --------------------------------------------------------
+
+    interaction = (
+        client.interactions.create(
 
             model=model_name,
 
-            contents=user_prompt,
+            input=user_prompt,
 
-            config=types.GenerateContentConfig(
+            system_instruction=(
+                system_prompt
+            ),
 
-                system_instruction=(
-                    system_prompt
-                ),
+            # We do not need to preserve server-side
+            # conversation state for independent FYP
+            # management reports.
+            store=False,
 
-                temperature=0.2,
-
-                max_output_tokens=2000
-            )
+            # Low reasoning is enough for the
+            # connection test and routine reports.
+            # Change to "medium" later for the
+            # Executive Manager if desired.
+            generation_config={
+                "thinking_level": "low"
+            }
         )
     )
 
+
+    response_text = (
+        interaction.output_text
+    )
+
+
+    if not response_text:
+
+        raise RuntimeError(
+            "Gemini returned an empty response."
+        )
+
+
     return {
-        "provider": "Gemini",
-        "model": model_name,
-        "content": response.text
+
+        "provider":
+            "Gemini",
+
+        "model":
+            model_name,
+
+        "content":
+            response_text,
+
+        "interaction_id":
+            getattr(
+                interaction,
+                "id",
+                None
+            )
     }
 
 
 # ============================================================
-# OPENROUTER
+# GEMINI EXECUTIVE CALL
+# ============================================================
+
+def call_gemini_executive(
+    system_prompt,
+    user_prompt
+):
+    """
+    Use a higher reasoning level for the final
+    Executive Manager report.
+    """
+
+    client = create_gemini_client()
+
+    model_name = get_secret(
+        "GEMINI_MODEL",
+        "gemini-3.7-flash"
+    )
+
+
+    interaction = (
+        client.interactions.create(
+
+            model=model_name,
+
+            input=user_prompt,
+
+            system_instruction=(
+                system_prompt
+            ),
+
+            store=False,
+
+            generation_config={
+                "thinking_level": "medium"
+            }
+        )
+    )
+
+
+    response_text = (
+        interaction.output_text
+    )
+
+
+    if not response_text:
+
+        raise RuntimeError(
+            "Gemini returned an empty "
+            "executive report."
+        )
+
+
+    return {
+
+        "provider":
+            "Gemini",
+
+        "model":
+            model_name,
+
+        "content":
+            response_text,
+
+        "interaction_id":
+            getattr(
+                interaction,
+                "id",
+                None
+            )
+    }
+
+
+# ============================================================
+# OPENROUTER CALL
 # ============================================================
 
 def call_openrouter(
@@ -181,17 +408,28 @@ def call_openrouter(
     user_prompt
 ):
     """
-    Generate a response through OpenRouter.
+    Generate text through OpenRouter's
+    free-model router.
     """
 
-    api_key = st.secrets[
+    api_key = get_secret(
         "OPENROUTER_API_KEY"
-    ]
+    )
 
-    requested_model = st.secrets.get(
+
+    if not api_key:
+
+        raise ValueError(
+            "OPENROUTER_API_KEY is missing "
+            "from Streamlit Secrets."
+        )
+
+
+    requested_model = get_secret(
         "OPENROUTER_MODEL",
         "openrouter/free"
     )
+
 
     headers = {
 
@@ -199,8 +437,9 @@ def call_openrouter(
             f"Bearer {api_key}",
 
         "Content-Type":
-            "application/json"
+            "application/json",
     }
+
 
     payload = {
 
@@ -210,22 +449,28 @@ def call_openrouter(
         "messages": [
 
             {
-                "role": "system",
-                "content": system_prompt
+                "role":
+                    "system",
+
+                "content":
+                    system_prompt,
             },
 
             {
-                "role": "user",
-                "content": user_prompt
-            }
+                "role":
+                    "user",
+
+                "content":
+                    user_prompt,
+            },
         ],
 
-        "temperature":
-            0.2,
-
+        # Keep the request relatively small because
+        # OpenRouter free models have stricter limits.
         "max_tokens":
-            2000
+            1800,
     }
+
 
     response = requests.post(
 
@@ -235,27 +480,130 @@ def call_openrouter(
 
         json=payload,
 
-        timeout=120
+        timeout=180,
     )
 
-    response.raise_for_status()
+
+    # --------------------------------------------------------
+    # HANDLE ERROR RESPONSE
+    # --------------------------------------------------------
+
+    if not response.ok:
+
+        try:
+
+            error_detail = (
+                response.json()
+            )
+
+        except Exception:
+
+            error_detail = (
+                response.text
+            )
+
+
+        raise RuntimeError(
+            f"OpenRouter request failed "
+            f"with HTTP {response.status_code}: "
+            f"{error_detail}"
+        )
+
 
     response_data = (
         response.json()
     )
 
-    generated_content = (
-        response_data[
-            "choices"
-        ][0][
-            "message"
-        ][
-            "content"
-        ]
+
+    # --------------------------------------------------------
+    # EXTRACT RESPONSE
+    # --------------------------------------------------------
+
+    choices = response_data.get(
+        "choices",
+        []
     )
 
-    # The Free Router may choose a different
-    # actual model for each request.
+
+    if not choices:
+
+        raise RuntimeError(
+            "OpenRouter returned no response choices."
+        )
+
+
+    message = (
+        choices[0]
+        .get(
+            "message",
+            {}
+        )
+    )
+
+
+    generated_content = (
+        message.get(
+            "content",
+            ""
+        )
+    )
+
+
+    # Some providers may return content structures
+    # rather than one plain string.
+    if isinstance(
+        generated_content,
+        list
+    ):
+
+        text_parts = []
+
+        for part in generated_content:
+
+            if isinstance(
+                part,
+                dict
+            ):
+
+                text = part.get(
+                    "text"
+                )
+
+                if text:
+
+                    text_parts.append(
+                        text
+                    )
+
+            elif isinstance(
+                part,
+                str
+            ):
+
+                text_parts.append(
+                    part
+                )
+
+
+        generated_content = (
+            "\n".join(
+                text_parts
+            )
+        )
+
+
+    if not generated_content:
+
+        raise RuntimeError(
+            "OpenRouter returned an "
+            "empty response."
+        )
+
+
+    # --------------------------------------------------------
+    # ACTUAL FREE MODEL USED
+    # --------------------------------------------------------
+
     actual_model = (
         response_data.get(
             "model",
@@ -263,15 +611,25 @@ def call_openrouter(
         )
     )
 
+
     return {
-        "provider": "OpenRouter",
-        "model": actual_model,
-        "content": generated_content
+
+        "provider":
+            "OpenRouter",
+
+        "requested_model":
+            requested_model,
+
+        "model":
+            actual_model,
+
+        "content":
+            generated_content,
     }
 
 
 # ============================================================
-# GENERAL PROVIDER ROUTER
+# PROVIDER ROUTER
 # ============================================================
 
 def call_llm(
@@ -279,31 +637,45 @@ def call_llm(
     system_prompt,
     user_prompt
 ):
+    """
+    Route a request to Gemini or OpenRouter.
+    """
 
     provider = (
-        provider.lower()
+        str(provider)
+        .strip()
+        .lower()
     )
+
 
     if provider == "gemini":
 
         return call_gemini(
-            system_prompt,
-            user_prompt
+
+            system_prompt=
+                system_prompt,
+
+            user_prompt=
+                user_prompt,
         )
 
-    elif provider == "openrouter":
+
+    if provider == "openrouter":
 
         return call_openrouter(
-            system_prompt,
-            user_prompt
+
+            system_prompt=
+                system_prompt,
+
+            user_prompt=
+                user_prompt,
         )
 
-    else:
 
-        raise ValueError(
-            f"Unknown LLM provider: "
-            f"{provider}"
-        )
+    raise ValueError(
+        f"Unknown LLM provider: "
+        f"{provider}"
+    )
 
 
 # ============================================================
@@ -314,16 +686,27 @@ def generate_manager_report(
     manager_name,
     analysis_summary
 ):
+    """
+    Generate one department-specific report.
+    """
 
-    if manager_name not in MANAGER_ROLES:
+    if (
+        manager_name
+        not in MANAGER_ROLES
+    ):
 
         raise ValueError(
-            "Unknown manager role."
+            f"Unknown manager: "
+            f"{manager_name}"
         )
 
-    provider = MANAGER_PROVIDERS[
-        manager_name
-    ]
+
+    provider = (
+        MANAGER_PROVIDERS[
+            manager_name
+        ]
+    )
+
 
     department_role = (
         MANAGER_ROLES[
@@ -331,18 +714,23 @@ def generate_manager_report(
         ]
     )
 
+
     system_prompt = f"""
 {COMMON_SYSTEM_PROMPT}
 
-You are the {manager_name}.
+You are acting as the:
+
+{manager_name}
 
 YOUR DEPARTMENT RESPONSIBILITY:
 
 {department_role}
 """
 
+
     user_prompt = f"""
-Below is the structured brand reputation analysis.
+The following JSON contains the brand reputation
+analysis produced from Spotify customer reviews.
 
 ANALYSIS DATA:
 
@@ -352,46 +740,53 @@ ANALYSIS DATA:
     ensure_ascii=False
 )}
 
-Generate a department-specific report using exactly
-the following structure:
+Generate a department-specific management report.
+
+Use exactly these sections:
 
 # {manager_name} Report
 
 ## Department Assessment
 
-Provide a concise assessment from your department's
-perspective.
+Provide a concise overall assessment from your
+department's perspective.
 
 ## Key Findings
 
-Identify the most important relevant findings.
+Identify the most important findings relevant to
+your department.
 
 ## Supporting Evidence
 
-Use only statistics, issue counts, frequent terms
-or example reviews contained in the supplied data.
+Use only statistics, issue counts, frequent terms,
+and representative reviews included in the supplied
+analysis.
 
 ## Recommended Improvements
 
-Provide specific actions.
+Provide practical and specific improvement actions.
 
 ## Priority Actions
 
-Categorise recommendations as:
+Organise recommendations under:
 
-- High Priority
-- Medium Priority
-- Low Priority
+### High Priority
+
+### Medium Priority
+
+### Low Priority
 
 ## Suggested KPIs
 
-Recommend measurable indicators that management
-could monitor.
+Recommend measurable indicators that could be
+monitored by management.
 
 ## Limitations
 
-State any limitations of the supplied evidence.
+Explain important limitations of the supplied
+evidence and model-generated analysis.
 """
+
 
     result = call_llm(
 
@@ -399,18 +794,20 @@ State any limitations of the supplied evidence.
 
         system_prompt=system_prompt,
 
-        user_prompt=user_prompt
+        user_prompt=user_prompt,
     )
+
 
     result[
         "manager"
     ] = manager_name
 
+
     return result
 
 
 # ============================================================
-# EXECUTIVE REPORT
+# EXECUTIVE MANAGER REPORT
 # ============================================================
 
 def generate_executive_report(
@@ -418,8 +815,9 @@ def generate_executive_report(
     department_reports
 ):
     """
-    Executive Manager always uses Gemini
-    in the current FYP design.
+    Consolidate all department reports.
+
+    Gemini is used as the Executive Manager.
     """
 
     system_prompt = f"""
@@ -427,17 +825,37 @@ def generate_executive_report(
 
 You are the Executive Manager.
 
-Your responsibility is to consolidate findings from
-all department managers into one management-level
-brand reputation report.
+You receive:
 
-Remove duplicated recommendations and prioritise
-actions based on the supplied evidence.
+1. Overall brand reputation statistics.
+2. Reports created by several department managers.
+
+Your responsibility is to consolidate these findings
+into one management-level report.
+
+Requirements:
+
+- Remove duplicated recommendations.
+- Identify organisation-wide priorities.
+- Prioritise actions based on supplied evidence.
+- Clearly distinguish evidence from recommendations.
+- Do not introduce new statistics.
+- Do not invent customer feedback.
 """
 
-    report_texts = {
 
-        manager: {
+    cleaned_reports = {}
+
+
+    for (
+        manager,
+        report
+    ) in department_reports.items():
+
+        cleaned_reports[
+            manager
+        ] = {
+
             "provider":
                 report.get(
                     "provider"
@@ -451,12 +869,9 @@ actions based on the supplied evidence.
             "report":
                 report.get(
                     "content"
-                )
+                ),
         }
 
-        for manager, report
-        in department_reports.items()
-    }
 
     user_prompt = f"""
 OVERALL BRAND REPUTATION ANALYSIS:
@@ -470,12 +885,12 @@ OVERALL BRAND REPUTATION ANALYSIS:
 DEPARTMENT REPORTS:
 
 {json.dumps(
-    report_texts,
+    cleaned_reports,
     indent=2,
     ensure_ascii=False
 )}
 
-Generate:
+Generate the final report using exactly these sections:
 
 # Executive Brand Reputation Report
 
@@ -504,13 +919,22 @@ Generate:
 ## Limitations
 """
 
-    result = call_gemini(
-        system_prompt,
-        user_prompt
+
+    result = (
+        call_gemini_executive(
+
+            system_prompt=
+                system_prompt,
+
+            user_prompt=
+                user_prompt,
+        )
     )
+
 
     result[
         "manager"
     ] = "Executive Manager"
+
 
     return result
