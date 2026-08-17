@@ -1,26 +1,209 @@
 # ============================================================
 # BRANDPULSE AI
 # PROFESSIONAL REPORT EXPORT
+#
+# Supported formats:
+# 1. Microsoft Word (.docx)
+# 2. PDF (.pdf)
 # ============================================================
 
-from io import BytesIO
 from datetime import datetime
+from io import BytesIO
+import re
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches, Pt
 
+from fpdf import FPDF
+
 
 # ============================================================
-# HELPERS
+# GENERAL HELPERS
 # ============================================================
 
-def add_title(
+def current_timestamp():
+    """
+    Return a readable report-generation timestamp.
+    """
+
+    return datetime.now().strftime(
+        "%d %B %Y, %H:%M"
+    )
+
+
+def clean_markdown_text(
+    text,
+):
+    """
+    Remove simple Markdown formatting from text.
+    """
+
+    if text is None:
+        return ""
+
+    text = str(text)
+
+    text = text.replace(
+        "**",
+        ""
+    )
+
+    text = text.replace(
+        "__",
+        ""
+    )
+
+    text = text.replace(
+        "`",
+        ""
+    )
+
+    return text.strip()
+
+
+# ============================================================
+# PDF-SAFE TEXT
+# ============================================================
+
+def pdf_safe_text(
+    text,
+):
+    """
+    Convert common Unicode characters into
+    characters supported by FPDF's built-in fonts.
+
+    This avoids PDF generation errors caused
+    by emoji or unsupported Unicode characters.
+    """
+
+    if text is None:
+        return ""
+
+    text = str(text)
+
+    replacements = {
+
+        "’": "'",
+        "‘": "'",
+
+        "“": '"',
+        "”": '"',
+
+        "–": "-",
+        "—": "-",
+
+        "…": "...",
+
+        "•": "-",
+
+        "→": "->",
+
+        "≥": ">=",
+        "≤": "<=",
+
+        "✓": "[OK]",
+        "✅": "[OK]",
+
+        "⚠️": "[Warning]",
+        "⚠": "[Warning]",
+
+        "🟢": "[Positive]",
+        "🔴": "[Negative]",
+        "🟡": "[Mixed]",
+
+        "📊": "",
+        "📈": "",
+        "📉": "",
+
+        "🧠": "",
+        "🤖": "",
+        "👔": "",
+
+        "🛠️": "",
+        "🛠": "",
+
+        "🧩": "",
+
+        "🎧": "",
+
+        "📣": "",
+
+        "💳": "",
+
+        "💡": "",
+
+        "🔎": "",
+
+        "📑": "",
+
+        "📘": "",
+
+        "📕": "",
+
+        "✨": "",
+
+        "🌐": "",
+
+        "🚨": "",
+
+        "🎯": "",
+
+        "📚": "",
+
+        "📏": "",
+
+        "🔗": "",
+    }
+
+
+    for (
+        original,
+        replacement
+    ) in replacements.items():
+
+        text = text.replace(
+            original,
+            replacement
+        )
+
+
+    # Strip basic Markdown
+    text = clean_markdown_text(
+        text
+    )
+
+
+    # Replace anything still unsupported by
+    # the built-in PDF font.
+    text = (
+        text
+        .encode(
+            "latin-1",
+            errors="replace"
+        )
+        .decode(
+            "latin-1"
+        )
+    )
+
+
+    return text
+
+
+# ============================================================
+# DOCX HELPERS
+# ============================================================
+
+def docx_add_title(
     document,
     text,
 ):
-    paragraph = document.add_paragraph()
+
+    paragraph = (
+        document.add_paragraph()
+    )
 
     paragraph.alignment = (
         WD_ALIGN_PARAGRAPH.CENTER
@@ -31,167 +214,172 @@ def add_title(
     )
 
     run.bold = True
-    run.font.size = Pt(22)
+
+    run.font.size = Pt(
+        23
+    )
 
 
-def add_subtitle(
+def docx_add_centered_text(
     document,
     text,
+    size=11,
+    bold=False,
 ):
-    paragraph = document.add_paragraph()
+
+    paragraph = (
+        document.add_paragraph()
+    )
 
     paragraph.alignment = (
         WD_ALIGN_PARAGRAPH.CENTER
     )
 
     run = paragraph.add_run(
-        text
+        str(text)
     )
 
-    run.font.size = Pt(11)
+    run.bold = bold
 
-
-def add_section_heading(
-    document,
-    text,
-):
-    heading = document.add_heading(
-        text,
-        level=1
-    )
-
-    return heading
-
-
-def add_subheading(
-    document,
-    text,
-):
-    document.add_heading(
-        text,
-        level=2
+    run.font.size = Pt(
+        size
     )
 
 
-def add_paragraph_text(
-    document,
-    text,
-):
-    if text is None:
-        return
-
-    text = str(text).strip()
-
-    if not text:
-        return
-
-    document.add_paragraph(
-        text
-    )
-
-
-# ============================================================
-# MARKDOWN-LIKE LLM REPORT PARSER
-# ============================================================
-
-def add_llm_report(
+def docx_add_llm_report(
     document,
     report_text,
 ):
     """
-    Convert the basic Markdown-style output
-    produced by the LLM into Word headings
-    and paragraphs.
+    Convert the simple Markdown structure
+    generated by the LLMs into Word elements.
     """
 
     if not report_text:
         return
 
-    lines = str(
-        report_text
-    ).splitlines()
+
+    lines = (
+        str(report_text)
+        .splitlines()
+    )
+
 
     for raw_line in lines:
 
-        line = raw_line.strip()
+        line = (
+            raw_line.strip()
+        )
+
 
         if not line:
             continue
 
-        # Main heading
+
+        # --------------------------------------------
+        # H1
+        # --------------------------------------------
+
         if line.startswith(
             "# "
         ):
 
             document.add_heading(
-                line[2:].strip(),
+                clean_markdown_text(
+                    line[2:]
+                ),
                 level=1
             )
 
-        # Level 2 heading
+
+        # --------------------------------------------
+        # H2
+        # --------------------------------------------
+
         elif line.startswith(
             "## "
         ):
 
             document.add_heading(
-                line[3:].strip(),
+                clean_markdown_text(
+                    line[3:]
+                ),
                 level=2
             )
 
-        # Level 3 heading
+
+        # --------------------------------------------
+        # H3
+        # --------------------------------------------
+
         elif line.startswith(
             "### "
         ):
 
             document.add_heading(
-                line[4:].strip(),
+                clean_markdown_text(
+                    line[4:]
+                ),
                 level=3
             )
 
-        # Bullet
+
+        # --------------------------------------------
+        # BULLET
+        # --------------------------------------------
+
         elif (
             line.startswith("- ")
-            or line.startswith("• ")
+            or
+            line.startswith("• ")
         ):
 
-            bullet_text = (
-                line[2:].strip()
-            )
-
             document.add_paragraph(
-                bullet_text,
+                clean_markdown_text(
+                    line[2:]
+                ),
                 style="List Bullet"
             )
 
-        # Numbered item
-        elif (
-            len(line) > 2
-            and line[0].isdigit()
-            and ". " in line[:4]
+
+        # --------------------------------------------
+        # NUMBERED ITEM
+        # --------------------------------------------
+
+        elif re.match(
+            r"^\d+\.\s",
+            line
         ):
 
+            cleaned = re.sub(
+                r"^\d+\.\s*",
+                "",
+                line
+            )
+
             document.add_paragraph(
-                line,
+                clean_markdown_text(
+                    cleaned
+                ),
                 style="List Number"
             )
 
+
+        # --------------------------------------------
+        # NORMAL PARAGRAPH
+        # --------------------------------------------
+
         else:
 
-            # Remove basic Markdown bold
-            cleaned_line = (
-                line.replace(
-                    "**",
-                    ""
-                )
-            )
-
             document.add_paragraph(
-                cleaned_line
+                clean_markdown_text(
+                    line
+                )
             )
 
 
 # ============================================================
-# CREATE DOCX
+# DOCX REPORT
 # ============================================================
 
 def create_brandpulse_docx(
@@ -200,18 +388,22 @@ def create_brandpulse_docx(
     executive_report,
 ):
     """
-    Create the complete BrandPulse AI
-    management report as an in-memory DOCX.
+    Create a complete BrandPulse Word report.
+
+    Returns:
+        BytesIO
     """
 
     document = Document()
 
 
     # ========================================================
-    # DOCUMENT MARGINS
+    # PAGE MARGINS
     # ========================================================
 
-    for section in document.sections:
+    for section in (
+        document.sections
+    ):
 
         section.top_margin = (
             Inches(0.65)
@@ -231,53 +423,91 @@ def create_brandpulse_docx(
 
 
     # ========================================================
+    # DEFAULT FONT
+    # ========================================================
+
+    normal_style = (
+        document.styles[
+            "Normal"
+        ]
+    )
+
+    normal_style.font.name = (
+        "Arial"
+    )
+
+    normal_style.font.size = Pt(
+        10.5
+    )
+
+
+    # ========================================================
     # COVER PAGE
     # ========================================================
 
-    add_title(
+    docx_add_title(
         document,
         "BrandPulse AI"
     )
 
-    add_subtitle(
+
+    docx_add_centered_text(
         document,
         (
             "AI-Assisted Brand Reputation "
             "Intelligence Report"
-        )
+        ),
+        size=14,
+        bold=True,
     )
+
 
     document.add_paragraph()
 
-    title = document.add_paragraph()
 
-    title.alignment = (
-        WD_ALIGN_PARAGRAPH.CENTER
-    )
-
-    run = title.add_run(
+    docx_add_centered_text(
+        document,
         (
             "Online Review-Based Brand "
             "Reputation Prediction Using "
             "NLP Techniques"
-        )
+        ),
+        size=12,
     )
 
-    run.bold = True
-    run.font.size = Pt(14)
+
+    document.add_paragraph()
 
 
-    generated = document.add_paragraph()
-
-    generated.alignment = (
-        WD_ALIGN_PARAGRAPH.CENTER
+    docx_add_centered_text(
+        document,
+        (
+            "Predictive Model: DistilBERT"
+        ),
+        size=10,
     )
 
-    generated.add_run(
-        "Generated: "
-        + datetime.now().strftime(
-            "%d %B %Y, %H:%M"
-        )
+
+    docx_add_centered_text(
+        document,
+        (
+            "Generative AI: Gemini "
+            "and OpenRouter Free"
+        ),
+        size=10,
+    )
+
+
+    document.add_paragraph()
+
+
+    docx_add_centered_text(
+        document,
+        (
+            "Generated: "
+            + current_timestamp()
+        ),
+        size=9,
     )
 
 
@@ -285,42 +515,51 @@ def create_brandpulse_docx(
 
 
     # ========================================================
-    # 1. ANALYSIS OVERVIEW
+    # 1. BRAND REPUTATION OVERVIEW
     # ========================================================
 
-    add_section_heading(
-        document,
-        "1. Brand Reputation Overview"
+    document.add_heading(
+        (
+            "1. Brand Reputation "
+            "Overview"
+        ),
+        level=1,
     )
 
 
-    overview_table = document.add_table(
-        rows=1,
-        cols=2
+    overview_table = (
+        document.add_table(
+            rows=1,
+            cols=2,
+        )
     )
 
-    overview_table.alignment = (
-        WD_TABLE_ALIGNMENT.CENTER
-    )
 
     overview_table.style = (
         "Table Grid"
     )
 
 
-    header_cells = (
+    overview_table.alignment = (
+        WD_TABLE_ALIGNMENT.CENTER
+    )
+
+
+    header = (
         overview_table.rows[
             0
         ].cells
     )
 
-    header_cells[0].text = (
-        "Indicator"
-    )
 
-    header_cells[1].text = (
-        "Result"
-    )
+    header[
+        0
+    ].text = "Indicator"
+
+
+    header[
+        1
+    ].text = "Result"
 
 
     overview_values = [
@@ -329,63 +568,54 @@ def create_brandpulse_docx(
             "Reviews Analysed",
             analysis_summary.get(
                 "total_reviews",
-                0
-            )
+                0,
+            ),
         ),
 
         (
             "Positive Reviews",
             analysis_summary.get(
                 "positive_reviews",
-                0
-            )
+                0,
+            ),
         ),
 
         (
             "Negative Reviews",
             analysis_summary.get(
                 "negative_reviews",
-                0
-            )
+                0,
+            ),
         ),
 
         (
             "Positive Percentage",
             (
-                str(
-                    analysis_summary.get(
-                        "positive_percentage",
-                        0
-                    )
-                )
-                + "%"
-            )
+                f"{analysis_summary.get(
+                    'positive_percentage',
+                    0
+                )}%"
+            ),
         ),
 
         (
             "Negative Percentage",
             (
-                str(
-                    analysis_summary.get(
-                        "negative_percentage",
-                        0
-                    )
-                )
-                + "%"
-            )
+                f"{analysis_summary.get(
+                    'negative_percentage',
+                    0
+                )}%"
+            ),
         ),
 
         (
             "Brand Reputation Score",
             (
-                str(
-                    analysis_summary.get(
-                        "reputation_score",
-                        0
-                    )
-                )
-                + "%"
-            )
+                f"{analysis_summary.get(
+                    'reputation_score',
+                    0
+                )}%"
+            ),
         ),
     ]
 
@@ -395,17 +625,17 @@ def create_brandpulse_docx(
         result
     ) in overview_values:
 
-        cells = (
+        row = (
             overview_table
             .add_row()
             .cells
         )
 
-        cells[0].text = str(
+        row[0].text = str(
             indicator
         )
 
-        cells[1].text = str(
+        row[1].text = str(
             result
         )
 
@@ -413,20 +643,25 @@ def create_brandpulse_docx(
     document.add_paragraph()
 
 
-    note = document.add_paragraph()
+    note = (
+        document.add_paragraph()
+    )
 
-    run = note.add_run(
+
+    note_run = note.add_run(
         "Methodology Note: "
     )
 
-    run.bold = True
+    note_run.bold = True
+
 
     note.add_run(
         (
-            "The Brand Reputation Score is "
-            "a project-defined indicator based "
-            "on the proportion of positive "
-            "DistilBERT sentiment predictions."
+            "The Brand Reputation Score "
+            "is a project-defined indicator "
+            "calculated from the proportion "
+            "of positive DistilBERT sentiment "
+            "predictions."
         )
     )
 
@@ -435,16 +670,19 @@ def create_brandpulse_docx(
     # 2. ISSUE ANALYSIS
     # ========================================================
 
-    add_section_heading(
-        document,
-        "2. Negative Review Issue Analysis"
+    document.add_heading(
+        (
+            "2. Negative Review "
+            "Issue Analysis"
+        ),
+        level=1,
     )
 
 
     issue_counts = (
         analysis_summary.get(
             "issue_counts",
-            {}
+            {},
         )
     )
 
@@ -454,32 +692,38 @@ def create_brandpulse_docx(
         issue_table = (
             document.add_table(
                 rows=1,
-                cols=2
+                cols=2,
             )
         )
+
 
         issue_table.style = (
             "Table Grid"
         )
+
 
         issue_table.alignment = (
             WD_TABLE_ALIGNMENT.CENTER
         )
 
 
-        header = (
+        issue_header = (
             issue_table.rows[
                 0
             ].cells
         )
 
-        header[0].text = (
+
+        issue_header[
+            0
+        ].text = (
             "Issue Category"
         )
 
-        header[1].text = (
-            "Mentions"
-        )
+
+        issue_header[
+            1
+        ].text = "Mentions"
 
 
         for (
@@ -487,28 +731,34 @@ def create_brandpulse_docx(
             count
         ) in issue_counts.items():
 
-            cells = (
+            row = (
                 issue_table
                 .add_row()
                 .cells
             )
 
-            cells[0].text = str(
+
+            row[
+                0
+            ].text = str(
                 issue
             )
 
-            cells[1].text = str(
+
+            row[
+                1
+            ].text = str(
                 count
             )
 
 
     else:
 
-        add_paragraph_text(
-            document,
+        document.add_paragraph(
             (
-                "No negative-review issue "
-                "categories were detected."
+                "No negative-review "
+                "issue categories were "
+                "identified."
             )
         )
 
@@ -517,44 +767,57 @@ def create_brandpulse_docx(
     # 3. CUSTOMER VOICE
     # ========================================================
 
-    add_section_heading(
-        document,
-        "3. Customer Voice Intelligence"
+    document.add_heading(
+        (
+            "3. Customer Voice "
+            "Intelligence"
+        ),
+        level=1,
     )
 
 
-    add_subheading(
-        document,
-        "3.1 Frequent Positive Terms"
+    # --------------------------------------------------------
+    # POSITIVE WORDS
+    # --------------------------------------------------------
+
+    document.add_heading(
+        (
+            "3.1 Frequent "
+            "Positive Terms"
+        ),
+        level=2,
     )
 
 
     positive_words = (
         analysis_summary.get(
             "top_positive_words",
-            []
+            [],
         )
     )
 
 
     if positive_words:
 
-        positive_table = (
+        table = (
             document.add_table(
                 rows=1,
-                cols=2
+                cols=2,
             )
         )
 
-        positive_table.style = (
+
+        table.style = (
             "Table Grid"
         )
 
+
         header = (
-            positive_table.rows[
+            table.rows[
                 0
             ].cells
         )
+
 
         header[0].text = "Word"
         header[1].text = "Frequency"
@@ -562,59 +825,71 @@ def create_brandpulse_docx(
 
         for item in positive_words:
 
-            cells = (
-                positive_table
+            row = (
+                table
                 .add_row()
                 .cells
             )
 
-            cells[0].text = str(
+
+            row[0].text = str(
                 item.get(
                     "word",
-                    ""
+                    "",
                 )
             )
 
-            cells[1].text = str(
+
+            row[1].text = str(
                 item.get(
                     "count",
-                    0
+                    0,
                 )
             )
 
 
-    add_subheading(
-        document,
-        "3.2 Frequent Negative Terms"
+    # --------------------------------------------------------
+    # NEGATIVE WORDS
+    # --------------------------------------------------------
+
+    document.add_heading(
+        (
+            "3.2 Frequent "
+            "Negative Terms"
+        ),
+        level=2,
     )
 
 
     negative_words = (
         analysis_summary.get(
             "top_negative_words",
-            []
+            [],
         )
     )
 
 
     if negative_words:
 
-        negative_table = (
+        table = (
             document.add_table(
                 rows=1,
-                cols=2
+                cols=2,
             )
         )
 
-        negative_table.style = (
+
+        table.style = (
             "Table Grid"
         )
 
+
         header = (
-            negative_table.rows[
+            table.rows[
                 0
             ].cells
         )
+
 
         header[0].text = "Word"
         header[1].text = "Frequency"
@@ -622,44 +897,1369 @@ def create_brandpulse_docx(
 
         for item in negative_words:
 
-            cells = (
-                negative_table
+            row = (
+                table
                 .add_row()
                 .cells
             )
 
-            cells[0].text = str(
+
+            row[0].text = str(
                 item.get(
                     "word",
-                    ""
+                    "",
                 )
             )
 
-            cells[1].text = str(
+
+            row[1].text = str(
                 item.get(
                     "count",
-                    0
+                    0,
                 )
             )
 
 
     # ========================================================
-    # 4. REPRESENTATIVE NEGATIVE REVIEWS
+    # 4. NEGATIVE REVIEW EXAMPLES
     # ========================================================
 
-    add_section_heading(
-        document,
+    document.add_heading(
         (
             "4. Representative Negative "
             "Customer Reviews"
-        )
+        ),
+        level=1,
     )
 
 
     negative_reviews = (
         analysis_summary.get(
             "sample_negative_reviews",
-            []
+            [],
+        )
+    )
+
+
+    if negative_reviews:
+
+        for review in (
+            negative_reviews
+        ):
+
+            document.add_paragraph(
+                str(review),
+                style="List Bullet",
+            )
+
+
+    else:
+
+        document.add_paragraph(
+            (
+                "No negative reviews "
+                "were detected."
+            )
+        )
+
+
+    # ========================================================
+    # 5. DEPARTMENT MANAGERS
+    # ========================================================
+
+    document.add_page_break()
+
+
+    document.add_heading(
+        (
+            "5. AI Department "
+            "Manager Reports"
+        ),
+        level=1,
+    )
+
+
+    manager_order = [
+
+        "Technical Manager",
+
+        "Product Manager",
+
+        "Customer Service Manager",
+
+        "Marketing Manager",
+
+        "Subscription Manager",
+    ]
+
+
+    for (
+        number,
+        manager_name
+    ) in enumerate(
+        manager_order,
+        start=1,
+    ):
+
+        report = (
+            manager_reports.get(
+                manager_name
+            )
+        )
+
+
+        if not report:
+            continue
+
+
+        document.add_heading(
+            (
+                f"5.{number} "
+                f"{manager_name}"
+            ),
+            level=2,
+        )
+
+
+        provider = (
+            report.get(
+                "provider",
+                "Unknown",
+            )
+        )
+
+
+        model = (
+            report.get(
+                "model",
+                "Unknown",
+            )
+        )
+
+
+        source = (
+            document.add_paragraph()
+        )
+
+
+        provider_run = (
+            source.add_run(
+                "LLM Provider: "
+            )
+        )
+
+
+        provider_run.bold = True
+
+
+        source.add_run(
+            str(provider)
+        )
+
+
+        source.add_run(
+            " | "
+        )
+
+
+        model_run = (
+            source.add_run(
+                "Model: "
+            )
+        )
+
+
+        model_run.bold = True
+
+
+        source.add_run(
+            str(model)
+        )
+
+
+        document.add_paragraph()
+
+
+        docx_add_llm_report(
+            document,
+            report.get(
+                "content",
+                "",
+            )
+        )
+
+
+        document.add_paragraph()
+
+
+    # ========================================================
+    # 6. EXECUTIVE REPORT
+    # ========================================================
+
+    document.add_page_break()
+
+
+    document.add_heading(
+        (
+            "6. Executive Brand "
+            "Reputation Report"
+        ),
+        level=1,
+    )
+
+
+    if executive_report:
+
+        provider = (
+            executive_report.get(
+                "provider",
+                "Gemini",
+            )
+        )
+
+
+        model = (
+            executive_report.get(
+                "model",
+                "Unknown",
+            )
+        )
+
+
+        source = (
+            document.add_paragraph()
+        )
+
+
+        run = (
+            source.add_run(
+                (
+                    "Executive "
+                    "LLM Provider: "
+                )
+            )
+        )
+
+
+        run.bold = True
+
+
+        source.add_run(
+            str(provider)
+        )
+
+
+        source.add_run(
+            " | "
+        )
+
+
+        run = (
+            source.add_run(
+                "Model: "
+            )
+        )
+
+
+        run.bold = True
+
+
+        source.add_run(
+            str(model)
+        )
+
+
+        document.add_paragraph()
+
+
+        docx_add_llm_report(
+            document,
+            executive_report.get(
+                "content",
+                "",
+            )
+        )
+
+
+    else:
+
+        document.add_paragraph(
+            (
+                "The Executive Report "
+                "has not been generated."
+            )
+        )
+
+
+    # ========================================================
+    # 7. SYSTEM NOTES
+    # ========================================================
+
+    document.add_page_break()
+
+
+    document.add_heading(
+        (
+            "7. System Interpretation "
+            "and Limitations"
+        ),
+        level=1,
+    )
+
+
+    interpretation_notes = [
+
+        (
+            "Sentiment classifications are "
+            "predictions produced by the "
+            "trained DistilBERT model."
+        ),
+
+        (
+            "Model confidence represents "
+            "the model output probability "
+            "and does not guarantee "
+            "prediction correctness."
+        ),
+
+        (
+            "The Brand Reputation Score "
+            "is a project-defined indicator "
+            "rather than a universal "
+            "industry-standard metric."
+        ),
+
+        (
+            "Customer issue categories "
+            "are produced using the "
+            "system's issue-analysis logic."
+        ),
+
+        (
+            "LLM-generated recommendations "
+            "are intended for decision support "
+            "and should not be treated as "
+            "automatic management decisions."
+        ),
+
+        (
+            "OpenRouter reports may be "
+            "generated by different models "
+            "because the application requests "
+            "the openrouter/free route."
+        ),
+    ]
+
+
+    for note in (
+        interpretation_notes
+    ):
+
+        document.add_paragraph(
+            note,
+            style="List Bullet",
+        )
+
+
+    # ========================================================
+    # SAVE DOCX TO MEMORY
+    # ========================================================
+
+    output = BytesIO()
+
+
+    document.save(
+        output
+    )
+
+
+    output.seek(0)
+
+
+    return output
+
+
+# ============================================================
+# PDF CLASS
+# ============================================================
+
+class BrandPulsePDF(
+    FPDF
+):
+
+    def header(
+        self
+    ):
+        """
+        Header shown from page 2 onward.
+        """
+
+        if self.page_no() > 1:
+
+            self.set_font(
+                "Helvetica",
+                "B",
+                9,
+            )
+
+
+            self.set_text_color(
+                30,
+                140,
+                90,
+            )
+
+
+            self.cell(
+                0,
+                7,
+                "BrandPulse AI - Brand Reputation Intelligence Report",
+                align="C",
+            )
+
+
+            self.ln(
+                9
+            )
+
+
+            self.set_draw_color(
+                210,
+                215,
+                220,
+            )
+
+
+            self.line(
+                15,
+                self.get_y(),
+                195,
+                self.get_y(),
+            )
+
+
+            self.ln(
+                4
+            )
+
+
+    def footer(
+        self
+    ):
+
+        self.set_y(
+            -14
+        )
+
+
+        self.set_font(
+            "Helvetica",
+            "",
+            8,
+        )
+
+
+        self.set_text_color(
+            110,
+            110,
+            110,
+        )
+
+
+        self.cell(
+            0,
+            8,
+            (
+                f"Page {self.page_no()}"
+            ),
+            align="C",
+        )
+
+
+# ============================================================
+# PDF HELPERS
+# ============================================================
+
+def pdf_add_heading(
+    pdf,
+    text,
+    level=1,
+):
+
+    text = pdf_safe_text(
+        text
+    )
+
+
+    if level == 1:
+
+        pdf.set_font(
+            "Helvetica",
+            "B",
+            15,
+        )
+
+
+        pdf.set_text_color(
+            40,
+            90,
+            80,
+        )
+
+
+        pdf.ln(
+            4
+        )
+
+
+        pdf.multi_cell(
+            0,
+            8,
+            text,
+        )
+
+
+        pdf.ln(
+            2
+        )
+
+
+    elif level == 2:
+
+        pdf.set_font(
+            "Helvetica",
+            "B",
+            12,
+        )
+
+
+        pdf.set_text_color(
+            60,
+            60,
+            60,
+        )
+
+
+        pdf.ln(
+            3
+        )
+
+
+        pdf.multi_cell(
+            0,
+            7,
+            text,
+        )
+
+
+        pdf.ln(
+            1
+        )
+
+
+    else:
+
+        pdf.set_font(
+            "Helvetica",
+            "B",
+            10.5,
+        )
+
+
+        pdf.set_text_color(
+            75,
+            75,
+            75,
+        )
+
+
+        pdf.ln(
+            2
+        )
+
+
+        pdf.multi_cell(
+            0,
+            6,
+            text,
+        )
+
+
+def pdf_add_paragraph(
+    pdf,
+    text,
+):
+
+    text = pdf_safe_text(
+        text
+    )
+
+
+    if not text:
+        return
+
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        9.5,
+    )
+
+
+    pdf.set_text_color(
+        45,
+        45,
+        45,
+    )
+
+
+    pdf.multi_cell(
+        0,
+        5.8,
+        text,
+    )
+
+
+    pdf.ln(
+        2
+    )
+
+
+def pdf_add_bullet(
+    pdf,
+    text,
+):
+
+    text = pdf_safe_text(
+        text
+    )
+
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        9.3,
+    )
+
+
+    pdf.set_text_color(
+        45,
+        45,
+        45,
+    )
+
+
+    pdf.multi_cell(
+        0,
+        5.8,
+        (
+            "- "
+            + text
+        ),
+    )
+
+
+def pdf_add_llm_report(
+    pdf,
+    report_text,
+):
+
+    if not report_text:
+        return
+
+
+    lines = (
+        str(report_text)
+        .splitlines()
+    )
+
+
+    for raw_line in lines:
+
+        line = (
+            raw_line.strip()
+        )
+
+
+        if not line:
+            continue
+
+
+        if line.startswith(
+            "# "
+        ):
+
+            pdf_add_heading(
+                pdf,
+                line[2:],
+                level=1,
+            )
+
+
+        elif line.startswith(
+            "## "
+        ):
+
+            pdf_add_heading(
+                pdf,
+                line[3:],
+                level=2,
+            )
+
+
+        elif line.startswith(
+            "### "
+        ):
+
+            pdf_add_heading(
+                pdf,
+                line[4:],
+                level=3,
+            )
+
+
+        elif (
+            line.startswith("- ")
+            or
+            line.startswith("• ")
+        ):
+
+            pdf_add_bullet(
+                pdf,
+                line[2:],
+            )
+
+
+        elif re.match(
+            r"^\d+\.\s",
+            line
+        ):
+
+            pdf_add_paragraph(
+                pdf,
+                line,
+            )
+
+
+        else:
+
+            pdf_add_paragraph(
+                pdf,
+                line,
+            )
+
+
+def pdf_add_table(
+    pdf,
+    rows,
+    column_widths,
+):
+    """
+    Simple 2-column PDF table.
+    """
+
+    if not rows:
+        return
+
+
+    for (
+        row_number,
+        row
+    ) in enumerate(
+        rows
+    ):
+
+        if row_number == 0:
+
+            pdf.set_fill_color(
+                40,
+                110,
+                90,
+            )
+
+
+            pdf.set_text_color(
+                255,
+                255,
+                255,
+            )
+
+
+            pdf.set_font(
+                "Helvetica",
+                "B",
+                9,
+            )
+
+
+        else:
+
+            pdf.set_fill_color(
+                245,
+                247,
+                249,
+            )
+
+
+            pdf.set_text_color(
+                45,
+                45,
+                45,
+            )
+
+
+            pdf.set_font(
+                "Helvetica",
+                "",
+                9,
+            )
+
+
+        pdf.cell(
+            column_widths[0],
+            7,
+            pdf_safe_text(
+                row[0]
+            ),
+            border=1,
+            fill=True,
+        )
+
+
+        pdf.cell(
+            column_widths[1],
+            7,
+            pdf_safe_text(
+                row[1]
+            ),
+            border=1,
+            fill=True,
+        )
+
+
+        pdf.ln()
+
+
+    pdf.ln(
+        4
+    )
+
+
+# ============================================================
+# CREATE PDF
+# ============================================================
+
+def create_brandpulse_pdf(
+    analysis_summary,
+    manager_reports,
+    executive_report,
+):
+    """
+    Create a complete BrandPulse PDF report.
+
+    Returns:
+        bytes
+    """
+
+    pdf = BrandPulsePDF(
+        orientation="P",
+        unit="mm",
+        format="A4",
+    )
+
+
+    pdf.set_auto_page_break(
+        auto=True,
+        margin=18,
+    )
+
+
+    # ========================================================
+    # COVER PAGE
+    # ========================================================
+
+    pdf.add_page()
+
+
+    pdf.set_y(
+        48
+    )
+
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        27,
+    )
+
+
+    pdf.set_text_color(
+        25,
+        145,
+        80,
+    )
+
+
+    pdf.cell(
+        0,
+        13,
+        "BrandPulse AI",
+        align="C",
+    )
+
+
+    pdf.ln(
+        18
+    )
+
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14,
+    )
+
+
+    pdf.set_text_color(
+        40,
+        40,
+        40,
+    )
+
+
+    pdf.multi_cell(
+        0,
+        8,
+        (
+            "AI-Assisted Brand Reputation "
+            "Intelligence Report"
+        ),
+        align="C",
+    )
+
+
+    pdf.ln(
+        8
+    )
+
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11,
+    )
+
+
+    pdf.set_text_color(
+        80,
+        80,
+        80,
+    )
+
+
+    pdf.multi_cell(
+        0,
+        7,
+        (
+            "Online Review-Based Brand "
+            "Reputation Prediction "
+            "Using NLP Techniques"
+        ),
+        align="C",
+    )
+
+
+    pdf.ln(
+        12
+    )
+
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        9.5,
+    )
+
+
+    pdf.cell(
+        0,
+        7,
+        (
+            "Predictive Model: DistilBERT"
+        ),
+        align="C",
+    )
+
+
+    pdf.ln(
+        7
+    )
+
+
+    pdf.cell(
+        0,
+        7,
+        (
+            "Generative AI: Gemini "
+            "and OpenRouter Free"
+        ),
+        align="C",
+    )
+
+
+    pdf.ln(
+        14
+    )
+
+
+    pdf.set_text_color(
+        110,
+        110,
+        110,
+    )
+
+
+    pdf.cell(
+        0,
+        7,
+        (
+            "Generated: "
+            + current_timestamp()
+        ),
+        align="C",
+    )
+
+
+    # ========================================================
+    # PAGE 2
+    # ========================================================
+
+    pdf.add_page()
+
+
+    # ========================================================
+    # 1. OVERVIEW
+    # ========================================================
+
+    pdf_add_heading(
+        pdf,
+        (
+            "1. Brand Reputation "
+            "Overview"
+        ),
+        level=1,
+    )
+
+
+    overview_rows = [
+
+        [
+            "Indicator",
+            "Result",
+        ],
+
+        [
+            "Reviews Analysed",
+            str(
+                analysis_summary.get(
+                    "total_reviews",
+                    0,
+                )
+            ),
+        ],
+
+        [
+            "Positive Reviews",
+            str(
+                analysis_summary.get(
+                    "positive_reviews",
+                    0,
+                )
+            ),
+        ],
+
+        [
+            "Negative Reviews",
+            str(
+                analysis_summary.get(
+                    "negative_reviews",
+                    0,
+                )
+            ),
+        ],
+
+        [
+            "Positive Percentage",
+            (
+                f"{analysis_summary.get(
+                    'positive_percentage',
+                    0
+                )}%"
+            ),
+        ],
+
+        [
+            "Negative Percentage",
+            (
+                f"{analysis_summary.get(
+                    'negative_percentage',
+                    0
+                )}%"
+            ),
+        ],
+
+        [
+            "Brand Reputation Score",
+            (
+                f"{analysis_summary.get(
+                    'reputation_score',
+                    0
+                )}%"
+            ),
+        ],
+    ]
+
+
+    pdf_add_table(
+        pdf,
+        overview_rows,
+        [
+            115,
+            65,
+        ],
+    )
+
+
+    pdf_add_paragraph(
+        pdf,
+        (
+            "Methodology Note: The Brand "
+            "Reputation Score is a "
+            "project-defined indicator "
+            "calculated from the proportion "
+            "of positive DistilBERT "
+            "sentiment predictions."
+        ),
+    )
+
+
+    # ========================================================
+    # 2. ISSUES
+    # ========================================================
+
+    pdf_add_heading(
+        pdf,
+        (
+            "2. Negative Review "
+            "Issue Analysis"
+        ),
+        level=1,
+    )
+
+
+    issue_counts = (
+        analysis_summary.get(
+            "issue_counts",
+            {},
+        )
+    )
+
+
+    if issue_counts:
+
+        issue_rows = [
+            [
+                "Issue Category",
+                "Mentions",
+            ]
+        ]
+
+
+        for (
+            issue,
+            count
+        ) in issue_counts.items():
+
+            issue_rows.append(
+                [
+                    str(issue),
+                    str(count),
+                ]
+            )
+
+
+        pdf_add_table(
+            pdf,
+            issue_rows,
+            [
+                135,
+                45,
+            ],
+        )
+
+
+    else:
+
+        pdf_add_paragraph(
+            pdf,
+            (
+                "No negative-review "
+                "issue categories were "
+                "identified."
+            ),
+        )
+
+
+    # ========================================================
+    # 3. CUSTOMER VOICE
+    # ========================================================
+
+    pdf_add_heading(
+        pdf,
+        (
+            "3. Customer Voice "
+            "Intelligence"
+        ),
+        level=1,
+    )
+
+
+    pdf_add_heading(
+        pdf,
+        (
+            "3.1 Frequent "
+            "Positive Terms"
+        ),
+        level=2,
+    )
+
+
+    positive_words = (
+        analysis_summary.get(
+            "top_positive_words",
+            [],
+        )
+    )
+
+
+    if positive_words:
+
+        rows = [
+            [
+                "Word",
+                "Frequency",
+            ]
+        ]
+
+
+        for item in positive_words:
+
+            rows.append(
+                [
+                    str(
+                        item.get(
+                            "word",
+                            "",
+                        )
+                    ),
+
+                    str(
+                        item.get(
+                            "count",
+                            0,
+                        )
+                    ),
+                ]
+            )
+
+
+        pdf_add_table(
+            pdf,
+            rows,
+            [
+                135,
+                45,
+            ],
+        )
+
+
+    pdf_add_heading(
+        pdf,
+        (
+            "3.2 Frequent "
+            "Negative Terms"
+        ),
+        level=2,
+    )
+
+
+    negative_words = (
+        analysis_summary.get(
+            "top_negative_words",
+            [],
+        )
+    )
+
+
+    if negative_words:
+
+        rows = [
+            [
+                "Word",
+                "Frequency",
+            ]
+        ]
+
+
+        for item in negative_words:
+
+            rows.append(
+                [
+                    str(
+                        item.get(
+                            "word",
+                            "",
+                        )
+                    ),
+
+                    str(
+                        item.get(
+                            "count",
+                            0,
+                        )
+                    ),
+                ]
+            )
+
+
+        pdf_add_table(
+            pdf,
+            rows,
+            [
+                135,
+                45,
+            ],
+        )
+
+
+    # ========================================================
+    # 4. NEGATIVE REVIEWS
+    # ========================================================
+
+    pdf_add_heading(
+        pdf,
+        (
+            "4. Representative Negative "
+            "Customer Reviews"
+        ),
+        level=1,
+    )
+
+
+    negative_reviews = (
+        analysis_summary.get(
+            "sample_negative_reviews",
+            [],
         )
     )
 
@@ -667,46 +2267,44 @@ def create_brandpulse_docx(
     if negative_reviews:
 
         for (
-            index,
+            number,
             review
         ) in enumerate(
             negative_reviews,
-            start=1
+            start=1,
         ):
 
-            paragraph = (
-                document.add_paragraph(
-                    style="List Number"
-                )
-            )
-
-            paragraph.add_run(
-                str(review)
+            pdf_add_paragraph(
+                pdf,
+                (
+                    f"{number}. "
+                    f"{review}"
+                ),
             )
 
 
     else:
 
-        add_paragraph_text(
-            document,
-            "No negative reviews detected."
+        pdf_add_paragraph(
+            pdf,
+            "No negative reviews detected.",
         )
 
 
     # ========================================================
-    # PAGE BREAK BEFORE MANAGERS
+    # 5. MANAGER REPORTS
     # ========================================================
 
-    document.add_page_break()
+    pdf.add_page()
 
 
-    # ========================================================
-    # 5. DEPARTMENT MANAGER REPORTS
-    # ========================================================
-
-    add_section_heading(
-        document,
-        "5. AI Department Manager Reports"
+    pdf_add_heading(
+        pdf,
+        (
+            "5. AI Department "
+            "Manager Reports"
+        ),
+        level=1,
     )
 
 
@@ -729,7 +2327,7 @@ def create_brandpulse_docx(
         manager_name
     ) in enumerate(
         manager_order,
-        start=1
+        start=1,
     ):
 
         report = (
@@ -743,80 +2341,69 @@ def create_brandpulse_docx(
             continue
 
 
-        document.add_heading(
+        pdf_add_heading(
+            pdf,
             (
                 f"5.{manager_number} "
                 f"{manager_name}"
             ),
-            level=2
+            level=2,
         )
 
 
-        provider = report.get(
-            "provider",
-            "Unknown"
-        )
-
-        model = report.get(
-            "model",
-            "Unknown"
-        )
-
-
-        source = document.add_paragraph()
-
-        source_run = source.add_run(
-            "LLM Provider: "
-        )
-
-        source_run.bold = True
-
-        source.add_run(
-            str(provider)
-        )
-
-
-        source.add_run(
-            " | "
-        )
-
-
-        model_run = source.add_run(
-            "Model: "
-        )
-
-        model_run.bold = True
-
-        source.add_run(
-            str(model)
-        )
-
-
-        document.add_paragraph()
-
-
-        add_llm_report(
-            document,
+        provider = (
             report.get(
-                "content",
-                ""
+                "provider",
+                "Unknown",
             )
         )
 
 
-        document.add_paragraph()
+        model = (
+            report.get(
+                "model",
+                "Unknown",
+            )
+        )
+
+
+        pdf_add_paragraph(
+            pdf,
+            (
+                f"LLM Provider: {provider} "
+                f"| Model: {model}"
+            ),
+        )
+
+
+        pdf_add_llm_report(
+            pdf,
+            report.get(
+                "content",
+                "",
+            ),
+        )
+
+
+        pdf.ln(
+            3
+        )
 
 
     # ========================================================
     # 6. EXECUTIVE REPORT
     # ========================================================
 
-    document.add_page_break()
+    pdf.add_page()
 
 
-    add_section_heading(
-        document,
-        "6. Executive Brand Reputation Report"
+    pdf_add_heading(
+        pdf,
+        (
+            "6. Executive Brand "
+            "Reputation Report"
+        ),
+        level=1,
     )
 
 
@@ -825,137 +2412,132 @@ def create_brandpulse_docx(
         provider = (
             executive_report.get(
                 "provider",
-                "Gemini"
+                "Gemini",
             )
         )
+
 
         model = (
             executive_report.get(
                 "model",
-                "Unknown"
+                "Unknown",
             )
         )
 
 
-        source = document.add_paragraph()
-
-        source_run = source.add_run(
-            "Executive LLM Provider: "
-        )
-
-        source_run.bold = True
-
-        source.add_run(
-            str(provider)
+        pdf_add_paragraph(
+            pdf,
+            (
+                "Executive LLM Provider: "
+                f"{provider} "
+                f"| Model: {model}"
+            ),
         )
 
 
-        source.add_run(
-            " | "
-        )
-
-
-        model_run = source.add_run(
-            "Model: "
-        )
-
-        model_run.bold = True
-
-        source.add_run(
-            str(model)
-        )
-
-
-        document.add_paragraph()
-
-
-        add_llm_report(
-            document,
+        pdf_add_llm_report(
+            pdf,
             executive_report.get(
                 "content",
-                ""
-            )
+                "",
+            ),
         )
 
 
     else:
 
-        add_paragraph_text(
-            document,
+        pdf_add_paragraph(
+            pdf,
             (
-                "Executive report has not "
-                "been generated."
-            )
+                "The Executive Report "
+                "has not been generated."
+            ),
         )
 
 
     # ========================================================
-    # 7. LIMITATION NOTE
+    # 7. LIMITATIONS
     # ========================================================
 
-    document.add_page_break()
+    pdf.add_page()
 
 
-    add_section_heading(
-        document,
-        "7. System Interpretation Notes"
+    pdf_add_heading(
+        pdf,
+        (
+            "7. System Interpretation "
+            "and Limitations"
+        ),
+        level=1,
     )
 
 
-    interpretation_notes = [
+    limitation_notes = [
 
         (
             "Sentiment classifications are "
-            "predictions produced by the trained "
-            "DistilBERT model."
+            "predictions produced by the "
+            "trained DistilBERT model."
         ),
 
         (
-            "Model confidence does not guarantee "
-            "that an individual prediction is correct."
+            "Model confidence does not "
+            "guarantee that an individual "
+            "prediction is correct."
         ),
 
         (
-            "Issue categories are derived from "
-            "the system's predefined issue-analysis "
-            "logic."
+            "The Brand Reputation Score "
+            "is a project-defined indicator "
+            "and not a universal "
+            "industry-standard metric."
         ),
 
         (
-            "LLM-generated management reports "
-            "should be treated as decision-support "
-            "recommendations rather than factual "
+            "Issue categories are generated "
+            "using the system's predefined "
+            "issue-analysis logic."
+        ),
+
+        (
+            "LLM-generated recommendations "
+            "are intended as decision-support "
+            "outputs rather than automatic "
             "management decisions."
         ),
 
         (
-            "OpenRouter reports may use different "
-            "free models because the application "
-            "requests the openrouter/free route."
+            "OpenRouter outputs may be "
+            "produced by different free models "
+            "because the application requests "
+            "the openrouter/free route."
         ),
     ]
 
 
-    for note_text in (
-        interpretation_notes
-    ):
+    for note in limitation_notes:
 
-        document.add_paragraph(
-            note_text,
-            style="List Bullet"
+        pdf_add_bullet(
+            pdf,
+            note,
         )
 
 
     # ========================================================
-    # SAVE TO MEMORY
+    # RETURN PDF AS BYTES
     # ========================================================
 
-    output = BytesIO()
+    result = pdf.output()
 
-    document.save(
-        output
-    )
 
-    output.seek(0)
+    if isinstance(
+        result,
+        bytearray
+    ):
 
-    return output
+        result = bytes(
+            result
+        )
+
+
+    return result
