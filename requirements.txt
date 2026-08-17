@@ -8,4 +8,4 @@ numpy
 openpyxl
 plotly
 requests
-google-genai
+google-genai>=2.3.0
