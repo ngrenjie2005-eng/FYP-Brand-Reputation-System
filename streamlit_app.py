@@ -9,9 +9,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from src.analysis import (
-    analyse_predictions,
-)
+from src.analysis import analyse_predictions
 
 from src.distilbert_predictor import (
     predict_batch,
@@ -52,54 +50,50 @@ st.html(
 
 :root {
     --green: #1ED760;
-    --green-soft: rgba(30, 215, 96, 0.14);
-
-    --purple: #A855F7;
-    --purple-soft: rgba(168, 85, 247, 0.15);
-
     --blue: #38BDF8;
-    --blue-soft: rgba(56, 189, 248, 0.14);
-
+    --purple: #A855F7;
     --pink: #F472B6;
-    --pink-soft: rgba(244, 114, 182, 0.14);
-
     --orange: #FB923C;
-    --orange-soft: rgba(251, 146, 60, 0.14);
-
     --yellow: #FACC15;
     --red: #FB7185;
 
-    --panel: rgba(18, 24, 34, 0.92);
-    --panel-2: rgba(24, 31, 43, 0.94);
+    --background: #0B0F16;
+    --panel: #121923;
+    --panel-light: #182231;
 
-    --text: #F8FAFC;
-    --muted: #94A3B8;
+    --text-main: #F8FAFC;
+    --text-soft: #AAB6C5;
+    --text-muted: #748196;
 }
 
+
+/* ==========================================================
+   MAIN APPLICATION
+   ========================================================== */
 
 .stApp {
     background:
         radial-gradient(
-            circle at 10% 5%,
-            rgba(168, 85, 247, 0.10),
-            transparent 23%
+            circle at 5% 5%,
+            rgba(168, 85, 247, 0.09),
+            transparent 22%
         ),
         radial-gradient(
-            circle at 90% 10%,
-            rgba(30, 215, 96, 0.10),
-            transparent 26%
+            circle at 95% 5%,
+            rgba(30, 215, 96, 0.09),
+            transparent 25%
         ),
         radial-gradient(
-            circle at 70% 80%,
-            rgba(56, 189, 248, 0.08),
-            transparent 26%
+            circle at 70% 85%,
+            rgba(56, 189, 248, 0.06),
+            transparent 25%
         ),
-        #0B0F16;
+        var(--background);
 }
 
 
 .block-container {
-    max-width: 1480px;
+    max-width: 1500px;
     padding-top: 1.2rem;
     padding-bottom: 4rem;
 }
@@ -111,75 +105,80 @@ st.html(
 
 .bp-hero {
     position: relative;
+
     overflow: hidden;
+
+    padding: 46px 48px;
+
+    margin-bottom: 25px;
 
     border-radius: 30px;
 
-    padding:
-        46px 48px
-        44px 48px;
-
-    margin-bottom: 22px;
-
     background:
         radial-gradient(
-            circle at 85% 15%,
-            rgba(30, 215, 96, 0.33),
+            circle at 86% 15%,
+            rgba(30, 215, 96, 0.32),
             transparent 29%
         ),
         radial-gradient(
-            circle at 12% 95%,
-            rgba(168, 85, 247, 0.26),
-            transparent 36%
+            circle at 12% 100%,
+            rgba(168, 85, 247, 0.24),
+            transparent 37%
         ),
         linear-gradient(
             130deg,
             #111827 0%,
-            #151A24 42%,
-            #0F1720 100%
+            #151A24 44%,
+            #101923 100%
         );
 
     border:
-        1px solid
-        rgba(255, 255, 255, 0.09);
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.09
+        );
 
     box-shadow:
-        0 25px 65px
-        rgba(0, 0, 0, 0.30);
+        0 25px 60px rgba(
+            0,
+            0,
+            0,
+            0.30
+        );
 }
 
 
-.bp-orb-1 {
+.bp-orb-one {
     position: absolute;
 
-    width: 180px;
-    height: 180px;
+    right: -50px;
+    top: -65px;
 
-    right: -40px;
-    top: -60px;
+    width: 190px;
+    height: 190px;
 
     border-radius: 50%;
 
     background:
-        rgba(30, 215, 96, 0.14);
-
-    filter: blur(2px);
+        rgba(30, 215, 96, 0.13);
 }
 
 
-.bp-orb-2 {
+.bp-orb-two {
     position: absolute;
 
-    width: 140px;
-    height: 140px;
+    bottom: -110px;
+    left: 42%;
 
-    left: 45%;
-    bottom: -100px;
+    width: 165px;
+    height: 165px;
 
     border-radius: 50%;
 
     background:
-        rgba(168, 85, 247, 0.18);
+        rgba(168, 85, 247, 0.15);
 }
 
 
@@ -188,28 +187,32 @@ st.html(
 
     align-items: center;
 
-    gap: 8px;
+    gap: 7px;
+
+    padding: 7px 13px;
+
+    margin-bottom: 16px;
 
     border-radius: 999px;
-
-    padding:
-        7px 13px;
-
-    margin-bottom: 15px;
-
-    color: #8AF0AB;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    letter-spacing: 1.2px;
 
     background:
         rgba(30, 215, 96, 0.10);
 
     border:
-        1px solid
-        rgba(30, 215, 96, 0.25);
+        1px solid rgba(
+            30,
+            215,
+            96,
+            0.24
+        );
+
+    color: #8AF0AB;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
 }
 
 
@@ -218,73 +221,88 @@ st.html(
 
     margin: 0;
 
-    font-size: 50px;
+    color: #F8FAFC;
+
+    font-size: clamp(
+        38px,
+        4vw,
+        54px
+    );
+
     font-weight: 900;
 
-    line-height: 1.02;
-
-    color: #F8FAFC;
+    line-height: 1.05;
 }
 
 
-.bp-title-gradient {
+.bp-gradient-text {
     background:
         linear-gradient(
             90deg,
             #1ED760,
-            #52E9A8,
+            #4ADE80,
             #38BDF8
         );
 
     -webkit-background-clip: text;
-
-    -webkit-text-fill-color:
-        transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 
 .bp-subtitle {
     position: relative;
 
-    max-width: 880px;
+    max-width: 900px;
 
-    margin:
-        17px 0 0 0;
+    margin-top: 17px;
 
-    color: #B4BECC;
+    color: #B3BECC;
 
     font-size: 16px;
+
     line-height: 1.75;
 }
 
 
-.bp-stack {
-    display: inline-flex;
+.bp-tech-stack {
+    position: relative;
 
-    gap: 8px;
+    display: flex;
 
     flex-wrap: wrap;
+
+    gap: 8px;
 
     margin-top: 22px;
 }
 
 
 .bp-chip {
-    padding:
-        7px 11px;
+    padding: 7px 11px;
 
     border-radius: 10px;
 
-    color: #D9E2EC;
-
     background:
-        rgba(255, 255, 255, 0.055);
+        rgba(
+            255,
+            255,
+            255,
+            0.055
+        );
 
     border:
-        1px solid
-        rgba(255, 255, 255, 0.075);
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.075
+        );
+
+    color: #D9E2EC;
 
     font-size: 12px;
+
+    white-space: nowrap;
 }
 
 
@@ -292,178 +310,215 @@ st.html(
    FEATURE CARDS
    ========================================================== */
 
-.bp-card {
-    height: 168px;
+/*
+IMPORTANT FIX:
+There is NO fixed height anymore.
 
-    padding: 21px;
+The previous version used height:168px,
+which caused your text to leave the card.
+*/
 
-    border-radius: 21px;
+.bp-feature-card {
+    box-sizing: border-box;
 
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.075);
+    width: 100%;
+
+    min-height: 220px;
+
+    height: auto;
+
+    padding: 23px;
+
+    margin-bottom: 10px;
+
+    border-radius: 22px;
+
+    overflow: hidden;
 
     background:
         linear-gradient(
             145deg,
-            rgba(24, 31, 43, 0.96),
-            rgba(16, 22, 31, 0.97)
+            rgba(24, 33, 45, 0.98),
+            rgba(16, 23, 32, 0.98)
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.075
         );
 
     transition:
-        transform .20s ease,
-        border-color .20s ease,
-        box-shadow .20s ease;
+        transform 0.20s ease,
+        border-color 0.20s ease,
+        box-shadow 0.20s ease;
 }
 
 
-.bp-card:hover {
+.bp-feature-card:hover {
     transform:
         translateY(-4px);
 
     border-color:
-        rgba(255, 255, 255, 0.16);
+        rgba(
+            30,
+            215,
+            96,
+            0.35
+        );
 
     box-shadow:
-        0 15px 34px
-        rgba(0, 0, 0, 0.22);
+        0 16px 35px rgba(
+            0,
+            0,
+            0,
+            0.23
+        );
 }
 
 
-.bp-card-icon {
-    width: 44px;
-    height: 44px;
-
+.bp-feature-icon {
     display: flex;
 
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
-    border-radius: 14px;
+    width: 46px;
+    height: 46px;
 
-    font-size: 22px;
+    margin-bottom: 15px;
 
-    margin-bottom: 13px;
+    border-radius: 15px;
+
+    font-size: 23px;
 }
 
 
-.icon-green {
-    background: var(--green-soft);
+.feature-green {
+    background:
+        rgba(
+            30,
+            215,
+            96,
+            0.14
+        );
 }
 
 
-.icon-purple {
-    background: var(--purple-soft);
+.feature-blue {
+    background:
+        rgba(
+            56,
+            189,
+            248,
+            0.15
+        );
 }
 
 
-.icon-blue {
-    background: var(--blue-soft);
+.feature-purple {
+    background:
+        rgba(
+            168,
+            85,
+            247,
+            0.17
+        );
 }
 
 
-.icon-pink {
-    background: var(--pink-soft);
+.feature-pink {
+    background:
+        rgba(
+            244,
+            114,
+            182,
+            0.16
+        );
 }
 
 
-.bp-card-title {
-    margin-bottom: 6px;
+.bp-feature-title {
+    margin-bottom: 9px;
 
     color: #F8FAFC;
 
     font-size: 16px;
+
     font-weight: 800;
+
+    line-height: 1.3;
+
+    overflow-wrap: break-word;
+
+    word-break: normal;
 }
 
 
-.bp-card-text {
-    color: #96A2B3;
+.bp-feature-text {
+    margin: 0;
+
+    color: #9FAABC;
 
     font-size: 13px;
-    line-height: 1.52;
+
+    line-height: 1.62;
+
+    overflow-wrap: break-word;
+
+    word-wrap: break-word;
+
+    word-break: normal;
+
+    white-space: normal;
 }
 
 
 /* ==========================================================
-   SIDEBAR
+   RESPONSIVE FEATURE CARDS
    ========================================================== */
 
-.bp-side-brand {
-    font-size: 24px;
-    font-weight: 900;
+@media (
+    max-width: 1200px
+) {
 
-    background:
-        linear-gradient(
-            90deg,
-            #F8FAFC,
-            #1ED760
-        );
+    .bp-feature-card {
+        min-height: 240px;
+    }
 
-    -webkit-background-clip: text;
-
-    -webkit-text-fill-color:
-        transparent;
+    .bp-feature-text {
+        font-size: 12.5px;
+    }
 }
 
 
-.bp-side-sub {
-    color: #8C99A9;
+@media (
+    max-width: 800px
+) {
 
-    font-size: 12px;
+    .bp-hero {
+        padding: 30px 25px;
+    }
 
-    margin-top: 2px;
-}
+    .bp-feature-card {
+        min-height: 190px;
+    }
 
-
-.bp-label {
-    color: #718096;
-
-    font-size: 10px;
-    font-weight: 800;
-
-    letter-spacing: 1.4px;
-
-    text-transform: uppercase;
-
-    margin-bottom: 5px;
-}
-
-
-.bp-online {
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 5px;
-
-    padding:
-        6px 10px;
-
-    border-radius: 999px;
-
-    color: #7AE9A0;
-
-    background:
-        rgba(30, 215, 96, 0.09);
-
-    border:
-        1px solid
-        rgba(30, 215, 96, 0.18);
-
-    font-size: 11px;
-    font-weight: 700;
+    .bp-title {
+        font-size: 38px;
+    }
 }
 
 
 /* ==========================================================
-   SECTION HEADER
+   SECTION HEADERS
    ========================================================== */
 
 .bp-section {
     margin:
-        7px 0
-        18px 0;
+        7px 0 19px 0;
 }
 
 
@@ -471,9 +526,10 @@ st.html(
     color: #5EEA91;
 
     font-size: 11px;
+
     font-weight: 800;
 
-    letter-spacing: 1.3px;
+    letter-spacing: 1.35px;
 }
 
 
@@ -484,14 +540,95 @@ st.html(
     color: #F8FAFC;
 
     font-size: 28px;
+
     font-weight: 850;
 }
 
 
 .bp-section-text {
-    color: #8997A9;
+    color: #8E9BAD;
 
     font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
+
+.bp-sidebar-brand {
+    font-size: 24px;
+
+    font-weight: 900;
+
+    background:
+        linear-gradient(
+            90deg,
+            #F8FAFC,
+            #1ED760
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+.bp-sidebar-subtitle {
+    margin-top: 3px;
+
+    color: #8491A3;
+
+    font-size: 12px;
+}
+
+
+.bp-small-label {
+    margin-bottom: 6px;
+
+    color: #6F7D90;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.35px;
+
+    text-transform: uppercase;
+}
+
+
+.bp-online {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    color: #7AE9A0;
+
+    background:
+        rgba(
+            30,
+            215,
+            96,
+            0.09
+        );
+
+    border:
+        1px solid rgba(
+            30,
+            215,
+            96,
+            0.18
+        );
+
+    font-size: 11px;
+
+    font-weight: 700;
 }
 
 
@@ -500,29 +637,38 @@ st.html(
    ========================================================== */
 
 .bp-kpi {
+    position: relative;
+
+    overflow: hidden;
+
     min-height: 126px;
 
-    padding: 19px;
+    padding: 20px 20px 20px 24px;
 
     border-radius: 20px;
 
     background:
-        rgba(19, 26, 37, 0.93);
+        rgba(
+            19,
+            26,
+            37,
+            0.94
+        );
 
     border:
-        1px solid
-        rgba(255, 255, 255, 0.07);
-
-    overflow: hidden;
-
-    position: relative;
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
 }
 
 
 .bp-kpi::before {
-    content: "";
-
     position: absolute;
+
+    content: "";
 
     left: 0;
     top: 0;
@@ -553,87 +699,111 @@ st.html(
 
 
 .bp-kpi-label {
-    color: #8896A8;
+    color: #8795A8;
 
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 11px;
+
+    font-weight: 750;
 }
 
 
 .bp-kpi-value {
-    margin-top: 8px;
+    margin-top: 9px;
 
     color: #F8FAFC;
 
     font-size: 30px;
+
     font-weight: 900;
 }
 
 
 .bp-kpi-note {
-    margin-top: 3px;
+    margin-top: 4px;
 
-    color: #667487;
+    color: #68778A;
 
     font-size: 11px;
 }
 
 
 /* ==========================================================
-   REPUTATION HERO
+   REPUTATION STATUS
    ========================================================== */
 
-.bp-reputation {
-    padding: 22px;
+.bp-reputation-panel {
+    padding: 23px;
 
-    border-radius: 21px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
 
     background:
         linear-gradient(
             110deg,
-            rgba(30, 215, 96, 0.08),
+            rgba(30, 215, 96, 0.07),
             rgba(56, 189, 248, 0.06),
             rgba(168, 85, 247, 0.08)
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.08
         );
 }
 
 
-.bp-rep-label {
-    color: #8FA0B3;
+.bp-reputation-label {
+    color: #8796A9;
 
-    font-size: 12px;
+    font-size: 11px;
+
+    font-weight: 750;
 }
 
 
-.bp-rep-title {
-    margin-top: 4px;
+.bp-reputation-title {
+    margin-top: 6px;
 
-    font-size: 23px;
-    font-weight: 850;
+    font-size: 24px;
+
+    font-weight: 900;
 }
 
 
 /* ==========================================================
-   MANAGER CARDS
+   MANAGER PROFILE
    ========================================================== */
 
-.bp-manager {
-    padding: 20px;
+.bp-manager-profile {
+    width: 100%;
 
-    border-radius: 19px;
+    box-sizing: border-box;
 
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.075);
+    padding: 21px;
+
+    margin-bottom: 14px;
+
+    border-radius: 21px;
+
+    overflow: hidden;
 
     background:
-        rgba(19, 26, 37, 0.91);
+        rgba(
+            19,
+            27,
+            38,
+            0.95
+        );
 
-    margin-bottom: 12px;
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.075
+        );
 }
 
 
@@ -642,23 +812,22 @@ st.html(
 
     align-items: center;
 
-    gap: 12px;
+    gap: 13px;
 }
 
 
 .bp-avatar {
-    min-width: 47px;
-    width: 47px;
-
-    height: 47px;
-
-    border-radius: 15px;
-
     display: flex;
 
-    align-items: center;
+    flex-shrink: 0;
 
+    align-items: center;
     justify-content: center;
+
+    width: 49px;
+    height: 49px;
+
+    border-radius: 16px;
 
     font-size: 23px;
 }
@@ -666,72 +835,104 @@ st.html(
 
 .avatar-tech {
     background:
-        rgba(56, 189, 248, 0.14);
+        rgba(
+            56,
+            189,
+            248,
+            0.14
+        );
 }
 
 
 .avatar-product {
     background:
-        rgba(168, 85, 247, 0.16);
+        rgba(
+            168,
+            85,
+            247,
+            0.16
+        );
 }
 
 
 .avatar-service {
     background:
-        rgba(30, 215, 96, 0.13);
+        rgba(
+            30,
+            215,
+            96,
+            0.13
+        );
 }
 
 
 .avatar-marketing {
     background:
-        rgba(244, 114, 182, 0.15);
+        rgba(
+            244,
+            114,
+            182,
+            0.15
+        );
 }
 
 
 .avatar-subscription {
     background:
-        rgba(251, 146, 60, 0.15);
+        rgba(
+            251,
+            146,
+            60,
+            0.15
+        );
 }
 
 
-.bp-manager-title {
+.bp-manager-name {
     color: #F8FAFC;
 
-    font-size: 17px;
+    font-size: 18px;
 
     font-weight: 850;
 }
 
 
-.bp-manager-provider {
-    color: #8290A2;
-
-    font-size: 11px;
-
+.bp-manager-short {
     margin-top: 2px;
+
+    color: #8492A5;
+
+    font-size: 12px;
+
+    overflow-wrap: break-word;
 }
 
 
 .bp-provider {
     display: inline-block;
 
-    margin-top: 10px;
+    margin-top: 12px;
 
-    padding:
-        5px 9px;
+    padding: 5px 9px;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
     font-size: 11px;
-    font-weight: 700;
+
+    font-weight: 750;
 }
 
 
 .provider-gemini {
-    color: #CDA8FF;
+    color: #CEA9FF;
 
     background:
-        rgba(168, 85, 247, 0.11);
+        rgba(
+            168,
+            85,
+            247,
+            0.12
+        );
 }
 
 
@@ -739,80 +940,83 @@ st.html(
     color: #7DD3FC;
 
     background:
-        rgba(56, 189, 248, 0.10);
+        rgba(
+            56,
+            189,
+            248,
+            0.11
+        );
 }
 
 
 /* ==========================================================
-   EXECUTIVE PANEL
+   EXECUTIVE
    ========================================================== */
 
 .bp-executive {
-    padding: 25px;
+    padding: 27px;
 
-    border-radius: 24px;
+    border-radius: 25px;
+
+    overflow: hidden;
 
     background:
         radial-gradient(
             circle at top right,
-            rgba(168, 85, 247, 0.18),
-            transparent 38%
+            rgba(168, 85, 247, 0.19),
+            transparent 40%
         ),
         linear-gradient(
             135deg,
-            rgba(25, 33, 47, 0.97),
-            rgba(15, 21, 30, 0.97)
+            rgba(25, 33, 47, 0.98),
+            rgba(15, 21, 30, 0.98)
         );
 
     border:
-        1px solid
-        rgba(168, 85, 247, 0.20);
+        1px solid rgba(
+            168,
+            85,
+            247,
+            0.21
+        );
 }
 
-
-/* ==========================================================
-   REPORT LABEL
-   ========================================================== */
 
 .bp-report-source {
     display: inline-flex;
 
-    gap: 7px;
+    flex-wrap: wrap;
 
     align-items: center;
 
-    padding:
-        6px 10px;
+    gap: 6px;
 
-    border-radius: 8px;
+    padding: 6px 10px;
+
+    border-radius: 9px;
 
     background:
-        rgba(255, 255, 255, 0.05);
+        rgba(
+            255,
+            255,
+            255,
+            0.05
+        );
 
-    color: #A5B0C0;
+    color: #A8B2C1;
 
     font-size: 11px;
+
+    overflow-wrap: anywhere;
 }
 
 
 /* ==========================================================
-   NATIVE STREAMLIT
+   STREAMLIT COMPONENTS
    ========================================================== */
 
 header[data-testid="stHeader"] {
     background: transparent;
-}
-
-
-[data-testid="stDataFrame"] {
-    border-radius: 16px;
-
-    overflow: hidden;
-}
-
-
-[data-testid="stFileUploader"] {
-    border-radius: 18px;
 }
 
 
@@ -821,18 +1025,23 @@ button[data-baseweb="tab"] {
 }
 
 
-/* Primary buttons */
+[data-testid="stDataFrame"] {
+    overflow: hidden;
 
-div[data-testid="stButton"] > button[kind="primary"] {
+    border-radius: 16px;
+}
+
+
+div[data-testid="stButton"]
+> button[kind="primary"] {
     border-radius: 12px;
 
     font-weight: 750;
 }
 
 
-/* Download buttons */
-
-div[data-testid="stDownloadButton"] > button {
+div[data-testid="stDownloadButton"]
+> button {
     border-radius: 12px;
 
     font-weight: 700;
@@ -844,17 +1053,19 @@ div[data-testid="stDownloadButton"] > button {
 
 
 # ============================================================
-# HELPERS
+# HELPER FUNCTIONS
 # ============================================================
 
 def section_header(
-    kicker: str,
-    title: str,
-    text: str,
+    kicker,
+    title,
+    text,
 ):
+
     st.html(
         f"""
 <div class="bp-section">
+
     <div class="bp-section-kicker">
         {kicker}
     </div>
@@ -866,20 +1077,23 @@ def section_header(
     <div class="bp-section-text">
         {text}
     </div>
+
 </div>
 """
     )
 
 
 def kpi_card(
-    label: str,
-    value: str,
-    note: str,
-    css_class: str,
+    label,
+    value,
+    note,
+    css_class,
 ):
+
     st.html(
         f"""
 <div class="bp-kpi {css_class}">
+
     <div class="bp-kpi-label">
         {label}
     </div>
@@ -891,90 +1105,100 @@ def kpi_card(
     <div class="bp-kpi-note">
         {note}
     </div>
+
 </div>
 """
     )
 
 
-def manager_visual(
-    manager_name: str,
-):
-    visuals = {
-        "Technical Manager": {
-            "emoji": "🛠️",
-            "avatar": "avatar-tech",
-            "short": "Technical reliability & performance",
-        },
-
-        "Product Manager": {
-            "emoji": "🧩",
-            "avatar": "avatar-product",
-            "short": "Product features & user experience",
-        },
-
-        "Customer Service Manager": {
-            "emoji": "🎧",
-            "avatar": "avatar-service",
-            "short": "Customer complaints & service recovery",
-        },
-
-        "Marketing Manager": {
-            "emoji": "📣",
-            "avatar": "avatar-marketing",
-            "short": "Brand perception & communication",
-        },
-
-        "Subscription Manager": {
-            "emoji": "💳",
-            "avatar": "avatar-subscription",
-            "short": "Pricing, billing & subscription value",
-        },
-    }
-
-    return visuals[
-        manager_name
-    ]
-
-
 def get_reputation_status(
-    score: float,
+    score,
 ):
+
     if score >= 80:
         return (
-            "Very Positive",
+            "Very Positive Brand Reputation",
             "🟢",
             "#1ED760",
         )
 
     if score >= 60:
         return (
-            "Positive",
+            "Positive Brand Reputation",
             "🟢",
             "#52E9A8",
         )
 
     if score >= 40:
         return (
-            "Mixed",
+            "Mixed Brand Reputation",
             "🟡",
             "#FACC15",
         )
 
     if score >= 20:
         return (
-            "Negative",
+            "Negative Brand Reputation",
             "🔴",
             "#FB923C",
         )
 
     return (
-        "Very Negative",
+        "Very Negative Brand Reputation",
         "🔴",
         "#FB7185",
     )
 
 
+def get_manager_visual(
+    manager_name,
+):
+
+    manager_styles = {
+
+        "Technical Manager": {
+            "emoji": "🛠️",
+            "avatar": "avatar-tech",
+            "short":
+                "Technical reliability, stability and performance",
+        },
+
+        "Product Manager": {
+            "emoji": "🧩",
+            "avatar": "avatar-product",
+            "short":
+                "Product experience, features and usability",
+        },
+
+        "Customer Service Manager": {
+            "emoji": "🎧",
+            "avatar": "avatar-service",
+            "short":
+                "Customer complaints, satisfaction and recovery",
+        },
+
+        "Marketing Manager": {
+            "emoji": "📣",
+            "avatar": "avatar-marketing",
+            "short":
+                "Brand perception, communication and positioning",
+        },
+
+        "Subscription Manager": {
+            "emoji": "💳",
+            "avatar": "avatar-subscription",
+            "short":
+                "Pricing, Premium, billing and customer value",
+        },
+    }
+
+    return manager_styles[
+        manager_name
+    ]
+
+
 def reset_management_reports():
+
     st.session_state[
         "manager_reports"
     ] = {}
@@ -992,6 +1216,7 @@ if (
     "prediction_results"
     not in st.session_state
 ):
+
     st.session_state[
         "prediction_results"
     ] = None
@@ -1001,6 +1226,7 @@ if (
     "analysis_summary"
     not in st.session_state
 ):
+
     st.session_state[
         "analysis_summary"
     ] = None
@@ -1010,6 +1236,7 @@ if (
     "manager_reports"
     not in st.session_state
 ):
+
     st.session_state[
         "manager_reports"
     ] = {}
@@ -1019,6 +1246,7 @@ if (
     "executive_report"
     not in st.session_state
 ):
+
     st.session_state[
         "executive_report"
     ] = None
@@ -1032,35 +1260,39 @@ with st.sidebar:
 
     st.html(
         """
-<div class="bp-side-brand">
+<div class="bp-sidebar-brand">
     🎧 BrandPulse AI
 </div>
 
-<div class="bp-side-sub">
-    Reputation Intelligence Platform
+<div class="bp-sidebar-subtitle">
+    Brand Reputation Intelligence Platform
 </div>
 """
     )
+
 
     st.divider()
 
 
     st.html(
         """
-<div class="bp-label">
+<div class="bp-small-label">
     PREDICTIVE AI
 </div>
 """
     )
 
+
     st.markdown(
         "### 🧠 DistilBERT"
     )
 
+
     st.caption(
-        "Binary Spotify review "
-        "sentiment classification"
+        "Binary sentiment classification "
+        "for Spotify customer reviews."
     )
+
 
     st.html(
         """
@@ -1076,11 +1308,12 @@ with st.sidebar:
 
     st.html(
         """
-<div class="bp-label">
+<div class="bp-small-label">
     GENERATIVE AI
 </div>
 """
     )
+
 
     st.write(
         "✨ Gemini"
@@ -1096,11 +1329,12 @@ with st.sidebar:
 
     st.html(
         """
-<div class="bp-label">
-    SENTIMENT CLASSES
+<div class="bp-small-label">
+    CLASSIFICATION
 </div>
 """
     )
+
 
     st.write(
         "🟢 Positive"
@@ -1116,11 +1350,12 @@ with st.sidebar:
 
     st.html(
         """
-<div class="bp-label">
+<div class="bp-small-label">
     INTELLIGENCE FLOW
 </div>
 """
     )
+
 
     st.markdown(
         """
@@ -1128,7 +1363,7 @@ with st.sidebar:
 
 **02** · DistilBERT Prediction
 
-**03** · Reputation Analysis
+**03** · Reputation Analytics
 
 **04** · Issue Intelligence
 
@@ -1146,10 +1381,10 @@ with st.sidebar:
         "Final Year Project"
     )
 
+
     st.caption(
-        "Online Review-Based "
-        "Brand Reputation Prediction "
-        "Using NLP Techniques"
+        "Online Review-Based Brand Reputation "
+        "Prediction Using NLP Techniques"
     )
 
 
@@ -1161,31 +1396,55 @@ st.html(
     """
 <div class="bp-hero">
 
-    <div class="bp-orb-1"></div>
-    <div class="bp-orb-2"></div>
+    <div class="bp-orb-one"></div>
+
+    <div class="bp-orb-two"></div>
 
     <div class="bp-badge">
         ✦ AI-POWERED BRAND INTELLIGENCE
     </div>
 
     <div class="bp-title">
-        Brand<span class="bp-title-gradient">Pulse AI</span>
+
+        Brand<span class="bp-gradient-text">Pulse AI</span>
+
     </div>
 
     <p class="bp-subtitle">
-        Turn Spotify customer reviews into decision-ready
-        brand intelligence. DistilBERT identifies sentiment,
-        analytical modules expose reputation issues, and
-        role-based Gemini and OpenRouter managers translate
-        the evidence into departmental improvement strategies.
+
+        Turn Spotify customer reviews into
+        decision-ready brand intelligence.
+        DistilBERT identifies sentiment,
+        analytical modules reveal reputation
+        issues, and role-based Gemini and
+        OpenRouter managers transform the
+        evidence into departmental improvement
+        strategies.
+
     </p>
 
-    <div class="bp-stack">
-        <span class="bp-chip">🧠 DistilBERT</span>
-        <span class="bp-chip">✨ Gemini</span>
-        <span class="bp-chip">🌐 OpenRouter Free</span>
-        <span class="bp-chip">📊 Brand Analytics</span>
-        <span class="bp-chip">🤖 Multi-Agent Management</span>
+    <div class="bp-tech-stack">
+
+        <span class="bp-chip">
+            🧠 DistilBERT
+        </span>
+
+        <span class="bp-chip">
+            ✨ Gemini
+        </span>
+
+        <span class="bp-chip">
+            🌐 OpenRouter Free
+        </span>
+
+        <span class="bp-chip">
+            📊 Reputation Analytics
+        </span>
+
+        <span class="bp-chip">
+            🤖 Management Council
+        </span>
+
     </div>
 
 </div>
@@ -1194,10 +1453,10 @@ st.html(
 
 
 # ============================================================
-# FEATURE STRIP
+# FEATURE CARDS
 # ============================================================
 
-feature_1, feature_2, feature_3, feature_4 = (
+feature_one, feature_two, feature_three, feature_four = (
     st.columns(
         4,
         gap="medium",
@@ -1205,96 +1464,111 @@ feature_1, feature_2, feature_3, feature_4 = (
 )
 
 
-with feature_1:
+with feature_one:
+
     st.html(
         """
-<div class="bp-card">
+<div class="bp-feature-card">
 
-    <div class="bp-card-icon icon-green">
+    <div class="bp-feature-icon feature-green">
         🧠
     </div>
 
-    <div class="bp-card-title">
+    <div class="bp-feature-title">
         Predictive Intelligence
     </div>
 
-    <div class="bp-card-text">
-        Your trained DistilBERT model classifies
-        individual and batch Spotify reviews as
-        positive or negative.
-    </div>
+    <p class="bp-feature-text">
+
+        Your trained DistilBERT model
+        classifies individual and batch
+        Spotify reviews as positive or
+        negative sentiment.
+
+    </p>
 
 </div>
 """
     )
 
 
-with feature_2:
+with feature_two:
+
     st.html(
         """
-<div class="bp-card">
+<div class="bp-feature-card">
 
-    <div class="bp-card-icon icon-blue">
+    <div class="bp-feature-icon feature-blue">
         📊
     </div>
 
-    <div class="bp-card-title">
+    <div class="bp-feature-title">
         Reputation Analytics
     </div>
 
-    <div class="bp-card-text">
-        Sentiment predictions become brand-level
-        indicators, issue distributions and
-        customer-voice intelligence.
-    </div>
+    <p class="bp-feature-text">
+
+        Sentiment predictions become
+        brand-level indicators, issue
+        distributions and customer-voice
+        intelligence.
+
+    </p>
 
 </div>
 """
     )
 
 
-with feature_3:
+with feature_three:
+
     st.html(
         """
-<div class="bp-card">
+<div class="bp-feature-card">
 
-    <div class="bp-card-icon icon-purple">
+    <div class="bp-feature-icon feature-purple">
         🤖
     </div>
 
-    <div class="bp-card-title">
+    <div class="bp-feature-title">
         AI Management Council
     </div>
 
-    <div class="bp-card-text">
-        Five department managers analyse the same
-        evidence through different organisational
-        responsibilities.
-    </div>
+    <p class="bp-feature-text">
+
+        Five department managers analyse
+        the same evidence through different
+        organisational responsibilities.
+
+    </p>
 
 </div>
 """
     )
 
 
-with feature_4:
+with feature_four:
+
     st.html(
         """
-<div class="bp-card">
+<div class="bp-feature-card">
 
-    <div class="bp-card-icon icon-pink">
+    <div class="bp-feature-icon feature-pink">
         👔
     </div>
 
-    <div class="bp-card-title">
+    <div class="bp-feature-title">
         Executive Intelligence
     </div>
 
-    <div class="bp-card-text">
-        Gemini consolidates departmental findings
-        into prioritised organisation-wide actions
-        and measurable KPIs.
-    </div>
+    <p class="bp-feature-text">
+
+        Gemini consolidates departmental
+        findings into prioritised
+        organisation-wide actions and
+        measurable KPIs.
+
+    </p>
 
 </div>
 """
@@ -1305,7 +1579,7 @@ st.write("")
 
 
 # ============================================================
-# MAIN TABS
+# MAIN NAVIGATION
 # ============================================================
 
 (
@@ -1334,12 +1608,13 @@ with single_tab:
         "Single Review Intelligence",
         (
             "Enter one Spotify review and inspect "
-            "the deployed DistilBERT prediction."
+            "the prediction produced by your "
+            "deployed DistilBERT model."
         ),
     )
 
 
-    input_column, output_column = (
+    input_column, prediction_column = (
         st.columns(
             [1.55, 1],
             gap="large",
@@ -1350,16 +1625,17 @@ with single_tab:
     with input_column:
 
         with st.container(
-            border=True,
+            border=True
         ):
 
             st.markdown(
                 "### ✍️ Customer Review"
             )
 
+
             review_text = (
                 st.text_area(
-                    "Review",
+                    "Customer review",
                     placeholder=(
                         "Example: The latest Spotify "
                         "update keeps crashing and "
@@ -1369,6 +1645,7 @@ with single_tab:
                     label_visibility="collapsed",
                 )
             )
+
 
             st.caption(
                 "Enter an English-language "
@@ -1386,10 +1663,10 @@ with single_tab:
             )
 
 
-    with output_column:
+    with prediction_column:
 
         with st.container(
-            border=True,
+            border=True
         ):
 
             st.markdown(
@@ -1400,7 +1677,7 @@ with single_tab:
             if not analyse_single:
 
                 st.info(
-                    "Your DistilBERT result "
+                    "The DistilBERT prediction "
                     "will appear here."
                 )
 
@@ -1430,9 +1707,11 @@ with single_tab:
 
 
                     sentiment = (
-                        result[
-                            "sentiment"
-                        ]
+                        str(
+                            result[
+                                "sentiment"
+                            ]
+                        )
                         .strip()
                         .lower()
                     )
@@ -1476,8 +1755,8 @@ with single_tab:
                         st.write(
                             "The review contains "
                             "customer dissatisfaction "
-                            "that may affect brand "
-                            "perception."
+                            "that may negatively "
+                            "influence brand perception."
                         )
 
 
@@ -1501,15 +1780,14 @@ with single_tab:
                                 1.0,
                                 confidence / 100,
                             ),
-                        ),
-                        width="stretch",
+                        )
                     )
 
 
                     st.caption(
                         "Confidence is the model's "
-                        "output probability, not a "
-                        "guarantee of correctness."
+                        "output probability and does "
+                        "not guarantee correctness."
                     )
 
 
@@ -1535,14 +1813,14 @@ with batch_tab:
         "BATCH ANALYSIS",
         "Customer Review Intelligence",
         (
-            "Upload CSV or XLSX reviews, run "
-            "DistilBERT in batches and generate "
-            "brand-level analytical evidence."
+            "Upload CSV or Excel reviews, "
+            "run DistilBERT in batches and "
+            "generate brand-level evidence."
         ),
     )
 
 
-    upload_column, guide_column = (
+    upload_column, format_column = (
         st.columns(
             [1.55, 1],
             gap="large",
@@ -1553,12 +1831,13 @@ with batch_tab:
     with upload_column:
 
         with st.container(
-            border=True,
+            border=True
         ):
 
             st.markdown(
                 "### 📂 Upload Review Dataset"
             )
+
 
             uploaded_file = (
                 st.file_uploader(
@@ -1571,25 +1850,29 @@ with batch_tab:
                 )
             )
 
+
             st.caption(
                 "Supported formats: CSV and XLSX."
             )
 
 
-    with guide_column:
+    with format_column:
 
         with st.container(
-            border=True,
+            border=True
         ):
 
             st.markdown(
                 "### 📌 Expected Format"
             )
 
+
             st.write(
-                "Your file needs at least "
-                "one review-text column."
+                "Your dataset needs at least "
+                "one text column containing "
+                "customer reviews."
             )
+
 
             st.code(
                 "review_text\n"
@@ -1603,13 +1886,13 @@ with batch_tab:
 
         try:
 
-            filename = (
+            file_name = (
                 uploaded_file.name
                 .lower()
             )
 
 
-            if filename.endswith(
+            if file_name.endswith(
                 ".csv"
             ):
 
@@ -1632,7 +1915,7 @@ with batch_tab:
             st.write("")
 
 
-            dataset_left, dataset_right = (
+            preview_column, information_column = (
                 st.columns(
                     [3, 1],
                     gap="medium",
@@ -1640,11 +1923,12 @@ with batch_tab:
             )
 
 
-            with dataset_left:
+            with preview_column:
 
                 st.markdown(
                     "### Dataset Preview"
                 )
+
 
                 st.dataframe(
                     uploaded_df.head(10),
@@ -1653,16 +1937,18 @@ with batch_tab:
                 )
 
 
-            with dataset_right:
+            with information_column:
 
                 st.markdown(
                     "### Dataset"
                 )
 
+
                 st.metric(
                     "Rows",
                     f"{len(uploaded_df):,}",
                 )
+
 
                 st.metric(
                     "Columns",
@@ -1713,17 +1999,17 @@ with batch_tab:
             )
 
 
-            run_batch = (
+            run_analysis = (
                 st.button(
                     "🚀 Run Brand Intelligence Analysis",
                     type="primary",
                     width="stretch",
-                    key="run_batch",
+                    key="run_batch_analysis",
                 )
             )
 
 
-            if run_batch:
+            if run_analysis:
 
                 if (
                     len(valid_reviews)
@@ -1731,8 +2017,7 @@ with batch_tab:
                 ):
 
                     st.warning(
-                        "No valid reviews "
-                        "were found."
+                        "No valid reviews found."
                     )
 
 
@@ -1741,7 +2026,10 @@ with batch_tab:
                     try:
 
                         with st.status(
-                            "Launching BrandPulse analysis...",
+                            (
+                                "Launching BrandPulse "
+                                "analysis..."
+                            ),
                             expanded=True,
                         ) as status:
 
@@ -1767,7 +2055,7 @@ with batch_tab:
 
 
                             st.write(
-                                "📊 Calculating "
+                                "📊 Calculating brand "
                                 "reputation indicators..."
                             )
 
@@ -1783,8 +2071,8 @@ with batch_tab:
 
 
                             st.write(
-                                "🔎 Mapping negative "
-                                "review issue categories..."
+                                "🔎 Identifying customer "
+                                "issue categories..."
                             )
 
 
@@ -1798,8 +2086,9 @@ with batch_tab:
                             ] = summary
 
 
-                            # Important:
-                            # New dataset = old reports invalid.
+                            # A new dataset means all
+                            # previous LLM reports become
+                            # invalid.
                             reset_management_reports()
 
 
@@ -1833,8 +2122,8 @@ with batch_tab:
         except Exception as error:
 
             st.error(
-                "The uploaded file could "
-                "not be read."
+                "The uploaded file "
+                "could not be read."
             )
 
             st.exception(
@@ -1843,7 +2132,7 @@ with batch_tab:
 
 
     # --------------------------------------------------------
-    # BATCH RESULTS
+    # PREDICTION TABLE
     # --------------------------------------------------------
 
     if (
@@ -1861,7 +2150,8 @@ with batch_tab:
             "Prediction Intelligence",
             (
                 "Review-level DistilBERT "
-                "predictions and detected issues."
+                "predictions and customer "
+                "issue classifications."
             ),
         )
 
@@ -1869,7 +2159,8 @@ with batch_tab:
         display_results = (
             st.session_state[
                 "prediction_results"
-            ].copy()
+            ]
+            .copy()
         )
 
 
@@ -1907,19 +2198,10 @@ with batch_tab:
             display_results,
             width="stretch",
             hide_index=True,
-            column_config={
-                "Confidence (%)":
-                    st.column_config.ProgressColumn(
-                        "Confidence (%)",
-                        min_value=0,
-                        max_value=100,
-                        format="%.2f%%",
-                    ),
-            },
         )
 
 
-        export_csv = (
+        csv_output = (
             display_results
             .to_csv(
                 index=False
@@ -1932,7 +2214,7 @@ with batch_tab:
 
         st.download_button(
             "⬇️ Download Prediction Results",
-            data=export_csv,
+            data=csv_output,
             file_name=(
                 "brandpulse_prediction_results.csv"
             ),
@@ -1952,7 +2234,7 @@ with dashboard_tab:
         "Brand Reputation Dashboard",
         (
             "Explore aggregated sentiment, "
-            "customer issues and review-language "
+            "customer issues and customer-language "
             "patterns generated from the current dataset."
         ),
     )
@@ -1968,7 +2250,7 @@ with dashboard_tab:
     if summary is None:
 
         with st.container(
-            border=True,
+            border=True
         ):
 
             st.info(
@@ -1990,7 +2272,7 @@ with dashboard_tab:
         # KPI CARDS
         # ----------------------------------------------------
 
-        kpi_1, kpi_2, kpi_3, kpi_4 = (
+        metric_one, metric_two, metric_three, metric_four = (
             st.columns(
                 4,
                 gap="medium",
@@ -1998,17 +2280,17 @@ with dashboard_tab:
         )
 
 
-        with kpi_1:
+        with metric_one:
 
             kpi_card(
                 "REVIEWS ANALYSED",
                 f"{summary['total_reviews']:,}",
-                "Current analysis dataset",
+                "Current uploaded dataset",
                 "kpi-blue",
             )
 
 
-        with kpi_2:
+        with metric_two:
 
             kpi_card(
                 "POSITIVE REVIEWS",
@@ -2021,7 +2303,7 @@ with dashboard_tab:
             )
 
 
-        with kpi_3:
+        with metric_three:
 
             kpi_card(
                 "NEGATIVE REVIEWS",
@@ -2034,7 +2316,7 @@ with dashboard_tab:
             )
 
 
-        with kpi_4:
+        with metric_four:
 
             kpi_card(
                 "REPUTATION SCORE",
@@ -2052,8 +2334,8 @@ with dashboard_tab:
         # ----------------------------------------------------
 
         (
-            reputation_name,
-            reputation_emoji,
+            reputation_label,
+            reputation_icon,
             reputation_color,
         ) = get_reputation_status(
             score
@@ -2062,18 +2344,20 @@ with dashboard_tab:
 
         st.html(
             f"""
-<div class="bp-reputation">
+<div class="bp-reputation-panel">
 
-    <div class="bp-rep-label">
+    <div class="bp-reputation-label">
         CURRENT BRAND REPUTATION
     </div>
 
     <div
-        class="bp-rep-title"
-        style="color:{reputation_color};"
+        class="bp-reputation-title"
+        style="
+            color:{reputation_color};
+        "
     >
-        {reputation_emoji}
-        {reputation_name}
+        {reputation_icon}
+        {reputation_label}
     </div>
 
 </div>
@@ -2088,8 +2372,7 @@ with dashboard_tab:
                     1.0,
                     score / 100,
                 ),
-            ),
-            width="stretch",
+            )
         )
 
 
@@ -2111,7 +2394,7 @@ with dashboard_tab:
         with sentiment_column:
 
             with st.container(
-                border=True,
+                border=True
             ):
 
                 st.markdown(
@@ -2141,7 +2424,7 @@ with dashboard_tab:
                 )
 
 
-                sentiment_chart = (
+                sentiment_figure = (
                     px.pie(
                         sentiment_df,
                         names="Sentiment",
@@ -2159,36 +2442,34 @@ with dashboard_tab:
                 )
 
 
-                sentiment_chart.update_traces(
+                sentiment_figure.update_traces(
                     textposition="inside",
                     textinfo="percent+label",
-                    hovertemplate=(
-                        "<b>%{label}</b>"
-                        "<br>Reviews: %{value}"
-                        "<br>Share: %{percent}"
-                        "<extra></extra>"
-                    ),
                 )
 
 
-                sentiment_chart.update_layout(
+                sentiment_figure.update_layout(
                     margin=dict(
-                        l=10,
-                        r=10,
+                        l=5,
+                        r=5,
                         t=10,
-                        b=10,
+                        b=5,
                     ),
 
                     legend_title_text="",
 
-                    paper_bgcolor="rgba(0,0,0,0)",
+                    paper_bgcolor=(
+                        "rgba(0,0,0,0)"
+                    ),
 
-                    plot_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor=(
+                        "rgba(0,0,0,0)"
+                    ),
                 )
 
 
                 st.plotly_chart(
-                    sentiment_chart,
+                    sentiment_figure,
                     width="stretch",
                 )
 
@@ -2196,7 +2477,7 @@ with dashboard_tab:
         with issue_column:
 
             with st.container(
-                border=True,
+                border=True
             ):
 
                 st.markdown(
@@ -2235,15 +2516,14 @@ with dashboard_tab:
 
 
                     issue_df = (
-                        issue_df
-                        .sort_values(
+                        issue_df.sort_values(
                             "Mentions",
                             ascending=True,
                         )
                     )
 
 
-                    issue_chart = (
+                    issue_figure = (
                         px.bar(
                             issue_df,
                             x="Mentions",
@@ -2259,24 +2539,28 @@ with dashboard_tab:
                     )
 
 
-                    issue_chart.update_layout(
+                    issue_figure.update_layout(
                         coloraxis_showscale=False,
 
                         margin=dict(
-                            l=10,
-                            r=10,
+                            l=5,
+                            r=5,
                             t=10,
-                            b=10,
+                            b=5,
                         ),
 
-                        paper_bgcolor="rgba(0,0,0,0)",
+                        paper_bgcolor=(
+                            "rgba(0,0,0,0)"
+                        ),
 
-                        plot_bgcolor="rgba(0,0,0,0)",
+                        plot_bgcolor=(
+                            "rgba(0,0,0,0)"
+                        ),
                     )
 
 
                     st.plotly_chart(
-                        issue_chart,
+                        issue_figure,
                         width="stretch",
                     )
 
@@ -2284,8 +2568,7 @@ with dashboard_tab:
                 else:
 
                     st.success(
-                        "No negative issue "
-                        "categories were detected."
+                        "No issue categories detected."
                     )
 
 
@@ -2318,7 +2601,7 @@ with dashboard_tab:
         with positive_column:
 
             with st.container(
-                border=True,
+                border=True
             ):
 
                 st.markdown(
@@ -2335,9 +2618,7 @@ with dashboard_tab:
                 )
 
 
-                if (
-                    not positive_words.empty
-                ):
+                if not positive_words.empty:
 
                     positive_words.rename(
                         columns={
@@ -2369,7 +2650,7 @@ with dashboard_tab:
         with negative_column:
 
             with st.container(
-                border=True,
+                border=True
             ):
 
                 st.markdown(
@@ -2386,9 +2667,7 @@ with dashboard_tab:
                 )
 
 
-                if (
-                    not negative_words.empty
-                ):
+                if not negative_words.empty:
 
                     negative_words.rename(
                         columns={
@@ -2418,7 +2697,7 @@ with dashboard_tab:
 
 
         # ----------------------------------------------------
-        # REVIEWS REQUIRING ATTENTION
+        # NEGATIVE REVIEW EXAMPLES
         # ----------------------------------------------------
 
         st.write("")
@@ -2429,26 +2708,26 @@ with dashboard_tab:
             "Reviews Requiring Attention",
             (
                 "Representative negative reviews "
-                "that can help management understand "
-                "the issues behind the aggregate metrics."
+                "help management understand the "
+                "customer concerns behind the metrics."
             ),
         )
 
 
-        negative_samples = (
+        negative_reviews = (
             summary[
                 "sample_negative_reviews"
             ]
         )
 
 
-        if negative_samples:
+        if negative_reviews:
 
             for (
                 review_number,
                 review,
             ) in enumerate(
-                negative_samples,
+                negative_reviews,
                 start=1,
             ):
 
@@ -2467,8 +2746,7 @@ with dashboard_tab:
         else:
 
             st.success(
-                "No negative reviews "
-                "were detected."
+                "No negative reviews detected."
             )
 
 
@@ -2477,8 +2755,8 @@ with dashboard_tab:
             "project-defined indicator calculated "
             "from the proportion of positive "
             "DistilBERT predictions. It is not "
-            "presented as a universal industry "
-            "brand-reputation metric."
+            "a universal industry brand-reputation "
+            "metric."
         )
 
 
@@ -2492,10 +2770,9 @@ with management_tab:
         "GENERATIVE AI",
         "AI Management Council",
         (
-            "Five role-based managers interpret "
-            "the structured brand-reputation "
-            "evidence from different departmental "
-            "perspectives."
+            "Five role-based AI managers analyse "
+            "the structured reputation evidence "
+            "from different organisational perspectives."
         ),
     )
 
@@ -2510,12 +2787,12 @@ with management_tab:
     if summary is None:
 
         with st.container(
-            border=True,
+            border=True
         ):
 
             st.warning(
                 "Run **Batch Intelligence** first. "
-                "The managers require structured "
+                "The AI managers require structured "
                 "brand-reputation evidence."
             )
 
@@ -2523,76 +2800,79 @@ with management_tab:
     else:
 
         # ----------------------------------------------------
-        # MANAGEMENT ARCHITECTURE
+        # ARCHITECTURE
         # ----------------------------------------------------
 
-        with st.container(
-            border=True,
-        ):
-
-            architecture_left, architecture_right = (
-                st.columns(
-                    [1.45, 1],
-                    gap="large",
-                )
+        architecture_text, architecture_table = (
+            st.columns(
+                [1.45, 1],
+                gap="large",
             )
+        )
 
 
-            with architecture_left:
+        with architecture_text:
+
+            with st.container(
+                border=True
+            ):
 
                 st.markdown(
                     "### 🏢 Council Architecture"
                 )
 
+
                 st.write(
-                    "The managers receive the same "
-                    "analysis summary, but each role "
-                    "is instructed to focus on its "
-                    "own organisational responsibilities."
+                    "All managers receive the same "
+                    "brand-reputation summary. "
+                    "Different role instructions "
+                    "make each manager analyse the "
+                    "evidence from its own "
+                    "departmental responsibility."
                 )
 
 
-            with architecture_right:
+        with architecture_table:
 
-                architecture_df = (
-                    pd.DataFrame(
-                        [
-                            {
-                                "Manager":
-                                    manager,
-
-                                "Provider":
-                                    (
-                                        "Gemini"
-                                        if provider
-                                        == "gemini"
-                                        else
-                                        "OpenRouter Free"
-                                    ),
-                            }
-
-                            for (
+            architecture_df = (
+                pd.DataFrame(
+                    [
+                        {
+                            "Manager":
                                 manager,
-                                provider,
-                            )
-                            in MANAGER_PROVIDERS.items()
-                        ]
-                    )
+
+                            "Provider":
+                                (
+                                    "Gemini"
+                                    if provider
+                                    == "gemini"
+                                    else
+                                    "OpenRouter Free"
+                                ),
+                        }
+
+                        for (
+                            manager,
+                            provider,
+                        )
+                        in MANAGER_PROVIDERS.items()
+                    ]
                 )
+            )
 
 
-                st.dataframe(
-                    architecture_df,
-                    width="stretch",
-                    hide_index=True,
-                )
+            st.dataframe(
+                architecture_df,
+                width="stretch",
+                hide_index=True,
+            )
 
 
         # ----------------------------------------------------
-        # COUNCIL PROGRESS
+        # PROGRESS
         # ----------------------------------------------------
 
-        completed_count = len(
+        completed_reports = len(
             st.session_state[
                 "manager_reports"
             ]
@@ -2605,7 +2885,7 @@ with management_tab:
 
 
         completion_ratio = (
-            completed_count
+            completed_reports
             / total_managers
         )
 
@@ -2613,7 +2893,7 @@ with management_tab:
         st.write("")
 
 
-        progress_left, progress_right = (
+        progress_column, progress_metric = (
             st.columns(
                 [3, 1],
                 gap="medium",
@@ -2621,35 +2901,36 @@ with management_tab:
         )
 
 
-        with progress_left:
+        with progress_column:
 
             st.markdown(
-                "### 📋 Council Progress"
+                "### 📋 Management Council Progress"
             )
 
+
             st.progress(
-                completion_ratio,
-                width="stretch",
+                completion_ratio
             )
+
 
             st.caption(
                 (
-                    f"{completed_count} of "
+                    f"{completed_reports} of "
                     f"{total_managers} department "
-                    "reports generated."
+                    "reports completed."
                 )
             )
 
 
-        with progress_right:
+        with progress_metric:
 
             kpi_card(
                 "REPORTS READY",
                 (
-                    f"{completed_count}"
+                    f"{completed_reports}"
                     f"/{total_managers}"
                 ),
-                "AI Council completion",
+                "Council completion",
                 "kpi-purple",
             )
 
@@ -2658,7 +2939,7 @@ with management_tab:
 
 
         # ----------------------------------------------------
-        # MANAGER TABS
+        # DEPARTMENT TABS
         # ----------------------------------------------------
 
         (
@@ -2678,7 +2959,7 @@ with management_tab:
         )
 
 
-        manager_tab_map = {
+        manager_tabs = {
             "Technical Manager":
                 technical_tab,
 
@@ -2696,84 +2977,71 @@ with management_tab:
         }
 
 
-        # ----------------------------------------------------
-        # EACH MANAGER
-        # ----------------------------------------------------
-
         for (
             manager_name,
             manager_tab,
-        ) in manager_tab_map.items():
+        ) in manager_tabs.items():
 
             with manager_tab:
 
                 visual = (
-                    manager_visual(
+                    get_manager_visual(
                         manager_name
                     )
                 )
 
 
-                provider_key = (
+                provider = (
                     MANAGER_PROVIDERS[
                         manager_name
                     ]
                 )
 
 
-                if (
-                    provider_key
-                    == "gemini"
-                ):
+                if provider == "gemini":
 
-                    provider_name = (
-                        "Gemini"
+                    provider_label = (
+                        "✨ Gemini"
                     )
 
                     provider_css = (
                         "provider-gemini"
                     )
 
-                    provider_emoji = (
-                        "✨"
-                    )
-
 
                 else:
 
-                    provider_name = (
-                        "OpenRouter Free"
+                    provider_label = (
+                        "🌐 OpenRouter Free"
                     )
 
                     provider_css = (
                         "provider-openrouter"
                     )
 
-                    provider_emoji = (
-                        "🌐"
-                    )
-
 
                 st.html(
                     f"""
-<div class="bp-manager">
+<div class="bp-manager-profile">
 
     <div class="bp-manager-top">
 
         <div
-            class="bp-avatar
-                   {visual['avatar']}"
+            class="
+                bp-avatar
+                {visual['avatar']}
+            "
         >
             {visual['emoji']}
         </div>
 
         <div>
 
-            <div class="bp-manager-title">
+            <div class="bp-manager-name">
                 {manager_name}
             </div>
 
-            <div class="bp-manager-provider">
+            <div class="bp-manager-short">
                 {visual['short']}
             </div>
 
@@ -2782,11 +3050,12 @@ with management_tab:
     </div>
 
     <span
-        class="bp-provider
-               {provider_css}"
+        class="
+            bp-provider
+            {provider_css}
+        "
     >
-        {provider_emoji}
-        {provider_name}
+        {provider_label}
     </span>
 
 </div>
@@ -2805,7 +3074,7 @@ with management_tab:
                     )
 
 
-                button_key = (
+                manager_button_key = (
                     "generate_"
                     + manager_name
                     .lower()
@@ -2823,7 +3092,7 @@ with management_tab:
                     ),
                     type="primary",
                     width="stretch",
-                    key=button_key,
+                    key=manager_button_key,
                 ):
 
                     try:
@@ -2831,7 +3100,8 @@ with management_tab:
                         with st.status(
                             (
                                 f"{manager_name} "
-                                "is analysing the evidence..."
+                                "is analysing "
+                                "the evidence..."
                             ),
                             expanded=True,
                         ) as status:
@@ -2841,19 +3111,22 @@ with management_tab:
                                 "statistics..."
                             )
 
+
                             st.write(
                                 "🔎 Reviewing relevant "
                                 "customer issues..."
                             )
 
+
                             st.write(
                                 "🧠 Interpreting findings "
-                                "from the department "
+                                "from the departmental "
                                 "perspective..."
                             )
 
+
                             st.write(
-                                "💡 Building actionable "
+                                "💡 Developing actionable "
                                 "recommendations..."
                             )
 
@@ -2873,9 +3146,9 @@ with management_tab:
                             ] = report
 
 
-                            # Existing executive report
-                            # becomes outdated when any
-                            # department report changes.
+                            # Any change to a department
+                            # report invalidates an older
+                            # executive report.
                             st.session_state[
                                 "executive_report"
                             ] = None
@@ -2915,7 +3188,7 @@ with management_tab:
 
 
                 # --------------------------------------------
-                # DISPLAY REPORT
+                # EXISTING MANAGER REPORT
                 # --------------------------------------------
 
                 manager_report = (
@@ -2933,7 +3206,7 @@ with management_tab:
 
 
                     with st.container(
-                        border=True,
+                        border=True
                     ):
 
                         report_provider = (
@@ -2955,9 +3228,15 @@ with management_tab:
                         st.html(
                             f"""
 <div class="bp-report-source">
-    🤖 Provider: {report_provider}
-    &nbsp;&nbsp;•&nbsp;&nbsp;
-    Model: {report_model}
+
+    🤖 Provider:
+    {report_provider}
+
+    &nbsp;•&nbsp;
+
+    Model:
+    {report_model}
+
 </div>
 """
                         )
@@ -2973,19 +3252,16 @@ with management_tab:
                         )
 
 
-                    report_text = (
-                        manager_report[
-                            "content"
-                        ]
-                    )
-
-
                     st.download_button(
                         (
                             "⬇️ Download "
                             f"{manager_name} Report"
                         ),
-                        data=report_text,
+                        data=(
+                            manager_report[
+                                "content"
+                            ]
+                        ),
                         file_name=(
                             manager_name
                             .lower()
@@ -3018,14 +3294,13 @@ with management_tab:
                             "OpenRouter was requested "
                             "through `openrouter/free`. "
                             "The actual free model used "
-                            "for this report is shown "
-                            "above."
+                            "for this report is shown above."
                         )
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # EXECUTIVE MANAGER
-        # ----------------------------------------------------
+        # ====================================================
 
         st.divider()
 
@@ -3040,9 +3315,9 @@ with management_tab:
 
     <div
         style="
-            font-size:28px;
-            font-weight:900;
             color:#F8FAFC;
+            font-size:29px;
+            font-weight:900;
         "
     >
         Executive Manager
@@ -3050,16 +3325,20 @@ with management_tab:
 
     <div
         style="
-            margin-top:8px;
+            max-width:850px;
+            margin-top:9px;
             color:#97A5B7;
-            line-height:1.6;
             font-size:13px;
+            line-height:1.65;
+            overflow-wrap:break-word;
         "
     >
+
         Gemini consolidates all five
-        department reports into a single,
+        departmental analyses into one
         prioritised organisation-wide
-        brand improvement strategy.
+        brand reputation strategy.
+
     </div>
 
 </div>
@@ -3067,22 +3346,22 @@ with management_tab:
         )
 
 
-        reports = (
+        current_reports = (
             st.session_state[
                 "manager_reports"
             ]
         )
 
 
-        reports_ready = len(
-            reports
+        report_count = len(
+            current_reports
         )
 
 
         st.write("")
 
 
-        readiness_left, readiness_right = (
+        readiness_text, readiness_card = (
             st.columns(
                 [2, 1],
                 gap="medium",
@@ -3090,15 +3369,15 @@ with management_tab:
         )
 
 
-        with readiness_left:
+        with readiness_text:
 
             if (
-                reports_ready
+                report_count
                 == total_managers
             ):
 
                 st.success(
-                    "✅ All department reports "
+                    "✅ All five department reports "
                     "are ready for executive "
                     "consolidation."
                 )
@@ -3114,22 +3393,22 @@ with management_tab:
                         in MANAGER_ROLES
 
                         if manager
-                        not in reports
+                        not in current_reports
                     ]
                 )
 
 
                 st.info(
                     (
-                        f"Generate the remaining "
                         f"**{len(missing_managers)}** "
-                        "department report(s) first."
+                        "department report(s) "
+                        "still need to be generated."
                     )
                 )
 
 
                 with st.expander(
-                    "Reports still required"
+                    "View reports still required"
                 ):
 
                     for manager in (
@@ -3141,37 +3420,44 @@ with management_tab:
                         )
 
 
-        with readiness_right:
+        with readiness_card:
 
             kpi_card(
                 "EXECUTIVE READY",
                 (
                     "YES"
-                    if reports_ready
+                    if report_count
                     == total_managers
                     else "NOT YET"
                 ),
                 (
-                    f"{reports_ready}/"
+                    f"{report_count}/"
                     f"{total_managers} reports"
                 ),
                 (
                     "kpi-green"
-                    if reports_ready
+                    if report_count
                     == total_managers
                     else "kpi-purple"
                 ),
             )
 
 
+        # ----------------------------------------------------
+        # GENERATE EXECUTIVE REPORT
+        # ----------------------------------------------------
+
         if (
-            reports_ready
+            report_count
             == total_managers
         ):
 
-            generate_executive = (
+            generate_executive_button = (
                 st.button(
-                    "👔 Generate Executive Brand Reputation Report",
+                    (
+                        "👔 Generate Executive "
+                        "Brand Reputation Report"
+                    ),
                     type="primary",
                     width="stretch",
                     key="generate_executive",
@@ -3179,15 +3465,14 @@ with management_tab:
             )
 
 
-            if generate_executive:
+            if generate_executive_button:
 
                 try:
 
                     with st.status(
                         (
-                            "Executive Manager "
-                            "is consolidating "
-                            "department intelligence..."
+                            "Executive Manager is "
+                            "consolidating intelligence..."
                         ),
                         expanded=True,
                     ) as status:
@@ -3197,20 +3482,25 @@ with management_tab:
                             "department reports..."
                         )
 
+
                         st.write(
                             "🔗 Identifying repeated "
-                            "and cross-department issues..."
+                            "and cross-department "
+                            "reputation issues..."
                         )
 
-                        st.write(
-                            "🎯 Ranking immediate and "
-                            "long-term priorities..."
-                        )
 
                         st.write(
-                            "📏 Consolidating measurable "
+                            "🎯 Ranking immediate "
+                            "and long-term actions..."
+                        )
+
+
+                        st.write(
+                            "📏 Consolidating "
                             "management KPIs..."
                         )
+
 
                         st.write(
                             "📝 Preparing final "
@@ -3221,7 +3511,7 @@ with management_tab:
                         executive_report = (
                             generate_executive_report(
                                 summary,
-                                reports,
+                                current_reports,
                             )
                         )
 
@@ -3233,9 +3523,8 @@ with management_tab:
 
                         status.update(
                             label=(
-                                "Executive Brand "
-                                "Reputation Report "
-                                "completed."
+                                "Executive Brand Reputation "
+                                "Report completed."
                             ),
                             state="complete",
                             expanded=False,
@@ -3261,7 +3550,7 @@ with management_tab:
 
 
         # ----------------------------------------------------
-        # EXECUTIVE REPORT
+        # EXECUTIVE REPORT DISPLAY
         # ----------------------------------------------------
 
         executive_report = (
@@ -3281,14 +3570,14 @@ with management_tab:
                 "Executive Brand Reputation Report",
                 (
                     "Organisation-wide synthesis "
-                    "of predictive analysis and "
+                    "of predictive analytics and "
                     "department-level AI intelligence."
                 ),
             )
 
 
             with st.container(
-                border=True,
+                border=True
             ):
 
                 executive_provider = (
@@ -3310,13 +3599,15 @@ with management_tab:
                 st.html(
                     f"""
 <div class="bp-report-source">
+
     👔 Executive Provider:
     {executive_provider}
 
-    &nbsp;&nbsp;•&nbsp;&nbsp;
+    &nbsp;•&nbsp;
 
     Model:
     {executive_model}
+
 </div>
 """
                 )
@@ -3332,7 +3623,7 @@ with management_tab:
                 )
 
 
-            download_left, download_right = (
+            download_report_column, download_data_column = (
                 st.columns(
                     2,
                     gap="medium",
@@ -3340,7 +3631,7 @@ with management_tab:
             )
 
 
-            with download_left:
+            with download_report_column:
 
                 st.download_button(
                     "⬇️ Download Executive Report",
@@ -3358,24 +3649,26 @@ with management_tab:
                 )
 
 
-            with download_right:
+            with download_data_column:
 
-                complete_package = {
+                complete_analysis = {
                     "analysis_summary":
                         summary,
 
                     "department_reports":
-                        reports,
+                        current_reports,
 
                     "executive_report":
                         executive_report,
                 }
 
 
-                complete_json = json.dumps(
-                    complete_package,
-                    indent=2,
-                    ensure_ascii=False,
+                complete_json = (
+                    json.dumps(
+                        complete_analysis,
+                        indent=2,
+                        ensure_ascii=False,
+                    )
                 )
 
 
