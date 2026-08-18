@@ -2,50 +2,68 @@
 
 ## Online Review-Based Brand Reputation Prediction Using NLP Techniques
 
-**BrandPulse AI** is a Final Year Project (FYP) that applies Natural Language Processing (NLP), machine learning, deep learning, transformer-based sentiment classification, brand reputation analytics, and Large Language Models (LLMs) to analyse online customer reviews and transform them into decision-support information.
+**BrandPulse AI** is a Final Year Project (FYP) that applies Natural Language Processing (NLP), machine learning, deep learning, transformer-based sentiment classification, brand reputation analytics, and Large Language Models (LLMs) to analyse online customer reviews and transform them into management-oriented decision-support information.
 
-The current case study focuses on **Spotify application reviews** collected from multiple publicly available Kaggle datasets.
+The project uses **Spotify application reviews** as the case study.
 
-The final deployed system uses a fine-tuned **DistilBERT** model to classify reviews into **Positive** or **Negative** sentiment. The predictions are subsequently transformed into brand reputation indicators, issue categories, customer voice insights, department-level AI reports, and an executive management report.
+The final system deploys a fine-tuned **DistilBERT** model to classify reviews into **Positive** or **Negative** sentiment. These predictions are subsequently transformed into brand reputation indicators, customer issue categories, customer voice insights, department-level AI management reports, and an executive-level brand reputation report.
 
-The application is implemented using **Streamlit** and deployed through **Streamlit Community Cloud**.
+The completed application is implemented using **Streamlit** and deployed through **Streamlit Community Cloud**.
 
 ---
 
 # 📌 Project Overview
 
-Online customer reviews contain valuable information about customer satisfaction, product quality, technical problems, subscription concerns, customer service issues, and overall brand perception.
+Online customer reviews contain valuable information about:
 
-However, manually analysing thousands of online reviews is difficult and time-consuming.
+- customer satisfaction;
+- application performance;
+- product usability;
+- technical problems;
+- playback issues;
+- subscription concerns;
+- advertisements;
+- customer service;
+- brand perception.
 
-BrandPulse AI addresses this problem by creating an end-to-end review intelligence system:
+However, manually analysing a large number of customer reviews is time-consuming and difficult.
+
+BrandPulse AI provides an integrated workflow:
 
 ```text
 Customer Reviews
         │
         ▼
-Sentiment Prediction
+DistilBERT Sentiment Prediction
         │
         ▼
 Brand Reputation Analytics
         │
-        ▼
-Customer Issue Analysis
+        ├── Reputation Score
+        ├── Sentiment Distribution
+        ├── Customer Issue Analysis
+        └── Customer Voice Analysis
         │
         ▼
-Customer Voice Intelligence
+Multi-LLM AI Management Council
+        │
+        ├── Technical Manager
+        ├── Product Manager
+        ├── Customer Service Manager
+        ├── Marketing Manager
+        └── Subscription Manager
         │
         ▼
-AI Department Managers
+Executive Manager
         │
         ▼
-Executive Management Report
+Executive Brand Reputation Report
         │
         ▼
 DOCX / PDF Report Export
 ```
 
-The system therefore extends conventional sentiment classification beyond simply predicting:
+The system therefore extends conventional sentiment analysis beyond simply producing:
 
 ```text
 Positive
@@ -53,81 +71,83 @@ or
 Negative
 ```
 
-and converts model outputs into information that can support organisational decision-making.
+and converts the predictive results into information that can support managerial interpretation and decision-making.
 
 ---
 
 # 🎯 Project Objectives
 
-The main objectives of the project are to:
+The main objectives of BrandPulse AI are to:
 
-- collect and integrate Spotify application reviews from multiple datasets;
-- preprocess online review text for NLP modelling;
-- compare different feature representations and sentiment classification models;
-- develop and evaluate traditional machine learning, deep learning, hybrid, and transformer approaches;
-- deploy the selected DistilBERT sentiment classifier;
-- classify Spotify reviews into Positive and Negative sentiment;
-- calculate brand-level reputation indicators from sentiment predictions;
-- identify recurring customer issues from negative reviews;
-- extract frequently occurring positive and negative customer terms;
-- provide department-specific interpretations using LLMs;
-- generate management recommendations based on analytical evidence;
-- consolidate departmental findings into an executive report;
-- provide an interactive Streamlit decision-support dashboard;
-- support professional report export.
+- collect and integrate Spotify application reviews from multiple sources;
+- preprocess customer review text for NLP modelling;
+- compare different feature representations and sentiment classification approaches;
+- evaluate traditional machine learning, deep learning, transformer, and hybrid approaches;
+- deploy a selected DistilBERT sentiment classification model;
+- classify reviews into Positive and Negative sentiment;
+- calculate brand-level reputation indicators;
+- identify common customer issues within negative reviews;
+- analyse recurring positive and negative customer language;
+- generate department-specific AI management reports;
+- distribute generative AI workloads across multiple LLM providers;
+- consolidate department reports into an executive-level report;
+- provide interactive visualisation through Streamlit;
+- generate professional Microsoft Word and PDF reports.
 
 ---
 
-# 🏗️ System Architecture
+# 🏗️ Final System Architecture
 
-The final BrandPulse AI architecture is:
+The final BrandPulse AI architecture consists of three main intelligence layers:
 
 ```text
-                     Spotify Reviews
-                           │
-                           ▼
-                  Streamlit Application
-                           │
-                           ▼
-                    DistilBERT Model
-                 Hosted on Hugging Face
-                           │
-                           ▼
+                    Spotify Reviews
+                          │
+                          ▼
+                 Streamlit Application
+                          │
+                          ▼
+                  Predictive AI Layer
+                          │
+                    DistilBERT
+                          │
+                          ▼
               Positive / Negative Sentiment
-                           │
-                           ▼
-                Brand Reputation Analytics
-                           │
-          ┌────────────────┼────────────────┐
-          │                │                │
-          ▼                ▼                ▼
- Reputation Score     Issue Analysis   Customer Voice
-          │                │                │
-          └────────────────┼────────────────┘
-                           │
-                           ▼
-                 AI Management Council
-                           │
-       ┌───────────────────┼───────────────────┐
-       │                   │                   │
-       ▼                   ▼                   ▼
- Gemini Managers    OpenRouter Managers   Department Reports
-       │                   │                   │
-       └───────────────────┼───────────────────┘
-                           │
-                           ▼
-                    Executive Manager
-                           │
-                           ▼
-             Executive Reputation Report
-                           │
-                           ▼
-                   DOCX / PDF Export
+                          │
+                          ▼
+                  Analytics Layer
+                          │
+         ┌────────────────┼────────────────┐
+         │                │                │
+         ▼                ▼                ▼
+ Reputation Score    Issue Analysis   Customer Voice
+         │                │                │
+         └────────────────┼────────────────┘
+                          │
+                          ▼
+             Multi-LLM Management Layer
+                          │
+       ┌──────────────────┼──────────────────┐
+       │                  │                  │
+       ▼                  ▼                  ▼
+ OpenRouter Free     Ollama Cloud      Department Reports
+       │                  │                  │
+       └──────────────────┼──────────────────┘
+                          │
+                          ▼
+                  Executive Manager
+                       Gemini
+                          │
+                          ▼
+              Executive Reputation Report
+                          │
+                          ▼
+                  DOCX / PDF Export
 ```
 
 ---
 
-# 🧠 Predictive Sentiment Model
+# 🧠 Predictive AI Layer
 
 ## DistilBERT
 
@@ -140,24 +160,23 @@ The model performs binary sentiment classification:
 1 → Positive
 ```
 
-The deployed model and tokenizer are stored in a Hugging Face repository and loaded by the Streamlit application when required.
+The trained model and tokenizer are hosted in a Hugging Face model repository.
 
-The application can analyse:
-
-- one individual review; or
-- multiple reviews uploaded through CSV/XLSX files.
+The Streamlit application loads the model and tokenizer directly from Hugging Face during application execution.
 
 ---
 
-# 🔍 Example Prediction
+# 🔍 Single Review Prediction
 
-Example input:
+Users can manually enter one Spotify review.
+
+Example:
 
 ```text
 The latest Spotify update keeps crashing and playback stops randomly.
 ```
 
-Possible output:
+Possible result:
 
 ```text
 Sentiment:
@@ -167,15 +186,59 @@ Confidence:
 96.42%
 ```
 
-> Model confidence represents the probability produced by the model. It should not be interpreted as a guarantee that the prediction is correct.
+The application displays:
+
+- predicted sentiment;
+- prediction confidence;
+- a short interpretation.
+
+> Model confidence represents the probability produced by the classifier and should not be interpreted as certainty.
+
+---
+
+# 📂 Batch Review Intelligence
+
+BrandPulse AI supports batch review analysis through:
+
+```text
+.csv
+.xlsx
+```
+
+The uploaded dataset only requires a column containing customer review text.
+
+Example:
+
+```csv
+review_text
+"Spotify has excellent music recommendations."
+"The latest update keeps crashing."
+"Premium is becoming too expensive."
+```
+
+Users select the appropriate review-text column before starting the analysis.
+
+The system then performs:
+
+```text
+Uploaded Dataset
+        ↓
+Valid Review Filtering
+        ↓
+DistilBERT Batch Prediction
+        ↓
+Sentiment Results
+        ↓
+Reputation Analytics
+```
 
 ---
 
 # 📊 Brand Reputation Analytics
 
-After DistilBERT classifies the reviews, BrandPulse AI aggregates the predictions into brand-level information.
+After sentiment prediction, BrandPulse AI aggregates individual review predictions into brand-level indicators.
 
-The Reputation Dashboard provides:
+The dashboard provides:
 
 - total reviews analysed;
 - positive review count;
@@ -184,10 +247,10 @@ The Reputation Dashboard provides:
 - negative review percentage;
 - Brand Reputation Score;
 - sentiment distribution;
-- negative review issue distribution;
+- negative review issue analysis;
 - frequent positive terms;
 - frequent negative terms;
-- representative negative reviews.
+- representative negative customer reviews.
 
 ---
 
@@ -203,7 +266,7 @@ Positive Reviews
 Positive Reviews + Negative Reviews
 ```
 
-For example:
+Example:
 
 ```text
 Positive Reviews = 720
@@ -214,25 +277,25 @@ Brand Reputation Score
 = 72%
 ```
 
-The prototype interprets the score using the following ranges:
+The prototype interprets the resulting value as:
 
-| Brand Reputation Score | Interpretation |
+| Score | Interpretation |
 |---:|---|
-| 80–100% | Very Positive |
-| 60–79.99% | Positive |
-| 40–59.99% | Mixed |
-| 20–39.99% | Negative |
-| 0–19.99% | Very Negative |
+| 80–100% | Very Positive Brand Reputation |
+| 60–79.99% | Positive Brand Reputation |
+| 40–59.99% | Mixed Brand Reputation |
+| 20–39.99% | Negative Brand Reputation |
+| 0–19.99% | Very Negative Brand Reputation |
 
-> The Brand Reputation Score is a **project-defined decision-support indicator** and is not presented as a universal or industry-standard brand reputation index.
+> The Brand Reputation Score is a **project-defined decision-support indicator**. It is not presented as an official Spotify metric or a universal industry-standard brand reputation measurement.
 
 ---
 
 # 🔎 Customer Issue Analysis
 
-Negative customer reviews are further analysed using predefined issue categories.
+Negative reviews are analysed using predefined issue categories.
 
-Current categories include:
+The current categories include:
 
 - Technical Performance
 - Playback
@@ -244,9 +307,7 @@ Current categories include:
 - Customer Service
 - Other or Unclear
 
-A review can belong to more than one issue category.
-
-For example:
+Example:
 
 ```text
 Review:
@@ -257,7 +318,15 @@ Detected Issues:
 - Playback
 ```
 
-Issue counts should therefore be interpreted as **issue mentions**, rather than necessarily representing unique reviews.
+A single review may contain multiple issue categories.
+
+Therefore, issue counts are interpreted as:
+
+```text
+Issue Mentions
+```
+
+rather than necessarily representing unique reviews.
 
 ---
 
@@ -266,16 +335,14 @@ Issue counts should therefore be interpreted as **issue mentions**, rather than 
 BrandPulse AI extracts frequently occurring terms from predicted:
 
 ```text
-Positive reviews
+Positive Reviews
 ```
 
 and:
 
 ```text
-Negative reviews
+Negative Reviews
 ```
-
-This provides an additional view of recurring customer language.
 
 Example:
 
@@ -289,13 +356,13 @@ great        24
 recommend    18
 ```
 
-The objective is to help users identify words and topics commonly associated with positive or negative customer experiences.
+This component provides additional insight into recurring customer language and common areas associated with satisfaction or dissatisfaction.
 
 ---
 
 # 🧩 Separation of System Components
 
-An important design principle of BrandPulse AI is that sentiment prediction, issue analysis, and management recommendation generation are separate components.
+BrandPulse AI intentionally separates predictive AI, analytical processing, and generative AI.
 
 ```text
 DistilBERT
@@ -307,176 +374,362 @@ Python Analytics Layer
 │
 ├── Brand Reputation Score
 ├── Sentiment Distribution
-├── Issue Categorisation
+├── Customer Issue Analysis
 └── Customer Voice Analysis
 
 
-Large Language Models
+Generative AI Layer
 │
-├── Departmental Interpretation
+├── Department Interpretation
 ├── Management Recommendations
 └── Executive Consolidation
 ```
 
-The LLMs therefore **do not replace the trained DistilBERT model**.
+The LLMs do **not** replace DistilBERT.
 
-They receive structured analytical evidence produced after sentiment prediction.
+Instead:
 
----
+```text
+DistilBERT
+→ predicts sentiment
 
-# 🤖 AI Management Council
+Python Analytics
+→ produces structured evidence
 
-The application contains five role-based AI department managers.
-
-Each manager receives the same structured brand reputation evidence but analyses it according to a different organisational responsibility.
-
-Current manager-provider assignment:
-
-| AI Manager | LLM Provider |
-|---|---|
-| Technical Manager | Gemini |
-| Product Manager | Gemini |
-| Customer Service Manager | Gemini |
-| Marketing Manager | OpenRouter Free |
-| Subscription Manager | OpenRouter Free |
-| Executive Manager | Gemini |
-
-This assignment is used as part of the prototype architecture and should not be interpreted as a claim that one provider is universally better for a particular department.
+LLMs
+→ interpret evidence
+→ generate recommendations
+```
 
 ---
 
-# 🛠️ Technical Manager
+# 🤖 Multi-LLM AI Management Council
 
-**Provider:** Gemini
+The final system uses a **multi-provider Large Language Model architecture**.
 
-The Technical Manager focuses on:
+This design distributes department-level report generation across different AI providers instead of relying entirely on one LLM service.
 
-- software stability;
-- application crashes;
-- technical failures;
-- playback problems;
-- application performance;
-- reliability;
-- recurring technical complaints.
+The final configuration is:
 
-Example management considerations may include:
+| Manager | Provider | Model / Route |
+|---|---|---|
+| Technical Manager | OpenRouter | `openrouter/free` |
+| Product Manager | Ollama Cloud | `gpt-oss:20b` |
+| Customer Service Manager | OpenRouter | `openrouter/free` |
+| Marketing Manager | Ollama Cloud | `gpt-oss:20b` |
+| Subscription Manager | OpenRouter | `openrouter/free` |
+| Executive Manager | Gemini | Configured through `GEMINI_MODEL` |
 
-- prioritising high-frequency technical issues;
-- reducing crash rates;
-- monitoring software reliability;
-- improving playback stability;
-- establishing technical performance KPIs.
+The multi-provider architecture helps reduce dependency on a single generative AI provider and mitigates provider-specific quota or availability constraints.
 
 ---
 
-# 🧩 Product Manager
+# 🌐 OpenRouter Free
 
-**Provider:** Gemini
+OpenRouter is used for:
 
-The Product Manager focuses on:
+```text
+Technical Manager
+Customer Service Manager
+Subscription Manager
+```
 
-- application features;
-- usability;
-- playlists;
-- navigation;
-- product experience;
-- feature requests;
-- product improvement opportunities.
-
-The Product Manager interprets review evidence from a product development perspective.
-
----
-
-# 🎧 Customer Service Manager
-
-**Provider:** Gemini
-
-The Customer Service Manager focuses on:
-
-- complaints;
-- customer satisfaction;
-- customer frustration;
-- recurring support problems;
-- service recovery;
-- customer communication;
-- complaint response priorities.
-
----
-
-# 📣 Marketing Manager
-
-**Provider:** OpenRouter Free
-
-The Marketing Manager focuses on:
-
-- brand perception;
-- positive customer experiences;
-- reputation weaknesses;
-- communication strategies;
-- reputation risks;
-- customer-facing messaging;
-- brand positioning.
-
-The application currently requests:
+The application requests:
 
 ```text
 openrouter/free
 ```
 
-OpenRouter may select different free models depending on availability.
+The free router may select different available free models depending on current service availability.
 
-Therefore, the actual underlying OpenRouter model used to generate a report is recorded and displayed by the application.
+For transparency, BrandPulse AI records and displays:
+
+```text
+Provider
+Requested Route
+Actual Model Used
+```
+
+---
+
+# 🦙 Ollama Cloud
+
+Ollama Cloud is used for:
+
+```text
+Product Manager
+Marketing Manager
+```
+
+The current configured model is:
+
+```text
+gpt-oss:20b
+```
+
+The Ollama managers analyse the same structured reputation evidence as the other department managers but use department-specific role prompts.
+
+---
+
+# ✨ Gemini Executive Manager
+
+Gemini is reserved primarily for the **Executive Manager**.
+
+Instead of using Gemini for several department-level requests, BrandPulse AI preserves Gemini resources for the final consolidation stage.
+
+The Executive Manager receives:
+
+```text
+Brand Reputation Analytics
++
+Technical Manager Report
++
+Product Manager Report
++
+Customer Service Manager Report
++
+Marketing Manager Report
++
+Subscription Manager Report
+```
+
+and consolidates them into one organisation-wide report.
+
+The exact Gemini model can be configured through:
+
+```text
+GEMINI_MODEL
+```
+
+in Streamlit Secrets.
+
+---
+
+# 🛠️ Technical Manager
+
+### Provider
+
+OpenRouter Free
+
+### Focus Areas
+
+The Technical Manager analyses:
+
+- application stability;
+- technical performance;
+- crashes;
+- software bugs;
+- playback problems;
+- reliability;
+- technical customer complaints.
+
+Typical output sections include:
+
+- department overview;
+- key findings;
+- main reputation risks;
+- positive signals;
+- recommended actions;
+- recommended KPIs;
+- priority level;
+- limitations.
+
+---
+
+# 🧩 Product Manager
+
+### Provider
+
+Ollama Cloud
+
+### Model
+
+```text
+gpt-oss:20b
+```
+
+### Focus Areas
+
+The Product Manager analyses:
+
+- product usability;
+- application features;
+- playlists;
+- music library experience;
+- navigation;
+- user interface;
+- product improvement opportunities;
+- recurring feature-related complaints.
+
+---
+
+# 🎧 Customer Service Manager
+
+### Provider
+
+OpenRouter Free
+
+### Focus Areas
+
+The Customer Service Manager analyses:
+
+- customer complaints;
+- customer dissatisfaction;
+- support problems;
+- customer communication;
+- service recovery;
+- recurring customer frustrations.
+
+---
+
+# 📣 Marketing Manager
+
+### Provider
+
+Ollama Cloud
+
+### Model
+
+```text
+gpt-oss:20b
+```
+
+### Focus Areas
+
+The Marketing Manager analyses:
+
+- brand perception;
+- reputation strengths;
+- reputation risks;
+- positive customer experiences;
+- customer communication;
+- brand messaging.
 
 ---
 
 # 💳 Subscription Manager
 
-**Provider:** OpenRouter Free
+### Provider
 
-The Subscription Manager focuses on:
+OpenRouter Free
 
-- Premium subscription experiences;
-- subscription pricing;
-- billing concerns;
+### Focus Areas
+
+The Subscription Manager analyses:
+
+- Premium subscription;
+- pricing;
 - advertisements;
-- perceived customer value;
-- subscription satisfaction;
-- potential retention issues.
-
-The application also records the actual free model selected by OpenRouter for transparency.
+- billing;
+- perceived value;
+- subscription dissatisfaction;
+- potential customer retention concerns.
 
 ---
 
 # 👔 Executive Manager
 
-The Executive Manager uses **Gemini**.
+### Provider
 
-It becomes available only after all five department manager reports have been generated.
+Gemini
 
-The Executive Manager consolidates department-level findings into an organisation-wide report.
+The Executive Manager can only be generated after all five department reports are available.
 
-The final Executive Report may contain sections such as:
+The Executive Report may contain:
 
-- Executive Summary
-- Overall Brand Reputation
-- Main Brand Strengths
-- Critical Brand Risks
-- Major Customer Issues
-- Department-Level Findings
-- Immediate Priorities
-- Short-Term Improvement Actions
-- Long-Term Improvement Actions
-- Recommended KPIs
-- Management Recommendations
-- Limitations
+1. Executive Summary
+2. Overall Brand Reputation
+3. Main Brand Strengths
+4. Critical Reputation Risks
+5. Cross-Department Findings
+6. Immediate Management Priorities
+7. Short-Term Action Plan
+8. Long-Term Improvement Direction
+9. Recommended Executive KPIs
+10. Department Coordination
+11. Overall Management Recommendation
+12. Limitations
 
 ---
 
-# 📑 Professional Report Export
+# 🔄 Management Council Execution Flow
 
-BrandPulse AI is designed to support professional export of the generated analysis.
+```text
+Reputation Analytics Completed
+        │
+        ▼
+Technical Manager
+OpenRouter
+        │
+        ▼
+Product Manager
+Ollama
+        │
+        ▼
+Customer Service Manager
+OpenRouter
+        │
+        ▼
+Marketing Manager
+Ollama
+        │
+        ▼
+Subscription Manager
+OpenRouter
+        │
+        ▼
+Five Reports Ready
+        │
+        ▼
+Executive Manager
+Gemini
+        │
+        ▼
+Executive Report
+```
 
-Supported report formats include:
+The application stores generated reports using Streamlit session state.
+
+This means changing tabs does not automatically regenerate reports.
+
+---
+
+# 🔄 Report Regeneration Logic
+
+When a department report is regenerated:
+
+```text
+Department Report Changed
+        ↓
+Previous Executive Report
+becomes outdated
+        ↓
+Executive Report cleared
+        ↓
+New Executive Report required
+```
+
+When a new review dataset is analysed:
+
+```text
+New Dataset
+        ↓
+Old Department Reports cleared
+        ↓
+Old Executive Report cleared
+        ↓
+Old DOCX/PDF exports cleared
+```
+
+This prevents reports from being associated with outdated analytical evidence.
+
+---
+
+# 📑 Professional Report Centre
+
+BrandPulse AI includes a completed professional report-generation component.
+
+The system generates both:
 
 ## Microsoft Word
 
@@ -484,55 +737,86 @@ Supported report formats include:
 BrandPulse_AI_Brand_Reputation_Report.docx
 ```
 
+and:
+
 ## PDF
 
 ```text
 BrandPulse_AI_Brand_Reputation_Report.pdf
 ```
 
-The complete report may contain:
+Both formats are generated from the same completed analysis.
 
-1. Brand Reputation Overview
-2. Sentiment Results
-3. Brand Reputation Score
-4. Issue Analysis
-5. Customer Voice Intelligence
-6. Representative Negative Reviews
-7. Technical Manager Report
-8. Product Manager Report
-9. Customer Service Manager Report
-10. Marketing Manager Report
-11. Subscription Manager Report
-12. Executive Brand Reputation Report
-13. System Interpretation Notes
-14. Limitations
+---
 
-> DOCX and PDF generation remain part of the final system testing process.
+# 📘 DOCX Report
+
+The Word report is generated using:
+
+```text
+python-docx
+```
+
+The document contains:
+
+1. Cover Page
+2. Brand Reputation Overview
+3. Negative Review Issue Analysis
+4. Customer Voice Intelligence
+5. Representative Negative Reviews
+6. Technical Manager Report
+7. Product Manager Report
+8. Customer Service Manager Report
+9. Marketing Manager Report
+10. Subscription Manager Report
+11. Executive Brand Reputation Report
+12. System Interpretation and Limitations
+
+The DOCX version is editable and suitable for further academic formatting if required.
+
+---
+
+# 📕 PDF Report
+
+The PDF report is generated using:
+
+```text
+fpdf2
+```
+
+The PDF contains the same major analytical and management information as the DOCX report.
+
+The implementation includes:
+
+- page headers;
+- page numbers;
+- report sections;
+- tables;
+- customer review examples;
+- manager reports;
+- executive report;
+- interpretation notes;
+- system limitations.
 
 ---
 
 # 🖥️ Streamlit Application
 
-The final interface contains four main sections.
+The final interface contains four primary sections.
 
 ---
 
 ## 🧪 Single Review
 
-Allows one customer review to be entered manually.
-
-Workflow:
+Allows users to manually enter one Spotify review.
 
 ```text
 Customer Review
-      │
-      ▼
+        ↓
 DistilBERT
-      │
-      ▼
+        ↓
 Positive / Negative
-      │
-      ▼
+        ↓
 Prediction Confidence
 ```
 
@@ -540,47 +824,49 @@ Prediction Confidence
 
 ## 📂 Batch Intelligence
 
-Allows users to upload multiple reviews using:
+Allows users to upload:
 
 ```text
-.csv
-.xlsx
+CSV
+XLSX
 ```
 
-A dataset only needs a column containing customer review text.
+The system then:
 
-Example:
-
-```csv
-review_text
-"Spotify has excellent music recommendations."
-"The application keeps crashing after the update."
-"Premium has become too expensive."
+```text
+Loads Dataset
+        ↓
+Select Review Column
+        ↓
+Removes Missing / Empty Reviews
+        ↓
+Runs DistilBERT
+        ↓
+Generates Analytics
 ```
-
-After uploading the file, the user selects the column containing the review text.
-
-The system then performs batch sentiment classification.
 
 ---
 
 ## 📈 Reputation Dashboard
 
-The Reputation Dashboard visualises the results using:
+Displays:
 
-- KPI cards;
-- sentiment distribution charts;
+- reviews analysed;
+- positive reviews;
+- negative reviews;
+- sentiment percentages;
 - Brand Reputation Score;
-- negative issue distributions;
+- sentiment distribution;
+- issue distribution;
 - positive customer voice;
 - negative customer voice;
-- representative negative customer reviews.
+- representative negative reviews.
 
 ---
 
 ## 🤖 AI Management Council
 
-This section contains:
+Contains:
 
 ```text
 Technical Manager
@@ -591,13 +877,20 @@ Subscription Manager
 Executive Manager
 ```
 
-The manager reports depend on the results generated through Batch Intelligence.
+and displays:
+
+- AI provider;
+- model used;
+- department role;
+- generated report;
+- download option;
+- council completion progress.
 
 ---
 
 # 📂 Repository Structure
 
-The current project repository follows approximately this structure:
+The final project structure is approximately:
 
 ```text
 FYP-Brand-Reputation-System/
@@ -619,11 +912,8 @@ FYP-Brand-Reputation-System/
 │   └── report_export.py
 │
 ├── streamlit_app.py
-│
 ├── requirements.txt
-│
 ├── README.md
-│
 └── .gitignore
 ```
 
@@ -631,131 +921,89 @@ FYP-Brand-Reputation-System/
 
 # 📓 Experimental Notebooks
 
-The `notebooks/` folder contains the experimental model-development workflow.
-
-Additional information is available in:
-
-```text
-notebooks/README.md
-```
+The `notebooks/` directory contains three primary experiment notebooks.
 
 ---
 
 # 1️⃣ FYP_Single_Algorithm.ipynb
 
-This notebook contains the main experimental pipeline for:
+This notebook contains:
 
-- dataset preparation;
+- raw dataset loading;
+- dataset integration;
 - exploratory analysis;
-- complete text preprocessing;
+- full text preprocessing;
 - feature representation;
-- individual machine-learning experiments;
+- traditional machine-learning experiments;
 - deep-learning experiments;
-- model comparison.
+- model comparisons.
 
-## Important Preprocessing Note
+## Important
 
 The **complete text preprocessing workflow is implemented only in this notebook**.
 
-The processed datasets are saved as:
+Processed datasets are saved into:
 
 ```text
-.csv
-.xlsx
+CSV
+XLSX
 ```
 
-files for reuse by the DistilBERT and Hybrid notebooks.
-
-Conceptually:
-
-```text
-Raw Datasets
-      │
-      ▼
-FYP_Single_Algorithm.ipynb
-      │
-      ├── Dataset Integration
-      ├── Full Text Preprocessing
-      ├── Feature Representation
-      └── Model Experiments
-      │
-      ▼
-Saved Preprocessed CSV / XLSX
-```
+formats for reuse by the DistilBERT and Hybrid notebooks.
 
 ---
 
 # 2️⃣ FYP_DistilBERT.ipynb
 
-This notebook contains the DistilBERT transformer experiment.
+This notebook contains:
 
-It includes:
-
-- loading the saved preprocessed dataset;
+- loading the previously saved processed dataset;
 - train/validation/test preparation;
 - tokenisation;
-- class-weight preparation;
+- class-weight configuration;
 - DistilBERT fine-tuning;
-- validation;
-- final evaluation;
-- confusion matrix generation;
+- model validation;
+- model testing;
+- evaluation metrics;
+- confusion matrix;
 - model export;
 - tokenizer export;
 - Hugging Face deployment preparation.
 
-The complete preprocessing pipeline is **not repeated** in this notebook.
+The complete preprocessing pipeline is **not repeated** here.
 
-Instead:
+Conceptually:
 
 ```text
 FYP_Single_Algorithm.ipynb
-        │
-        ▼
-Saved Preprocessed Dataset
-        │
-        ▼
+        ↓
+Saved Preprocessed Data
+        ↓
 FYP_DistilBERT.ipynb
 ```
-
-The current Streamlit deployment uses the DistilBERT model produced from this workflow.
 
 ---
 
 # 3️⃣ FYP_Hybrid.ipynb
 
-This notebook contains the hybrid modelling experiments.
+The Hybrid notebook contains experiments involving hybrid/fusion approaches.
 
-The Hybrid notebook may involve:
+It may include:
 
-- loading saved preprocessed datasets;
-- loading selected feature representations;
-- using high-performing modelling components;
-- generating predictions;
-- combining prediction outputs;
-- applying hybrid/fusion techniques;
-- comparing hybrid performance against individual models.
+- loading saved processed datasets;
+- selected feature representations;
+- selected high-performing models;
+- prediction generation;
+- prediction fusion;
+- hybrid representation experiments;
+- hybrid performance evaluation;
+- comparison against individual models.
 
-The full preprocessing pipeline is also **not repeated** in the Hybrid notebook.
-
-Instead:
-
-```text
-FYP_Single_Algorithm.ipynb
-        │
-        ▼
-Saved CSV / XLSX Datasets
-        │
-        ▼
-FYP_Hybrid.ipynb
-```
-
-The Hybrid notebook is retained for experimental comparison and is not the final model deployed by Streamlit.
+The complete preprocessing workflow is also **not repeated** in this notebook.
 
 ---
 
 # 🔁 Recommended Notebook Execution Order
-
-To reproduce the complete modelling workflow:
 
 ```text
 STEP 1
@@ -763,39 +1011,36 @@ FYP_Single_Algorithm.ipynb
         │
         ├── Load raw datasets
         ├── Integrate datasets
-        ├── Full preprocessing
+        ├── Full text preprocessing
         ├── Individual experiments
-        └── Save processed CSV / XLSX
+        └── Save CSV / XLSX
         │
         ▼
 
 STEP 2
 FYP_DistilBERT.ipynb
         │
-        ├── Load saved dataset
-        ├── Fine-tune DistilBERT
-        ├── Validate / Test
-        └── Export final model
+        ├── Load processed dataset
+        ├── Train DistilBERT
+        ├── Validate
+        ├── Test
+        └── Export model
         │
         ▼
 
 STEP 3
 FYP_Hybrid.ipynb
         │
-        ├── Load saved dataset(s)
+        ├── Load processed datasets
         ├── Run hybrid experiments
-        └── Compare performance
+        └── Compare results
 ```
-
-The DistilBERT and Hybrid notebooks should therefore not be expected to independently recreate the complete text preprocessing stage.
 
 ---
 
 # 📊 Dataset Sources
 
-The project uses four Spotify-related review datasets obtained from Kaggle.
-
----
+Four Spotify-related datasets were obtained from Kaggle.
 
 ## Dataset 1 — Top 20 Play Store App Reviews Daily Update
 
@@ -839,22 +1084,20 @@ https://www.kaggle.com/datasets/mfaaris/spotify-app-reviews-2022
 
 The datasets were obtained from Kaggle for academic research purposes.
 
-Users reproducing the project should refer to the respective Kaggle pages for:
+Users reproducing the project should refer to the original Kaggle dataset pages for:
 
-- original dataset authorship;
-- licensing information;
-- usage terms;
+- dataset authorship;
+- licences;
+- usage conditions;
 - latest dataset versions.
-
-The datasets are not redistributed as part of this repository unless permitted by the applicable dataset licence.
 
 ---
 
 # ☁️ Google Colab
 
-The experimental notebooks were primarily developed in **Google Colab**.
+The experimental notebooks were primarily developed using **Google Colab**.
 
-Google Drive is commonly mounted using:
+Google Drive is mounted using code such as:
 
 ```python
 from google.colab import drive
@@ -864,17 +1107,11 @@ drive.mount(
 )
 ```
 
-Files are then accessed through paths such as:
-
-```text
-/content/drive/MyDrive/...
-```
-
 ---
 
-# ⚠️ Important Google Drive Path Requirement
+# ⚠️ Google Drive Path Requirement
 
-Some notebook code uses paths based on the original Google Drive structure used during development.
+Some notebook code contains file paths based on the original development environment.
 
 For example:
 
@@ -886,11 +1123,9 @@ DATASET_PATH = (
 )
 ```
 
-These paths may not exist when another user runs the notebook.
+These paths must be modified if the notebooks are executed using another Google Drive account.
 
-Users must change the paths according to their own Google Drive structure.
-
-For example:
+Example:
 
 ```python
 DATASET_PATH = (
@@ -900,32 +1135,31 @@ DATASET_PATH = (
 )
 ```
 
-This applies to:
+The same applies to:
 
-- original/raw datasets;
-- preprocessed datasets;
-- TF-IDF datasets;
+- raw dataset locations;
+- processed datasets;
+- TF-IDF files;
 - embedding datasets;
-- CSV files;
-- XLSX files;
-- model checkpoints;
-- saved model folders;
-- validation results;
-- prediction exports;
-- Hugging Face export directories.
+- CSV outputs;
+- XLSX outputs;
+- checkpoints;
+- saved models;
+- prediction results;
+- deployment folders.
 
 ---
 
 # ❌ FileNotFoundError
 
-A common error when reproducing the notebooks is:
+A common error is:
 
 ```text
 FileNotFoundError:
 [Errno 2] No such file or directory
 ```
 
-This normally means the configured path does not match the current Google Drive directory.
+This usually means that the configured path does not match the user's actual Google Drive.
 
 Users can inspect their Google Drive using:
 
@@ -939,46 +1173,48 @@ print(
 )
 ```
 
-and modify the file path accordingly.
+and update the relevant paths accordingly.
 
 ---
 
-# 💾 Preprocessed CSV / XLSX Dependency
+# 💾 Preprocessed Dataset Dependency
 
-A particularly important project detail is:
+The relationship between notebooks is:
 
 ```text
-FULL TEXT PREPROCESSING
-        │
-        ▼
+Raw Spotify Reviews
+        ↓
 FYP_Single_Algorithm.ipynb
+        ↓
+FULL TEXT PREPROCESSING
+        ↓
+Saved CSV / XLSX
+        │
+        ├───────────────┐
+        │               │
+        ▼               ▼
+FYP_DistilBERT     FYP_Hybrid
 ```
-
-The other experimental notebooks mainly consume saved preprocessing outputs.
 
 Therefore:
 
 ```text
-FYP_DistilBERT.ipynb
+DistilBERT Notebook
 → loads saved processed data
 
-FYP_Hybrid.ipynb
+Hybrid Notebook
 → loads saved processed data
 ```
-
-If the required files have not yet been generated, the relevant preprocessing/export sections of `FYP_Single_Algorithm.ipynb` must be completed first.
 
 ---
 
 # 🔬 Experimental Approaches
 
-The project investigates several NLP modelling approaches.
+The project investigates several modelling approaches.
 
----
+## TF-IDF
 
-## TF-IDF Representations
-
-Experiments may include:
+Representations include:
 
 ```text
 Unigram
@@ -990,9 +1226,9 @@ Unigram + Bigram + Trigram
 
 ---
 
-## Embedding Representations
+# 🧠 Embedding Representations
 
-Experiments may include:
+Experiments include:
 
 ```text
 Word2Vec
@@ -1004,29 +1240,31 @@ FastText
 
 ---
 
-## Traditional Machine Learning
+# 📐 Traditional Machine Learning
 
-Models investigated may include:
+Models investigated include approaches such as:
 
 - Naive Bayes
 - Support Vector Machine
 - Logistic Regression
 
-Different Naive Bayes variants can be used depending on the feature representation, such as:
+Different Naive Bayes implementations may be used depending on the feature representation.
+
+For example:
 
 ```text
 TF-IDF
 → MultinomialNB
 
-Embedding Features
+Embedding
 → GaussianNB
 ```
 
 ---
 
-## Deep Learning
+# 🧬 Deep Learning
 
-Experiments may include:
+The experimental workflow includes deep-learning models such as:
 
 - LSTM
 - BiLSTM
@@ -1034,29 +1272,31 @@ Experiments may include:
 
 ---
 
-## Transformer
+# 🤖 Transformer Model
 
-The transformer experiment uses:
+The transformer-based experiment uses:
 
 ```text
 DistilBERT
 ```
 
-The selected DistilBERT model is the model currently used by the deployed BrandPulse AI application.
+The final Streamlit application deploys the selected DistilBERT model.
 
 ---
 
-## Hybrid Experiment
+# 🔗 Hybrid Experiment
 
-A separate notebook investigates hybrid/fusion approaches based on selected experimental results.
+The Hybrid notebook investigates combining selected model outputs or feature representations.
 
-The Hybrid model is retained as experimental evidence and is not currently used as the final Streamlit sentiment predictor.
+The Hybrid approach is retained as experimental evidence and comparative analysis.
+
+It is **not** the final deployed Streamlit sentiment classifier.
 
 ---
 
 # 📏 Evaluation Metrics
 
-The modelling notebooks evaluate classification performance using metrics such as:
+Model evaluation uses metrics such as:
 
 - Accuracy
 - Precision
@@ -1064,15 +1304,15 @@ The modelling notebooks evaluate classification performance using metrics such a
 - F1-Score
 - Confusion Matrix
 
-Model selection is based on the experimental methodology implemented in the notebooks.
+Validation results are used during model-selection activities.
 
-The final test set should remain separate from the training and model-selection stages.
+Final evaluation should be performed using the held-out test set.
 
 ---
 
-# 🌐 Hugging Face Model Deployment
+# 🌐 Hugging Face Deployment
 
-After the final DistilBERT model is trained, the model and tokenizer are exported.
+The final DistilBERT model and tokenizer are exported after training.
 
 Typical files include:
 
@@ -1084,32 +1324,32 @@ special_tokens_map.json
 vocab.txt
 ```
 
-The exported model is uploaded to Hugging Face.
+They are uploaded to a Hugging Face model repository.
 
-The Streamlit application loads the model using:
+The Streamlit application then performs:
 
 ```text
 Hugging Face Repository
-        │
-        ▼
+        ↓
 AutoTokenizer
-        │
-        ▼
+        ↓
 AutoModelForSequenceClassification
-        │
-        ▼
-BrandPulse AI
+        ↓
+DistilBERT Prediction
 ```
-
-The Hugging Face repository can remain private when a valid read token is supplied through Streamlit Secrets.
 
 ---
 
 # 🛠️ Technology Stack
 
-## Programming Language
+## Programming
 
 - Python
+
+## Development Environment
+
+- Google Colab
+- GitHub
 
 ## Data Processing
 
@@ -1117,14 +1357,17 @@ The Hugging Face repository can remain private when a valid read token is suppli
 - NumPy
 - openpyxl
 
-## Machine Learning / NLP
+## Machine Learning
 
 - scikit-learn
 - PyTorch
+
+## NLP / Transformer
+
 - Hugging Face Transformers
 - DistilBERT
 
-## Embedding / Feature Representation
+## Feature Representation
 
 - TF-IDF
 - Word2Vec
@@ -1137,29 +1380,25 @@ The Hugging Face repository can remain private when a valid read token is suppli
 - BiLSTM
 - CNN
 
+## Generative AI
+
+- OpenRouter
+- Ollama Cloud
+- Google Gemini
+
 ## Model Hosting
 
 - Hugging Face Hub
-
-## Generative AI
-
-- Google Gemini
-- OpenRouter
 
 ## Visualisation
 
 - Streamlit
 - Plotly
 
-## Reporting
+## Report Generation
 
 - python-docx
 - fpdf2
-
-## Development
-
-- Google Colab
-- GitHub
 
 ## Cloud Deployment
 
@@ -1167,9 +1406,9 @@ The Hugging Face repository can remain private when a valid read token is suppli
 
 ---
 
-# 📦 Main Application Dependencies
+# 📦 Application Dependencies
 
-The deployed application currently uses packages such as:
+The Streamlit application currently uses packages such as:
 
 ```text
 streamlit
@@ -1187,7 +1426,7 @@ python-docx
 fpdf2
 ```
 
-Dependencies are listed in:
+The official list is stored in:
 
 ```text
 requirements.txt
@@ -1195,35 +1434,33 @@ requirements.txt
 
 ---
 
-# 🔐 Environment Secrets
+# 🔐 Streamlit Secrets
 
-Sensitive API credentials should not be stored directly in GitHub source files.
+Sensitive credentials are not stored directly in GitHub.
 
-The Streamlit deployment requires secrets similar to:
+The deployed system uses Streamlit Secrets.
+
+Example configuration:
 
 ```toml
 HF_MODEL_REPO = "YOUR_HUGGINGFACE_MODEL_REPOSITORY"
-
 HF_TOKEN = "YOUR_HUGGINGFACE_READ_TOKEN"
 
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-
-GEMINI_MODEL = "YOUR_CONFIGURED_GEMINI_MODEL"
-
 OPENROUTER_API_KEY = "YOUR_OPENROUTER_API_KEY"
-
 OPENROUTER_MODEL = "openrouter/free"
+
+OLLAMA_API_KEY = "YOUR_OLLAMA_API_KEY"
+OLLAMA_MODEL = "gpt-oss:20b"
+
+GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
+GEMINI_MODEL = "YOUR_CONFIGURED_GEMINI_MODEL"
 ```
 
-Actual credentials must be configured through Streamlit Secrets or another secure environment-variable system.
-
-> Never commit real Hugging Face, Gemini, OpenRouter, or other private API keys to GitHub.
-
-If an API key has accidentally been committed, revoke the exposed credential and generate a replacement.
+> Real tokens and API keys must never be committed to GitHub.
 
 ---
 
-# 🚀 Running BrandPulse AI Locally
+# 🚀 Running the Application Locally
 
 ## 1. Clone the repository
 
@@ -1231,7 +1468,7 @@ If an API key has accidentally been committed, revoke the exposed credential and
 git clone <repository-url>
 ```
 
-Move into the project directory:
+Then:
 
 ```bash
 cd FYP-Brand-Reputation-System
@@ -1247,25 +1484,28 @@ pip install -r requirements.txt
 
 ---
 
-## 3. Configure required secrets
+## 3. Configure credentials
 
-Set the required Hugging Face, Gemini, and OpenRouter credentials.
+Add the required:
+
+- Hugging Face credentials;
+- OpenRouter credentials;
+- Ollama credentials;
+- Gemini credentials.
 
 ---
 
-## 4. Start Streamlit
+## 4. Run Streamlit
 
 ```bash
 streamlit run streamlit_app.py
 ```
 
-Streamlit will display a local URL in the terminal.
-
 ---
 
-# ☁️ Streamlit Community Cloud Deployment
+# ☁️ Streamlit Community Cloud
 
-The deployment configuration uses approximately:
+Deployment configuration:
 
 ```text
 Repository:
@@ -1278,514 +1518,400 @@ Main file:
 streamlit_app.py
 ```
 
-The required secrets must be configured in Streamlit Community Cloud before the application can access:
-
-- Hugging Face;
-- Gemini;
-- OpenRouter.
+Required API credentials are configured through Streamlit Cloud Secrets.
 
 ---
 
-# 🧪 Current Testing Status
+# ✅ Final Functional Status
 
-BrandPulse AI has been progressively tested during development using smaller review samples and individual component tests.
-
-Components tested during development include:
+The major application components have been successfully implemented and tested.
 
 ```text
-✅ Hugging Face DistilBERT model loading
+✅ Hugging Face DistilBERT loading
 
-✅ Single-review DistilBERT prediction
+✅ Single Review prediction
 
-✅ CSV/XLSX upload interface
+✅ CSV upload
 
-✅ Batch prediction workflow on manageable samples
+✅ XLSX upload
 
-✅ Brand Reputation Dashboard
+✅ Batch sentiment classification
 
-✅ Brand Reputation Score calculation
+✅ Brand Reputation Score
 
-✅ Customer issue analysis
+✅ Sentiment Distribution
 
-✅ Customer voice analysis
+✅ Customer Issue Analysis
 
-✅ Gemini API connectivity
+✅ Customer Voice Analysis
 
-✅ OpenRouter API connectivity
+✅ OpenRouter integration
 
-✅ Department manager generation workflow
+✅ Ollama Cloud integration
 
-✅ Executive Manager workflow
+✅ Gemini integration
 
-🧪 DOCX / PDF final export verification
+✅ Technical Manager
 
-🧪 Full-scale Streamlit dataset testing
+✅ Product Manager
+
+✅ Customer Service Manager
+
+✅ Marketing Manager
+
+✅ Subscription Manager
+
+✅ Executive Manager
+
+✅ Session-state report preservation
+
+✅ Manager report regeneration handling
+
+✅ Executive report invalidation handling
+
+✅ Markdown report downloads
+
+✅ Complete JSON export
+
+✅ Microsoft Word report generation
+
+✅ PDF report generation
+
+✅ Professional Report Centre
+
+✅ Multi-provider management architecture
 ```
 
-The complete full-scale FYP dataset has **not necessarily been processed end-to-end through Streamlit Community Cloud**.
+---
 
-Large-scale inference through a free cloud deployment can be affected by:
+# 🧪 Recommended Functional Test
 
-- memory limits;
-- CPU availability;
-- model inference time;
-- Streamlit execution limits;
-- application restarts;
-- third-party API quotas.
+| Test | Expected Result |
+|---|---|
+| Positive single review | Positive prediction |
+| Negative single review | Negative prediction |
+| Empty single review | Warning |
+| CSV upload | Accepted |
+| XLSX upload | Accepted |
+| Missing review values | Safely ignored |
+| Batch prediction | Predictions generated |
+| Reputation dashboard | Indicators displayed |
+| Sentiment distribution | Chart displayed |
+| Issue analysis | Issue mentions shown |
+| Customer voice | Word frequencies shown |
+| Technical Manager | OpenRouter report generated |
+| Product Manager | Ollama report generated |
+| Customer Service Manager | OpenRouter report generated |
+| Marketing Manager | Ollama report generated |
+| Subscription Manager | OpenRouter report generated |
+| Executive before 5 reports | Prevented |
+| Executive after 5 reports | Gemini report generated |
+| DOCX generation | Successful |
+| PDF generation | Successful |
+| New dataset | Previous AI reports cleared |
+| Regenerated manager | Previous executive output cleared |
 
-Therefore:
+---
+
+# 🎬 Recommended Demonstration Workflow
+
+For the final FYP demonstration:
 
 ```text
-Google Colab / Experimental Notebooks
-→ Model development
-→ Training
-→ Validation
-→ Testing
-→ Experimental comparison
-
-Streamlit
-→ Deployment prototype
-→ Interactive prediction
-→ Reputation visualisation
-→ Decision-support demonstration
+1. Open BrandPulse AI
+        ↓
+2. Test Positive Single Review
+        ↓
+3. Test Negative Single Review
+        ↓
+4. Upload Representative CSV
+        ↓
+5. Run Batch Intelligence
+        ↓
+6. View Reputation Dashboard
+        ↓
+7. Explain Reputation Score
+        ↓
+8. Explain Issue Analysis
+        ↓
+9. Generate Technical Manager
+        ↓
+10. Generate Product Manager
+        ↓
+11. Generate Customer Service Manager
+        ↓
+12. Generate Marketing Manager
+        ↓
+13. Generate Subscription Manager
+        ↓
+14. Generate Executive Manager
+        ↓
+15. Generate DOCX + PDF
+        ↓
+16. Download Professional Report
 ```
 
-A manageable representative review sample is recommended for the live Streamlit demonstration.
+A manageable representative dataset is recommended during the live demonstration to reduce cloud processing time.
 
 ---
 
 # ⚠️ Known Limitations
 
-## 1. Streamlit Community Cloud Resources
+## 1. Cloud Computing Resources
 
-The final DistilBERT model requires computational resources for inference.
+Streamlit Community Cloud has finite computational resources.
 
-Processing a very large review dataset directly through Streamlit Community Cloud may result in:
+Very large datasets may require:
 
-- slow processing;
-- timeout;
-- high memory consumption;
-- application restart.
+- significant CPU processing;
+- memory;
+- model inference time.
 
-Therefore, the deployed system is primarily intended as a decision-support prototype rather than a high-volume production inference service.
-
----
-
-## 2. Gemini API Rate Limits
-
-Gemini API access is subject to usage quotas.
-
-For example:
-
-```text
-429 RESOURCE_EXHAUSTED
-```
-
-may occur if the current project exceeds an assigned request or token limit.
-
-This does not necessarily indicate an error in the BrandPulse AI application.
+Large-scale model experimentation is therefore performed in Google Colab rather than through the deployed Streamlit interface.
 
 ---
 
-## 3. OpenRouter Free Router
+## 2. Binary Sentiment Classification
 
-BrandPulse AI currently requests:
-
-```text
-openrouter/free
-```
-
-The actual LLM selected by OpenRouter may vary according to free-model availability.
-
-Therefore, Marketing and Subscription reports may not always use the same underlying model.
-
-The application records the actual selected OpenRouter model where available.
-
----
-
-## 4. DistilBERT Classification Errors
-
-The final sentiment classifier is a predictive model.
-
-Incorrect sentiment predictions can still occur.
-
-Model confidence should therefore not be interpreted as certainty.
-
----
-
-## 5. Binary Sentiment
-
-The deployed system currently focuses on:
+The deployed DistilBERT model predicts:
 
 ```text
 Positive
 Negative
 ```
 
-The neutral category is not part of the final deployed binary classification workflow.
+Neutral sentiment is not included in the final deployed binary workflow.
 
 ---
 
-## 6. Rule-Based Issue Categorisation
+## 3. Issue Categorisation
 
-Issue categorisation uses predefined keyword/rule logic.
+Issue analysis currently uses predefined keyword-based rules.
 
-As a result:
+Therefore:
 
-- one review may match multiple issues;
-- an issue may not be detected if different wording is used;
-- some reviews may be categorised as Other or Unclear.
-
-A trained multi-label issue classifier could improve this component in future work.
+- one review may match several categories;
+- some alternative wording may not be detected;
+- some reviews may remain Other or Unclear.
 
 ---
 
-## 7. LLM Hallucination
+## 4. LLM Provider Availability
 
-Gemini and OpenRouter models can potentially generate unsupported or inaccurate statements.
+The system depends on external generative AI services.
 
-Prompts are designed to encourage the models to:
+OpenRouter, Ollama, or Gemini may temporarily experience:
 
-- use supplied analytical evidence;
+- rate limits;
+- service limits;
+- model unavailability;
+- network errors.
+
+The multi-provider architecture reduces dependency on a single service but does not eliminate third-party service limitations.
+
+---
+
+## 5. OpenRouter Free Routing
+
+The application requests:
+
+```text
+openrouter/free
+```
+
+The underlying model may therefore change according to availability.
+
+BrandPulse AI displays the actual model returned where possible.
+
+---
+
+## 6. LLM Hallucination
+
+Large Language Models may generate unsupported or inaccurate statements.
+
+BrandPulse AI prompts instruct the LLMs to:
+
+- use only supplied evidence;
 - avoid inventing statistics;
-- distinguish observations from recommendations;
-- state limitations when evidence is insufficient.
+- avoid inventing customer counts;
+- avoid inventing business facts;
+- clearly distinguish recommendations from observations;
+- acknowledge insufficient evidence.
 
-However, generated reports should still be treated as **decision-support outputs** rather than independently verified factual conclusions.
-
----
-
-# 🧪 Recommended System Testing
-
-A complete functional test should include:
-
-| Test | Expected Result |
-|---|---|
-| Positive single review | Positive prediction |
-| Negative single review | Negative prediction |
-| Empty review | Warning displayed |
-| CSV upload | File accepted |
-| XLSX upload | File accepted |
-| Missing review values | Safely removed/ignored |
-| Batch sentiment prediction | Predictions generated |
-| Reputation Dashboard | Statistics displayed |
-| Sentiment chart | Positive/negative distribution displayed |
-| Issue analysis | Issue mentions displayed |
-| Customer voice | Frequent terms displayed |
-| Gemini Technical Manager | Report generated |
-| Gemini Product Manager | Report generated |
-| Gemini Customer Service Manager | Report generated |
-| OpenRouter Marketing Manager | Report generated |
-| OpenRouter Subscription Manager | Report generated |
-| Executive Manager before 5 reports | Generation prevented |
-| Executive Manager after 5 reports | Report generated |
-| DOCX export | Word file opens correctly |
-| PDF export | PDF opens correctly |
-| New dataset uploaded | Previous manager reports cleared |
+LLM reports should nevertheless be treated as **decision-support recommendations**, not independently verified facts.
 
 ---
 
-# 🧪 Recommended Live Demonstration Workflow
+## 7. Reputation Score Interpretation
 
-For the FYP presentation or system demonstration:
+The Brand Reputation Score is an internal project indicator.
 
-```text
-1. Open BrandPulse AI
-        │
-        ▼
-2. Enter one positive review
-        │
-        ▼
-3. Run Single Review prediction
-        │
-        ▼
-4. Enter one negative review
-        │
-        ▼
-5. Upload representative CSV
-        │
-        ▼
-6. Run Batch Intelligence
-        │
-        ▼
-7. Open Reputation Dashboard
-        │
-        ▼
-8. Explain Brand Reputation Score
-        │
-        ▼
-9. Explain Issue Analysis
-        │
-        ▼
-10. Generate Department Manager Reports
-        │
-        ▼
-11. Generate Executive Report
-        │
-        ▼
-12. Export DOCX / PDF Report
-```
+It should not be interpreted as:
 
-A smaller representative dataset is recommended during a live demonstration to reduce the risk of cloud resource limitations.
+- an official Spotify metric;
+- an industry-standard reputation index;
+- a financial valuation;
+- a universal brand-equity measure.
 
 ---
 
-# 🧪 Large Dataset Testing
+# 🔐 Security Considerations
 
-The original FYP modelling workflow uses a substantially larger review dataset than the small demonstration dataset required by Streamlit.
+Before publishing or sharing the repository:
 
-The full-scale data is more appropriately processed in:
-
-```text
-Google Colab
-```
-
-because it provides a controlled model-development environment with access to higher computational resources.
-
-Streamlit serves primarily as the:
-
-- deployment interface;
-- visualisation layer;
-- management decision-support system;
-- demonstration platform.
-
----
-
-# 🧰 Troubleshooting
-
-## FileNotFoundError in notebooks
-
-Cause:
-
-```text
-Google Drive path does not match the current user's Drive.
-```
-
-Solution:
-
-Update:
-
-```text
-/content/drive/MyDrive/...
-```
-
-to match the actual location of the dataset.
-
----
-
-## Hugging Face Model Error
-
-Check:
-
-- `HF_MODEL_REPO`;
-- `HF_TOKEN`;
-- repository permissions;
-- model files;
-- tokenizer files.
-
----
-
-## Gemini 429 Error
-
-Example:
-
-```text
-429 RESOURCE_EXHAUSTED
-```
-
-This usually indicates an API quota or rate limit.
-
-Wait before retrying and check the configured API quota.
-
-Repeatedly clicking the generation button should be avoided while a rate limit is active.
-
----
-
-## OpenRouter Error
-
-Check:
-
-- API key;
-- free-model availability;
-- API request limits;
-- response model information.
-
-Because `openrouter/free` is used, free model availability may change.
-
----
-
-# 🔐 Security Recommendations
-
-Before submitting or demonstrating the FYP:
-
-- ensure no API keys exist in source code;
-- ensure no Hugging Face write token exists in GitHub;
-- ensure Gemini API keys are only stored securely;
-- ensure OpenRouter keys are only stored securely;
+- do not commit API keys;
+- do not commit Hugging Face write tokens;
+- do not include Gemini API keys;
+- do not include OpenRouter API keys;
+- do not include Ollama API keys;
 - inspect notebooks for accidentally printed credentials;
-- revoke any credential that has previously been publicly exposed.
+- revoke any credential that has previously been exposed.
 
 ---
 
-# 📌 Academic Transparency
+# 🔬 Academic Transparency
 
-The repository separates experimental research from the final deployment.
+The repository separates the research experimentation stage from the final application.
 
 ```text
 notebooks/
-→ Research experiments
-→ Model development
-→ Model evaluation
-→ Comparison
+│
+├── Model Development
+├── Model Evaluation
+├── Feature Representation
+├── DistilBERT
+└── Hybrid Experiments
 
 
 src/
-→ Application modules
-→ Prediction
-→ Analytics
-→ LLM integration
-→ Report generation
+│
+├── DistilBERT Prediction
+├── Reputation Analytics
+├── Multi-LLM Integration
+└── Report Generation
 
 
 streamlit_app.py
-→ Interactive decision-support system
+│
+└── Final Interactive Decision-Support Application
 ```
 
-The experimental notebooks provide evidence of model development, while the Streamlit application demonstrates how the selected model can be integrated into a practical brand reputation decision-support prototype.
+This separation ensures that the Streamlit application demonstrates deployment of the selected model without replacing the experimental research process performed in Google Colab.
 
 ---
 
 # 🔮 Future Improvements
 
-Potential future improvements include:
+Potential future development includes:
 
-- higher-capacity cloud inference;
-- asynchronous/background batch processing;
-- queue-based review processing;
-- database integration;
-- direct Google Play/App Store data collection;
-- historical brand reputation tracking;
-- reputation trend visualisation;
-- multilingual review analysis;
+- high-capacity cloud inference;
+- background batch processing;
+- asynchronous review analysis;
+- direct Google Play/App Store review collection;
+- multilingual sentiment classification;
 - topic modelling;
-- transformer-based issue classification;
-- multi-label customer issue classification;
+- transformer-based issue categorisation;
+- multi-label issue classification;
+- time-series reputation analysis;
+- historical reputation tracking;
+- competitor reputation comparison;
 - retrieval-augmented generation;
-- automated LLM grounding checks;
-- LLM output evaluation;
-- management KPI tracking;
-- scheduled reputation monitoring;
-- user authentication;
+- automatic LLM-grounding verification;
+- LLM output quality scoring;
+- database integration;
+- authentication;
+- management KPI monitoring;
 - department-specific dashboards;
-- improved DOCX/PDF visual report design;
-- support for additional brands;
-- comparative competitor reputation analysis.
+- automated scheduled reputation monitoring.
 
 ---
 
-# 📊 Final System Component Summary
+# 📊 Final Component Summary
 
-| Component | Technology | Purpose |
+| Component | Technology | Main Purpose |
 |---|---|---|
-| Review Input | Streamlit | Receive customer reviews |
-| Sentiment Prediction | DistilBERT | Positive/Negative classification |
-| Model Hosting | Hugging Face | Store deployed transformer |
-| Reputation Score | Python | Aggregate sentiment into reputation indicator |
-| Issue Analysis | Python rules | Detect common customer concerns |
-| Customer Voice | Python | Extract frequent terms |
-| Technical Manager | Gemini | Technical recommendations |
-| Product Manager | Gemini | Product recommendations |
-| Customer Service Manager | Gemini | Customer service recommendations |
-| Marketing Manager | OpenRouter Free | Marketing recommendations |
-| Subscription Manager | OpenRouter Free | Pricing/subscription recommendations |
-| Executive Manager | Gemini | Consolidate management findings |
-| Dashboard | Streamlit + Plotly | Interactive visualisation |
-| DOCX Export | python-docx | Editable management report |
-| PDF Export | fpdf2 | Fixed-format report |
+| Review Input | Streamlit | Collect review text |
+| Sentiment Classification | DistilBERT | Positive/Negative prediction |
+| Model Hosting | Hugging Face | Host final transformer |
+| Reputation Score | Python | Brand-level sentiment indicator |
+| Issue Analysis | Python Rules | Detect recurring concerns |
+| Customer Voice | Python | Identify recurring terms |
+| Technical Manager | OpenRouter | Technical interpretation |
+| Product Manager | Ollama `gpt-oss:20b` | Product interpretation |
+| Customer Service Manager | OpenRouter | Service interpretation |
+| Marketing Manager | Ollama `gpt-oss:20b` | Marketing interpretation |
+| Subscription Manager | OpenRouter | Subscription interpretation |
+| Executive Manager | Gemini | Consolidate all department reports |
+| Visualisation | Streamlit + Plotly | Interactive dashboard |
+| DOCX Export | python-docx | Editable professional report |
+| PDF Export | fpdf2 | Fixed-format professional report |
 
 ---
 
-# 📂 Recommended Final Repository Structure
+# ✅ Final Project Status
 
 ```text
-FYP-Brand-Reputation-System/
-│
-├── .streamlit/
-│   └── config.toml
-│
-├── notebooks/
-│   ├── README.md
-│   ├── FYP_Single_Algorithm.ipynb
-│   ├── FYP_DistilBERT.ipynb
-│   └── FYP_Hybrid.ipynb
-│
-├── src/
-│   ├── __init__.py
-│   ├── analysis.py
-│   ├── distilbert_predictor.py
-│   ├── llm_service.py
-│   └── report_export.py
-│
-├── streamlit_app.py
-├── requirements.txt
-├── README.md
-└── .gitignore
-```
+✅ Dataset Integration
 
----
+✅ Text Preprocessing
 
-# ✅ Current Project Status
+✅ TF-IDF Experiments
 
-```text
-✅ Spotify review dataset preparation
+✅ Embedding Experiments
 
-✅ Full text preprocessing workflow
+✅ Traditional ML Experiments
 
-✅ TF-IDF experiments
+✅ Deep Learning Experiments
 
-✅ Embedding experiments
+✅ DistilBERT Experiment
 
-✅ Traditional machine-learning experiments
+✅ Hybrid Experiment
 
-✅ Deep-learning experiments
+✅ Final DistilBERT Export
 
-✅ DistilBERT experiment
+✅ Hugging Face Hosting
 
-✅ Hybrid experiment
+✅ Streamlit Deployment
 
-✅ Final DistilBERT model export
+✅ Single Review Intelligence
 
-✅ Hugging Face model hosting
-
-✅ Streamlit deployment
-
-✅ Single Review prediction
-
-✅ Batch Intelligence workflow
+✅ Batch Review Intelligence
 
 ✅ Reputation Dashboard
 
 ✅ Brand Reputation Score
 
-✅ Customer Issue Analysis
+✅ Issue Analysis
 
 ✅ Customer Voice Analysis
 
-✅ Gemini integration
+✅ Multi-LLM Architecture
 
-✅ OpenRouter integration
+✅ OpenRouter Integration
 
-✅ Five AI Department Managers
+✅ Ollama Cloud Integration
 
-✅ Executive Manager workflow
+✅ Gemini Executive Integration
 
-🔄 DOCX / PDF final verification
+✅ Five Department Managers
 
-🔄 Final functional testing
+✅ Executive Manager
 
-🔄 LLM report evaluation
+✅ DOCX Report Generation
 
-🔄 Final FYP documentation and presentation
+✅ PDF Report Generation
+
+✅ Professional Report Centre
+
+✅ Final End-to-End Application Workflow
+
+🔄 Final System Evaluation
+
+🔄 LLM Output Evaluation
+
+🔄 Final FYP Documentation
+
+🔄 Final Presentation Preparation
 ```
 
 ---
@@ -1794,9 +1920,14 @@ FYP-Brand-Reputation-System/
 
 BrandPulse AI is an **academic Final Year Project prototype**.
 
-The application demonstrates how NLP-based sentiment classification, brand reputation analytics, and Large Language Models can be combined within a decision-support workflow.
+The application demonstrates the integration of:
 
-The model predictions and generated management recommendations should not be interpreted as:
+- NLP-based sentiment classification;
+- brand reputation analytics;
+- multi-provider Large Language Models;
+- management decision-support reporting.
+
+Generated sentiment predictions and management recommendations should not be interpreted as:
 
 - official Spotify statements;
 - independently verified business facts;
@@ -1821,48 +1952,51 @@ BrandPulse AI
 **Application Domain:**  
 Spotify Online Customer Reviews
 
-**Primary Deployed Sentiment Model:**  
+**Primary Predictive Model:**  
 DistilBERT
 
 **Sentiment Classes:**  
 Positive and Negative
 
-**Experimental Environment:**  
+**Experimental Platform:**  
 Google Colab
 
 **Model Hosting:**  
-Hugging Face
+Hugging Face Hub
 
 **Application Framework:**  
 Streamlit
 
-**Cloud Deployment:**  
+**Deployment:**  
 Streamlit Community Cloud
 
-**Generative AI Providers:**  
-Google Gemini and OpenRouter
+**Department LLM Providers:**  
+OpenRouter and Ollama Cloud
+
+**Executive LLM Provider:**  
+Gemini
 
 **Report Formats:**  
-DOCX and PDF
+Microsoft Word (`.docx`) and PDF (`.pdf`)
 
 ---
 
-# 📝 Summary
+# 📝 Final Summary
 
-BrandPulse AI combines three main levels of intelligence:
+BrandPulse AI integrates three levels of intelligence:
 
 ```text
 1. Predictive Intelligence
    │
-   └── DistilBERT sentiment classification
+   └── DistilBERT Sentiment Classification
 
 
 2. Analytical Intelligence
    │
    ├── Brand Reputation Score
    ├── Sentiment Distribution
-   ├── Issue Analysis
-   └── Customer Voice
+   ├── Customer Issue Analysis
+   └── Customer Voice Intelligence
 
 
 3. Generative Management Intelligence
@@ -1875,4 +2009,4 @@ BrandPulse AI combines three main levels of intelligence:
    └── Executive Manager
 ```
 
-The experimental notebooks provide the modelling foundation, while the final Streamlit system demonstrates how the selected DistilBERT model can be transformed into an interactive **brand reputation decision-support platform**.
+The experimental notebooks provide the modelling and evaluation foundation, while BrandPulse AI demonstrates how a selected NLP model can be deployed as an interactive **brand reputation decision-support system** combining predictive analytics, multi-LLM management interpretation, executive reporting, and professional document generation.
