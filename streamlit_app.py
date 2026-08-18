@@ -1,10 +1,27 @@
 # ============================================================
 # BRANDPULSE AI
-# Spotify Brand Reputation Intelligence System
+# Online Review-Based Brand Reputation Prediction
+# Using NLP Techniques
+#
+# FINAL STREAMLIT APPLICATION
+#
+# Predictive AI:
+#   DistilBERT
+#
+# Department LLMs:
+#   Technical Manager        -> OpenRouter Free
+#   Product Manager          -> Ollama Cloud
+#   Customer Service Manager -> OpenRouter Free
+#   Marketing Manager        -> Ollama Cloud
+#   Subscription Manager     -> OpenRouter Free
+#
+# Executive:
+#   Gemini
 # ============================================================
 
 from io import BytesIO
 import json
+import re
 
 import pandas as pd
 import plotly.express as px
@@ -53,47 +70,63 @@ st.html(
 <style>
 
 /* ==========================================================
-   GLOBAL DESIGN
+   GLOBAL
    ========================================================== */
 
 :root {
+
     --green: #1ED760;
-    --green-light: #64F394;
+    --green-soft: #5EEA91;
 
     --blue: #38BDF8;
+
     --purple: #A855F7;
+
     --pink: #F472B6;
+
     --orange: #FB923C;
+
     --yellow: #FACC15;
+
     --red: #FB7185;
 
     --background: #090D14;
-    --panel: #121925;
+
+    --panel: #121923;
+
     --panel-light: #182231;
 
-    --text: #F8FAFC;
-    --muted: #94A3B8;
+    --text-main: #F8FAFC;
+
+    --text-soft: #AAB6C5;
+
+    --text-muted: #748196;
 }
 
+
+/* ==========================================================
+   APPLICATION
+   ========================================================== */
 
 .stApp {
 
     background:
+
         radial-gradient(
-            circle at 4% 4%,
-            rgba(168,85,247,0.10),
+            circle at 4% 5%,
+            rgba(168, 85, 247, 0.10),
             transparent 23%
         ),
 
         radial-gradient(
             circle at 96% 5%,
-            rgba(30,215,96,0.10),
-            transparent 26%
+            rgba(30, 215, 96, 0.10),
+            transparent 25%
         ),
 
         radial-gradient(
-            circle at 75% 90%,
-            rgba(56,189,248,0.07),
+            circle at 72% 88%,
+            rgba(56, 189, 248, 0.07),
             transparent 25%
         ),
 
@@ -130,22 +163,22 @@ st.html(
     background:
 
         radial-gradient(
-            circle at 87% 18%,
-            rgba(30,215,96,0.34),
-            transparent 30%
+            circle at 88% 15%,
+            rgba(30, 215, 96, 0.31),
+            transparent 28%
         ),
 
         radial-gradient(
-            circle at 13% 100%,
-            rgba(168,85,247,0.26),
+            circle at 11% 100%,
+            rgba(168, 85, 247, 0.23),
             transparent 38%
         ),
 
         linear-gradient(
             130deg,
-            #111827,
+            #111827 0%,
             #151A24 45%,
-            #0E1821
+            #0E1821 100%
         );
 
     border:
@@ -157,12 +190,11 @@ st.html(
         );
 
     box-shadow:
-        0 26px 65px
-        rgba(
+        0 25px 60px rgba(
             0,
             0,
             0,
-            0.32
+            0.30
         );
 }
 
@@ -190,8 +222,7 @@ st.html(
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             30,
             215,
             96,
@@ -218,7 +249,7 @@ st.html(
         clamp(
             38px,
             4vw,
-            54px
+            55px
         );
 
     font-weight: 900;
@@ -230,6 +261,7 @@ st.html(
 .bp-gradient {
 
     background:
+
         linear-gradient(
             90deg,
             #1ED760,
@@ -246,7 +278,7 @@ st.html(
 
 .bp-subtitle {
 
-    max-width: 920px;
+    max-width: 930px;
 
     margin-top: 17px;
 
@@ -287,8 +319,7 @@ st.html(
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             255,
             255,
             255,
@@ -313,7 +344,7 @@ st.html(
 
     width: 100%;
 
-    min-height: 215px;
+    min-height: 220px;
 
     height: auto;
 
@@ -328,13 +359,12 @@ st.html(
     background:
         linear-gradient(
             145deg,
-            rgba(24,33,45,0.98),
-            rgba(16,23,32,0.98)
+            rgba(24, 33, 45, 0.98),
+            rgba(16, 23, 32, 0.98)
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             255,
             255,
             255,
@@ -342,7 +372,7 @@ st.html(
         );
 
     transition:
-        0.2s ease;
+        0.20s ease;
 }
 
 
@@ -356,12 +386,11 @@ st.html(
             30,
             215,
             96,
-            0.36
+            0.34
         );
 
     box-shadow:
-        0 16px 35px
-        rgba(
+        0 16px 35px rgba(
             0,
             0,
             0,
@@ -426,13 +455,13 @@ st.html(
 }
 
 
-.icon-pink {
+.icon-orange {
 
     background:
         rgba(
-            244,
-            114,
-            182,
+            251,
+            146,
+            60,
             0.16
         );
 }
@@ -471,7 +500,7 @@ st.html(
 
 
 /* ==========================================================
-   SECTION HEADER
+   SECTION
    ========================================================== */
 
 .bp-section {
@@ -585,8 +614,7 @@ st.html(
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             30,
             215,
             96,
@@ -600,7 +628,7 @@ st.html(
 
 
 /* ==========================================================
-   KPI CARDS
+   KPI
    ========================================================== */
 
 .bp-kpi {
@@ -628,8 +656,7 @@ st.html(
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             255,
             255,
             255,
@@ -671,6 +698,11 @@ st.html(
 
 .kpi-purple::before {
     background: #A855F7;
+}
+
+
+.kpi-orange::before {
+    background: #FB923C;
 }
 
 
@@ -719,14 +751,13 @@ st.html(
     background:
         linear-gradient(
             110deg,
-            rgba(30,215,96,0.07),
-            rgba(56,189,248,0.06),
-            rgba(168,85,247,0.08)
+            rgba(30, 215, 96, 0.07),
+            rgba(56, 189, 248, 0.06),
+            rgba(168, 85, 247, 0.08)
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             255,
             255,
             255,
@@ -756,7 +787,7 @@ st.html(
 
 
 /* ==========================================================
-   MANAGEMENT CARDS
+   MANAGER CARDS
    ========================================================== */
 
 .bp-manager {
@@ -782,8 +813,7 @@ st.html(
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             255,
             255,
             255,
@@ -823,32 +853,62 @@ st.html(
 
 
 .avatar-tech {
+
     background:
-        rgba(56,189,248,0.14);
+        rgba(
+            56,
+            189,
+            248,
+            0.14
+        );
 }
 
 
 .avatar-product {
+
     background:
-        rgba(168,85,247,0.16);
+        rgba(
+            168,
+            85,
+            247,
+            0.16
+        );
 }
 
 
 .avatar-service {
+
     background:
-        rgba(30,215,96,0.13);
+        rgba(
+            30,
+            215,
+            96,
+            0.13
+        );
 }
 
 
 .avatar-marketing {
+
     background:
-        rgba(244,114,182,0.15);
+        rgba(
+            244,
+            114,
+            182,
+            0.15
+        );
 }
 
 
 .avatar-subscription {
+
     background:
-        rgba(251,146,60,0.15);
+        rgba(
+            251,
+            146,
+            60,
+            0.15
+        );
 }
 
 
@@ -873,6 +933,10 @@ st.html(
     overflow-wrap: break-word;
 }
 
+
+/* ==========================================================
+   PROVIDER BADGES
+   ========================================================== */
 
 .bp-provider {
 
@@ -918,6 +982,20 @@ st.html(
 }
 
 
+.provider-ollama {
+
+    color: #FDBA74;
+
+    background:
+        rgba(
+            249,
+            115,
+            22,
+            0.12
+        );
+}
+
+
 /* ==========================================================
    EXECUTIVE
    ========================================================== */
@@ -931,26 +1009,58 @@ st.html(
     overflow: hidden;
 
     background:
+
         radial-gradient(
             circle at top right,
-            rgba(168,85,247,0.19),
+            rgba(168, 85, 247, 0.19),
             transparent 40%
         ),
 
         linear-gradient(
             135deg,
-            rgba(25,33,47,0.98),
-            rgba(15,21,30,0.98)
+            rgba(25, 33, 47, 0.98),
+            rgba(15, 21, 30, 0.98)
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             168,
             85,
             247,
             0.21
         );
+}
+
+
+/* ==========================================================
+   REPORT
+   ========================================================== */
+
+.bp-report-source {
+
+    display: inline-flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border-radius: 9px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.05
+        );
+
+    color: #A8B2C1;
+
+    font-size: 11px;
+
+    overflow-wrap: anywhere;
 }
 
 
@@ -967,15 +1077,16 @@ st.html(
     border-radius: 24px;
 
     background:
+
         radial-gradient(
             circle at top right,
-            rgba(56,189,248,0.14),
+            rgba(56, 189, 248, 0.14),
             transparent 35%
         ),
 
         radial-gradient(
             circle at bottom left,
-            rgba(30,215,96,0.12),
+            rgba(30, 215, 96, 0.12),
             transparent 35%
         ),
 
@@ -987,8 +1098,7 @@ st.html(
         );
 
     border:
-        1px solid
-        rgba(
+        1px solid rgba(
             56,
             189,
             248,
@@ -1021,36 +1131,36 @@ st.html(
 }
 
 
-.bp-report-source {
+/* ==========================================================
+   ERROR PANEL
+   ========================================================== */
 
-    display: inline-flex;
+.bp-error {
 
-    flex-wrap: wrap;
+    padding: 18px;
 
-    gap: 6px;
-
-    padding: 6px 10px;
-
-    border-radius: 9px;
+    border-radius: 16px;
 
     background:
         rgba(
-            255,
-            255,
-            255,
-            0.05
+            251,
+            113,
+            133,
+            0.08
         );
 
-    color: #A8B2C1;
-
-    font-size: 11px;
-
-    overflow-wrap: anywhere;
+    border:
+        1px solid rgba(
+            251,
+            113,
+            133,
+            0.20
+        );
 }
 
 
 /* ==========================================================
-   STREAMLIT NATIVE COMPONENTS
+   STREAMLIT
    ========================================================== */
 
 header[data-testid="stHeader"] {
@@ -1098,7 +1208,8 @@ div[data-testid="stDownloadButton"]
 ) {
 
     .bp-feature {
-        min-height: 235px;
+
+        min-height: 240px;
     }
 }
 
@@ -1108,12 +1219,20 @@ div[data-testid="stDownloadButton"]
 ) {
 
     .bp-hero {
+
         padding: 30px 24px;
     }
 
 
     .bp-feature {
-        min-height: 180px;
+
+        min-height: 185px;
+    }
+
+
+    .bp-title {
+
+        font-size: 38px;
     }
 }
 
@@ -1181,49 +1300,158 @@ def kpi_card(
     )
 
 
+def provider_display_name(
+    provider,
+):
+
+    provider_names = {
+
+        "gemini":
+            "Gemini",
+
+        "openrouter":
+            "OpenRouter Free",
+
+        "ollama":
+            "Ollama Cloud",
+    }
+
+
+    return provider_names.get(
+        str(provider).lower(),
+        str(provider).title(),
+    )
+
+
+def provider_badge(
+    provider,
+):
+
+    provider = (
+        str(provider)
+        .strip()
+        .lower()
+    )
+
+
+    if provider == "gemini":
+
+        return (
+            "✨ Gemini",
+            "provider-gemini",
+        )
+
+
+    if provider == "openrouter":
+
+        return (
+            "🌐 OpenRouter Free",
+            "provider-openrouter",
+        )
+
+
+    if provider == "ollama":
+
+        return (
+            "🦙 Ollama Cloud",
+            "provider-ollama",
+        )
+
+
+    return (
+        provider.title(),
+        "",
+    )
+
+
 def manager_visual(
     manager_name,
 ):
 
-    manager_styles = {
+    styles = {
 
         "Technical Manager": {
-            "emoji": "🛠️",
-            "avatar": "avatar-tech",
+
+            "emoji":
+                "🛠️",
+
+            "avatar":
+                "avatar-tech",
+
             "short":
-                "Reliability, software quality and performance",
+                (
+                    "Reliability, software quality, "
+                    "performance and technical issues"
+                ),
         },
+
 
         "Product Manager": {
-            "emoji": "🧩",
-            "avatar": "avatar-product",
+
+            "emoji":
+                "🧩",
+
+            "avatar":
+                "avatar-product",
+
             "short":
-                "Product experience, usability and features",
+                (
+                    "Product experience, features, "
+                    "usability and improvement priorities"
+                ),
         },
+
 
         "Customer Service Manager": {
-            "emoji": "🎧",
-            "avatar": "avatar-service",
+
+            "emoji":
+                "🎧",
+
+            "avatar":
+                "avatar-service",
+
             "short":
-                "Complaints, satisfaction and service recovery",
+                (
+                    "Complaints, satisfaction, support "
+                    "and customer service recovery"
+                ),
         },
+
 
         "Marketing Manager": {
-            "emoji": "📣",
-            "avatar": "avatar-marketing",
+
+            "emoji":
+                "📣",
+
+            "avatar":
+                "avatar-marketing",
+
             "short":
-                "Brand perception and communication",
+                (
+                    "Brand perception, messaging, "
+                    "reputation strengths and risks"
+                ),
         },
 
+
         "Subscription Manager": {
-            "emoji": "💳",
-            "avatar": "avatar-subscription",
+
+            "emoji":
+                "💳",
+
+            "avatar":
+                "avatar-subscription",
+
             "short":
-                "Premium, pricing, billing and customer value",
+                (
+                    "Premium, pricing, advertisements, "
+                    "billing and customer value"
+                ),
         },
     }
 
-    return manager_styles[
+
+    return styles[
         manager_name
     ]
 
@@ -1277,20 +1505,24 @@ def get_reputation_status(
 
 def reset_management_outputs():
     """
-    Run whenever a new dataset is analysed.
+    Clear manager/executive/export outputs
+    when a new review dataset is analysed.
     """
 
     st.session_state[
         "manager_reports"
     ] = {}
 
+
     st.session_state[
         "executive_report"
     ] = None
 
+
     st.session_state[
         "docx_export"
     ] = None
+
 
     st.session_state[
         "pdf_export"
@@ -1299,13 +1531,14 @@ def reset_management_outputs():
 
 def reset_report_exports():
     """
-    Run whenever manager or executive
-    report content changes.
+    Existing DOCX/PDF becomes outdated if
+    manager/executive report changes.
     """
 
     st.session_state[
         "docx_export"
     ] = None
+
 
     st.session_state[
         "pdf_export"
@@ -1315,10 +1548,6 @@ def reset_report_exports():
 def normalise_export_data(
     data,
 ):
-    """
-    Convert BytesIO / bytearray into bytes
-    suitable for Streamlit downloads.
-    """
 
     if data is None:
 
@@ -1327,7 +1556,7 @@ def normalise_export_data(
 
     if isinstance(
         data,
-        bytes
+        bytes,
     ):
 
         return data
@@ -1335,7 +1564,7 @@ def normalise_export_data(
 
     if isinstance(
         data,
-        bytearray
+        bytearray,
     ):
 
         return bytes(
@@ -1345,7 +1574,7 @@ def normalise_export_data(
 
     if isinstance(
         data,
-        BytesIO
+        BytesIO,
     ):
 
         data.seek(0)
@@ -1355,24 +1584,237 @@ def normalise_export_data(
 
     if hasattr(
         data,
-        "getvalue"
+        "getvalue",
     ):
 
         value = data.getvalue()
 
+
         if isinstance(
             value,
-            bytearray
+            bytearray,
         ):
 
             return bytes(
                 value
             )
 
+
         return value
 
 
     return data
+
+
+def format_percentage(
+    value,
+):
+
+    try:
+
+        return (
+            f"{float(value):.2f}%"
+        )
+
+    except Exception:
+
+        return (
+            f"{value}%"
+        )
+
+
+def prepare_word_dataframe(
+    word_data,
+):
+    """
+    Handle either:
+    [
+        {"word": "...", "count": 2}
+    ]
+
+    or:
+    [
+        ("word", 2)
+    ]
+    """
+
+    if not word_data:
+
+        return pd.DataFrame(
+            columns=[
+                "Word",
+                "Frequency",
+            ]
+        )
+
+
+    if isinstance(
+        word_data[0],
+        dict,
+    ):
+
+        df = pd.DataFrame(
+            word_data
+        )
+
+
+        rename_map = {
+
+            "word":
+                "Word",
+
+            "count":
+                "Frequency",
+        }
+
+
+        return df.rename(
+            columns=rename_map
+        )
+
+
+    df = pd.DataFrame(
+        word_data,
+        columns=[
+            "Word",
+            "Frequency",
+        ],
+    )
+
+
+    return df
+
+
+def clean_error_message(
+    error,
+):
+
+    message = str(
+        error
+    )
+
+
+    lower = (
+        message.lower()
+    )
+
+
+    # --------------------------------------------------------
+    # GEMINI
+    # --------------------------------------------------------
+
+    if (
+        "429"
+        in message
+        and
+        (
+            "gemini"
+            in lower
+            or
+            "quota"
+            in lower
+        )
+    ):
+
+        retry_match = re.search(
+            r"retry in ([0-9.]+)",
+            lower,
+        )
+
+
+        retry_text = ""
+
+
+        if retry_match:
+
+            retry_text = (
+                " Please wait approximately "
+                f"{retry_match.group(1)} seconds "
+                "before trying again."
+            )
+
+
+        return (
+            "Gemini is temporarily unavailable because "
+            "the current API quota or rate limit has "
+            "been reached."
+            + retry_text
+        )
+
+
+    # --------------------------------------------------------
+    # OPENROUTER
+    # --------------------------------------------------------
+
+    if (
+        "openrouter"
+        in lower
+        and
+        "429"
+        in message
+    ):
+
+        return (
+            "OpenRouter Free has temporarily reached "
+            "its request limit. Please wait and "
+            "try this manager again later."
+        )
+
+
+    # --------------------------------------------------------
+    # OLLAMA
+    # --------------------------------------------------------
+
+    if (
+        "ollama"
+        in lower
+        and
+        "429"
+        in message
+    ):
+
+        return (
+            "Ollama Cloud has temporarily reached "
+            "its request limit. Please wait and "
+            "try this manager again later."
+        )
+
+
+    if (
+        "ollama"
+        in lower
+        and
+        "404"
+        in message
+    ):
+
+        return (
+            "The configured Ollama model was not found. "
+            "Check OLLAMA_MODEL in Streamlit Secrets."
+        )
+
+
+    if (
+        "ollama"
+        in lower
+        and
+        "502"
+        in message
+    ):
+
+        return (
+            "The selected Ollama Cloud model is "
+            "temporarily unavailable. Please retry later."
+        )
+
+
+    # --------------------------------------------------------
+    # GENERIC
+    # --------------------------------------------------------
+
+    return message[
+        :700
+    ]
 
 
 # ============================================================
@@ -1403,7 +1845,7 @@ DEFAULT_SESSION_VALUES = {
 
 for (
     state_key,
-    state_default
+    default_value,
 ) in DEFAULT_SESSION_VALUES.items():
 
     if (
@@ -1413,7 +1855,7 @@ for (
 
         st.session_state[
             state_key
-        ] = state_default
+        ] = default_value
 
 
 # ============================================================
@@ -1453,15 +1895,17 @@ with st.sidebar:
 
 
     st.caption(
-        "Binary sentiment classification "
-        "for Spotify customer reviews."
+        (
+            "Fine-tuned binary sentiment "
+            "classification model."
+        )
     )
 
 
     st.html(
         """
 <span class="bp-online">
-    ● Model Online
+    ● Model Ready
 </span>
 """
     )
@@ -1473,9 +1917,34 @@ with st.sidebar:
     st.html(
         """
 <div class="bp-label">
-    GENERATIVE AI
+    MULTI-LLM COUNCIL
 </div>
 """
+    )
+
+
+    st.write(
+        "🌐 OpenRouter Free"
+    )
+
+
+    st.caption(
+        (
+            "Technical, Customer Service "
+            "and Subscription Managers"
+        )
+    )
+
+
+    st.write(
+        "🦙 Ollama Cloud"
+    )
+
+
+    st.caption(
+        (
+            "Product and Marketing Managers"
+        )
     )
 
 
@@ -1483,8 +1952,9 @@ with st.sidebar:
         "✨ Gemini"
     )
 
-    st.write(
-        "🌐 OpenRouter Free"
+
+    st.caption(
+        "Executive Manager only"
     )
 
 
@@ -1503,6 +1973,7 @@ with st.sidebar:
     st.write(
         "📘 Microsoft Word"
     )
+
 
     st.write(
         "📕 PDF"
@@ -1523,7 +1994,7 @@ with st.sidebar:
 
     st.markdown(
         """
-**01** · Upload Reviews
+**01** · Review Input
 
 **02** · DistilBERT Prediction
 
@@ -1531,9 +2002,9 @@ with st.sidebar:
 
 **04** · Issue Intelligence
 
-**05** · AI Management Council
+**05** · Multi-LLM Council
 
-**06** · Executive Report
+**06** · Gemini Executive
 
 **07** · DOCX / PDF Export
 """
@@ -1549,9 +2020,11 @@ with st.sidebar:
 
 
     st.caption(
-        "Online Review-Based Brand "
-        "Reputation Prediction Using "
-        "NLP Techniques"
+        (
+            "Online Review-Based Brand "
+            "Reputation Prediction Using "
+            "NLP Techniques"
+        )
     )
 
 
@@ -1577,13 +2050,14 @@ st.html(
 
     <p class="bp-subtitle">
 
-        Turn Spotify customer reviews into
+        Transform Spotify customer reviews into
         decision-ready brand intelligence.
-        DistilBERT predicts sentiment,
+        DistilBERT performs sentiment prediction,
         analytical modules identify reputation
-        issues, and Gemini plus OpenRouter
-        transform the evidence into
-        department-specific management strategies.
+        patterns, and a multi-provider management
+        council using OpenRouter, Ollama and Gemini
+        converts the evidence into departmental
+        and executive-level recommendations.
 
     </p>
 
@@ -1594,27 +2068,23 @@ st.html(
         </span>
 
         <span class="bp-chip">
-            ✨ Gemini
-        </span>
-
-        <span class="bp-chip">
             🌐 OpenRouter Free
         </span>
 
         <span class="bp-chip">
-            📊 Brand Analytics
+            🦙 Ollama Cloud
         </span>
 
         <span class="bp-chip">
-            🤖 AI Management Council
+            ✨ Gemini
         </span>
 
         <span class="bp-chip">
-            📘 DOCX
+            📊 Reputation Analytics
         </span>
 
         <span class="bp-chip">
-            📕 PDF
+            📑 DOCX / PDF
         </span>
 
     </div>
@@ -1652,10 +2122,9 @@ with feature_1:
 
     <p class="bp-feature-text">
 
-        The trained DistilBERT model
-        classifies individual and batch
-        Spotify customer reviews into
-        positive or negative sentiment.
+        The deployed DistilBERT model classifies
+        individual and batch Spotify customer
+        reviews into positive or negative sentiment.
 
     </p>
 
@@ -1680,10 +2149,10 @@ with feature_2:
 
     <p class="bp-feature-text">
 
-        Sentiment predictions become
-        brand-level indicators, customer
-        issue distributions and customer
-        voice intelligence.
+        Predictions are transformed into sentiment
+        distributions, a project-defined Brand
+        Reputation Score, issue categories and
+        customer voice intelligence.
 
     </p>
 
@@ -1703,14 +2172,15 @@ with feature_3:
     </div>
 
     <div class="bp-feature-title">
-        AI Management Council
+        Multi-LLM Management Council
     </div>
 
     <p class="bp-feature-text">
 
-        Five department managers analyse
-        the same evidence through different
-        organisational responsibilities.
+        OpenRouter and Ollama generate five
+        role-specific department reports while
+        distributing the generative AI workload
+        across multiple providers.
 
     </p>
 
@@ -1725,19 +2195,19 @@ with feature_4:
         """
 <div class="bp-feature">
 
-    <div class="bp-feature-icon icon-pink">
-        📑
+    <div class="bp-feature-icon icon-orange">
+        👔
     </div>
 
     <div class="bp-feature-title">
-        Executive Reporting
+        Executive Intelligence
     </div>
 
     <p class="bp-feature-text">
 
-        Executive intelligence and all
-        supporting analyses can be exported
-        as professional Word and PDF reports.
+        Gemini is reserved for final executive
+        consolidation after all five department
+        reports have been completed.
 
     </p>
 
@@ -1780,15 +2250,18 @@ with single_tab:
         "Single Review Intelligence",
         (
             "Enter one Spotify review and inspect "
-            "the prediction produced by the "
-            "deployed DistilBERT model."
+            "the sentiment prediction generated by "
+            "the deployed DistilBERT model."
         ),
     )
 
 
     input_column, result_column = (
         st.columns(
-            [1.55, 1],
+            [
+                1.55,
+                1,
+            ],
             gap="large",
         )
     )
@@ -1820,8 +2293,10 @@ with single_tab:
 
 
             st.caption(
-                "Enter an English-language "
-                "Spotify customer review."
+                (
+                    "Enter an English-language "
+                    "Spotify customer review."
+                )
             )
 
 
@@ -1842,23 +2317,27 @@ with single_tab:
         ):
 
             st.markdown(
-                "### 🎯 AI Prediction"
+                "### 🎯 DistilBERT Prediction"
             )
 
 
             if not analyse_single:
 
                 st.info(
-                    "The DistilBERT prediction "
-                    "will appear here."
+                    (
+                        "The sentiment prediction "
+                        "will appear here."
+                    )
                 )
 
 
             elif not review_text.strip():
 
                 st.warning(
-                    "Enter a review before "
-                    "running the analysis."
+                    (
+                        "Enter a review before "
+                        "running the analysis."
+                    )
                 )
 
 
@@ -1867,8 +2346,10 @@ with single_tab:
                 try:
 
                     with st.spinner(
-                        "DistilBERT is analysing "
-                        "the review..."
+                        (
+                            "DistilBERT is analysing "
+                            "the review..."
+                        )
                     ):
 
                         result = (
@@ -1878,11 +2359,17 @@ with single_tab:
                         )
 
 
+                    # distilbert_predictor.py returns
+                    # predicted_sentiment.
                     sentiment = (
                         str(
-                            result[
-                                "sentiment"
-                            ]
+                            result.get(
+                                "predicted_sentiment",
+                                result.get(
+                                    "sentiment",
+                                    "unknown",
+                                ),
+                            )
                         )
                         .strip()
                         .lower()
@@ -1891,18 +2378,16 @@ with single_tab:
 
                     confidence = (
                         float(
-                            result[
-                                "confidence"
-                            ]
+                            result.get(
+                                "confidence",
+                                0,
+                            )
                         )
                         * 100
                     )
 
 
-                    if (
-                        sentiment
-                        == "positive"
-                    ):
+                    if sentiment == "positive":
 
                         st.success(
                             "🟢 Positive Sentiment"
@@ -1910,16 +2395,15 @@ with single_tab:
 
 
                         st.write(
-                            "The review reflects "
-                            "a favourable customer "
-                            "experience."
+                            (
+                                "The review reflects "
+                                "a favourable customer "
+                                "experience."
+                            )
                         )
 
 
-                    elif (
-                        sentiment
-                        == "negative"
-                    ):
+                    elif sentiment == "negative":
 
                         st.error(
                             "🔴 Negative Sentiment"
@@ -1927,10 +2411,12 @@ with single_tab:
 
 
                         st.write(
-                            "The review indicates "
-                            "customer dissatisfaction "
-                            "that may negatively "
-                            "influence brand perception."
+                            (
+                                "The review indicates "
+                                "customer dissatisfaction "
+                                "that may negatively "
+                                "influence brand perception."
+                            )
                         )
 
 
@@ -1959,22 +2445,29 @@ with single_tab:
 
 
                     st.caption(
-                        "Confidence is a model "
-                        "output probability and "
-                        "does not guarantee "
-                        "prediction correctness."
+                        (
+                            "Confidence represents the "
+                            "model output probability "
+                            "and does not guarantee "
+                            "prediction correctness."
+                        )
                     )
 
 
                 except Exception as error:
 
                     st.error(
-                        "The review could not "
-                        "be analysed."
+                        (
+                            "The review could not "
+                            "be analysed."
+                        )
                     )
 
-                    st.exception(
-                        error
+
+                    st.warning(
+                        clean_error_message(
+                            error
+                        )
                     )
 
 
@@ -1989,17 +2482,19 @@ with batch_tab:
         "BATCH ANALYSIS",
         "Customer Review Intelligence",
         (
-            "Upload CSV or Excel reviews, "
-            "classify them using DistilBERT "
-            "and generate structured "
-            "brand-reputation evidence."
+            "Upload a CSV or XLSX file, select the "
+            "review-text column and classify multiple "
+            "customer reviews using DistilBERT."
         ),
     )
 
 
     upload_column, guide_column = (
         st.columns(
-            [1.55, 1],
+            [
+                1.55,
+                1,
+            ],
             gap="large",
         )
     )
@@ -2029,8 +2524,10 @@ with batch_tab:
 
 
             st.caption(
-                "Supported formats: "
-                "CSV and XLSX."
+                (
+                    "Supported formats: "
+                    "CSV and XLSX."
+                )
             )
 
 
@@ -2046,16 +2543,20 @@ with batch_tab:
 
 
             st.write(
-                "Your dataset only needs "
-                "one column containing "
-                "customer review text."
+                (
+                    "The dataset needs at least "
+                    "one column containing "
+                    "customer review text."
+                )
             )
 
 
             st.code(
-                "review_text\n"
-                "Spotify is easy to use...\n"
-                "The app keeps crashing...",
+                (
+                    "review_text\n"
+                    "Spotify is easy to use...\n"
+                    "The app keeps crashing..."
+                ),
                 language=None,
             )
 
@@ -2095,7 +2596,10 @@ with batch_tab:
 
             preview_column, info_column = (
                 st.columns(
-                    [3, 1],
+                    [
+                        3,
+                        1,
+                    ],
                     gap="medium",
                 )
             )
@@ -2109,7 +2613,9 @@ with batch_tab:
 
 
                 st.dataframe(
-                    uploaded_df.head(10),
+                    uploaded_df.head(
+                        10
+                    ),
                     width="stretch",
                     hide_index=True,
                 )
@@ -2142,6 +2648,7 @@ with batch_tab:
                         .columns
                         .tolist()
                     ),
+                    key="review_column_selector",
                 )
             )
 
@@ -2167,14 +2674,35 @@ with batch_tab:
                 (
                     f"**{len(valid_reviews):,}** "
                     "valid reviews are ready "
-                    "for analysis."
+                    "for DistilBERT analysis."
                 )
             )
 
 
+            if len(
+                valid_reviews
+            ) > 5000:
+
+                st.warning(
+                    (
+                        "This dataset contains more "
+                        "than 5,000 valid reviews. "
+                        "Large-scale inference may "
+                        "require significant processing "
+                        "time and memory on Streamlit "
+                        "Community Cloud. Consider using "
+                        "a representative sample for "
+                        "the live demonstration."
+                    )
+                )
+
+
             run_batch = (
                 st.button(
-                    "🚀 Run Brand Intelligence Analysis",
+                    (
+                        "🚀 Run Brand Intelligence "
+                        "Analysis"
+                    ),
                     type="primary",
                     width="stretch",
                     key="run_batch",
@@ -2190,7 +2718,7 @@ with batch_tab:
                 ):
 
                     st.warning(
-                        "No valid reviews found."
+                        "No valid reviews were found."
                     )
 
 
@@ -2199,13 +2727,18 @@ with batch_tab:
                     try:
 
                         with st.status(
-                            "Launching BrandPulse analysis...",
+                            (
+                                "Launching BrandPulse "
+                                "analysis..."
+                            ),
                             expanded=True,
                         ) as status:
 
                             st.write(
-                                "🧠 Running DistilBERT "
-                                "sentiment classification..."
+                                (
+                                    "🧠 Running DistilBERT "
+                                    "sentiment classification..."
+                                )
                             )
 
 
@@ -2225,8 +2758,10 @@ with batch_tab:
 
 
                             st.write(
-                                "📊 Calculating brand "
-                                "reputation indicators..."
+                                (
+                                    "📊 Calculating brand "
+                                    "reputation indicators..."
+                                )
                             )
 
 
@@ -2241,8 +2776,18 @@ with batch_tab:
 
 
                             st.write(
-                                "🔎 Detecting customer "
-                                "issue categories..."
+                                (
+                                    "🔎 Detecting customer "
+                                    "issue categories..."
+                                )
+                            )
+
+
+                            st.write(
+                                (
+                                    "💬 Extracting customer "
+                                    "voice information..."
+                                )
                             )
 
 
@@ -2256,6 +2801,8 @@ with batch_tab:
                             ] = summary
 
 
+                            # New evidence invalidates all
+                            # previous management outputs.
                             reset_management_outputs()
 
 
@@ -2281,25 +2828,33 @@ with batch_tab:
                             "Batch analysis failed."
                         )
 
-                        st.exception(
-                            error
+
+                        st.warning(
+                            clean_error_message(
+                                error
+                            )
                         )
 
 
         except Exception as error:
 
             st.error(
-                "The uploaded file "
-                "could not be read."
+                (
+                    "The uploaded file could "
+                    "not be read."
+                )
             )
 
-            st.exception(
-                error
+
+            st.warning(
+                clean_error_message(
+                    error
+                )
             )
 
 
     # ========================================================
-    # PREDICTION RESULTS
+    # PREDICTION TABLE
     # ========================================================
 
     if (
@@ -2316,7 +2871,7 @@ with batch_tab:
             "MODEL OUTPUT",
             "Prediction Intelligence",
             (
-                "Review-level sentiment predictions "
+                "Review-level DistilBERT predictions "
                 "and detected issue categories."
             ),
         )
@@ -2329,20 +2884,26 @@ with batch_tab:
         )
 
 
-        result_df[
+        if (
             "confidence"
-        ] = (
+            in result_df.columns
+        ):
+
             result_df[
                 "confidence"
-            ]
-            .astype(float)
-            .mul(100)
-            .round(2)
-        )
+            ] = (
+                result_df[
+                    "confidence"
+                ]
+                .astype(float)
+                .mul(100)
+                .round(2)
+            )
 
 
         result_df.rename(
             columns={
+
                 "review_text":
                     "Review",
 
@@ -2399,9 +2960,9 @@ with dashboard_tab:
         "REPUTATION INTELLIGENCE",
         "Brand Reputation Dashboard",
         (
-            "Explore aggregated sentiment, "
-            "customer issues and customer-language "
-            "patterns from the current dataset."
+            "Explore aggregated sentiment, issue "
+            "mentions, customer-language patterns "
+            "and the project-defined reputation score."
         ),
     )
 
@@ -2415,18 +2976,26 @@ with dashboard_tab:
 
     if summary is None:
 
-        st.info(
-            "Run **Batch Intelligence** first "
-            "to generate the dashboard."
-        )
+        with st.container(
+            border=True
+        ):
+
+            st.info(
+                (
+                    "Run **Batch Intelligence** "
+                    "first to generate the "
+                    "Reputation Dashboard."
+                )
+            )
 
 
     else:
 
         score = float(
-            summary[
-                "reputation_score"
-            ]
+            summary.get(
+                "reputation_score",
+                0,
+            )
         )
 
 
@@ -2446,8 +3015,8 @@ with dashboard_tab:
 
             kpi_card(
                 "REVIEWS ANALYSED",
-                f"{summary['total_reviews']:,}",
-                "Current uploaded dataset",
+                f"{summary.get('total_reviews', 0):,}",
+                "Current analysis dataset",
                 "kpi-blue",
             )
 
@@ -2456,10 +3025,14 @@ with dashboard_tab:
 
             kpi_card(
                 "POSITIVE REVIEWS",
-                f"{summary['positive_reviews']:,}",
+                f"{summary.get('positive_reviews', 0):,}",
                 (
-                    f"{summary['positive_percentage']}"
-                    "% of reviews"
+                    format_percentage(
+                        summary.get(
+                            "positive_percentage",
+                            0,
+                        )
+                    )
                 ),
                 "kpi-green",
             )
@@ -2469,10 +3042,14 @@ with dashboard_tab:
 
             kpi_card(
                 "NEGATIVE REVIEWS",
-                f"{summary['negative_reviews']:,}",
+                f"{summary.get('negative_reviews', 0):,}",
                 (
-                    f"{summary['negative_percentage']}"
-                    "% of reviews"
+                    format_percentage(
+                        summary.get(
+                            "negative_percentage",
+                            0,
+                        )
+                    )
                 ),
                 "kpi-red",
             )
@@ -2492,7 +3069,7 @@ with dashboard_tab:
 
 
         # ====================================================
-        # STATUS
+        # REPUTATION STATUS
         # ====================================================
 
         (
@@ -2514,9 +3091,7 @@ with dashboard_tab:
 
     <div
         class="bp-rep-title"
-        style="
-            color:{status_color};
-        "
+        style="color:{status_color};"
     >
         {status_icon}
         {status_label}
@@ -2534,6 +3109,15 @@ with dashboard_tab:
                     1.0,
                     score / 100,
                 ),
+            )
+        )
+
+
+        st.caption(
+            (
+                "The Brand Reputation Score is "
+                "calculated from the proportion "
+                "of positive DistilBERT predictions."
             )
         )
 
@@ -2567,19 +3151,23 @@ with dashboard_tab:
                 sentiment_df = (
                     pd.DataFrame(
                         {
+
                             "Sentiment": [
                                 "Positive",
                                 "Negative",
                             ],
 
                             "Reviews": [
-                                summary[
-                                    "positive_reviews"
-                                ],
 
-                                summary[
-                                    "negative_reviews"
-                                ],
+                                summary.get(
+                                    "positive_reviews",
+                                    0,
+                                ),
+
+                                summary.get(
+                                    "negative_reviews",
+                                    0,
+                                ),
                             ],
                         }
                     )
@@ -2594,6 +3182,7 @@ with dashboard_tab:
                         hole=0.67,
                         color="Sentiment",
                         color_discrete_map={
+
                             "Positive":
                                 "#1ED760",
 
@@ -2611,6 +3200,7 @@ with dashboard_tab:
 
 
                 sentiment_chart.update_layout(
+
                     margin=dict(
                         l=5,
                         r=5,
@@ -2648,9 +3238,10 @@ with dashboard_tab:
 
 
                 issue_counts = (
-                    summary[
-                        "issue_counts"
-                    ]
+                    summary.get(
+                        "issue_counts",
+                        {},
+                    )
                 )
 
 
@@ -2660,6 +3251,7 @@ with dashboard_tab:
                         pd.DataFrame(
                             [
                                 {
+
                                     "Issue":
                                         issue,
 
@@ -2702,6 +3294,7 @@ with dashboard_tab:
 
 
                     issue_chart.update_layout(
+
                         coloraxis_showscale=False,
 
                         margin=dict(
@@ -2727,11 +3320,23 @@ with dashboard_tab:
                     )
 
 
+                    st.caption(
+                        (
+                            "Issue values represent "
+                            "detected issue mentions. "
+                            "A review may contain more "
+                            "than one issue."
+                        )
+                    )
+
+
                 else:
 
                     st.success(
-                        "No issue categories "
-                        "were detected."
+                        (
+                            "No negative-review issue "
+                            "categories were detected."
+                        )
                     )
 
 
@@ -2746,9 +3351,8 @@ with dashboard_tab:
             "VOICE OF CUSTOMER",
             "Customer Language Intelligence",
             (
-                "Frequently occurring terms "
-                "inside positive and negative "
-                "predicted customer reviews."
+                "Frequently occurring terms in "
+                "positive and negative predicted reviews."
             ),
         )
 
@@ -2773,27 +3377,16 @@ with dashboard_tab:
 
 
                 positive_words = (
-                    pd.DataFrame(
-                        summary[
-                            "top_positive_words"
-                        ]
+                    prepare_word_dataframe(
+                        summary.get(
+                            "top_positive_words",
+                            [],
+                        )
                     )
                 )
 
 
                 if not positive_words.empty:
-
-                    positive_words.rename(
-                        columns={
-                            "word":
-                                "Word",
-
-                            "count":
-                                "Frequency",
-                        },
-                        inplace=True,
-                    )
-
 
                     st.dataframe(
                         positive_words,
@@ -2805,7 +3398,10 @@ with dashboard_tab:
                 else:
 
                     st.info(
-                        "No positive-word data."
+                        (
+                            "No positive-word "
+                            "data are available."
+                        )
                     )
 
 
@@ -2821,27 +3417,16 @@ with dashboard_tab:
 
 
                 negative_words = (
-                    pd.DataFrame(
-                        summary[
-                            "top_negative_words"
-                        ]
+                    prepare_word_dataframe(
+                        summary.get(
+                            "top_negative_words",
+                            [],
+                        )
                     )
                 )
 
 
                 if not negative_words.empty:
-
-                    negative_words.rename(
-                        columns={
-                            "word":
-                                "Word",
-
-                            "count":
-                                "Frequency",
-                        },
-                        inplace=True,
-                    )
-
 
                     st.dataframe(
                         negative_words,
@@ -2853,12 +3438,15 @@ with dashboard_tab:
                 else:
 
                     st.info(
-                        "No negative-word data."
+                        (
+                            "No negative-word "
+                            "data are available."
+                        )
                     )
 
 
         # ====================================================
-        # NEGATIVE REVIEWS
+        # REPRESENTATIVE NEGATIVE REVIEWS
         # ====================================================
 
         st.write("")
@@ -2868,16 +3456,18 @@ with dashboard_tab:
             "CUSTOMER ATTENTION",
             "Reviews Requiring Attention",
             (
-                "Representative negative customer "
-                "reviews behind the aggregate metrics."
+                "Representative negative reviews "
+                "provide customer context behind "
+                "the aggregate indicators."
             ),
         )
 
 
         negative_reviews = (
-            summary[
-                "sample_negative_reviews"
-            ]
+            summary.get(
+                "sample_negative_reviews",
+                [],
+            )
         )
 
 
@@ -2906,16 +3496,21 @@ with dashboard_tab:
         else:
 
             st.success(
-                "No negative reviews "
-                "were detected."
+                (
+                    "No representative negative "
+                    "reviews are available."
+                )
             )
 
 
         st.info(
-            "The Brand Reputation Score is "
-            "a project-defined indicator based "
-            "on the proportion of positive "
-            "DistilBERT predictions."
+            (
+                "The Brand Reputation Score is a "
+                "project-defined decision-support "
+                "indicator. It is not an official "
+                "Spotify metric or a universal "
+                "industry-standard reputation index."
+            )
         )
 
 
@@ -2927,13 +3522,13 @@ with dashboard_tab:
 with management_tab:
 
     section_header(
-        "GENERATIVE AI",
+        "MULTI-LLM DECISION SUPPORT",
         "AI Management Council",
         (
-            "Five role-based managers analyse "
-            "the structured reputation evidence "
-            "through different departmental "
-            "responsibilities."
+            "Five department managers interpret "
+            "the same structured reputation evidence "
+            "using OpenRouter and Ollama. Gemini is "
+            "reserved for final executive consolidation."
         ),
     )
 
@@ -2947,22 +3542,31 @@ with management_tab:
 
     if summary is None:
 
-        st.warning(
-            "Run **Batch Intelligence** first. "
-            "The managers require structured "
-            "brand-reputation evidence."
-        )
+        with st.container(
+            border=True
+        ):
+
+            st.warning(
+                (
+                    "Run **Batch Intelligence** first. "
+                    "The AI Management Council requires "
+                    "structured brand-reputation evidence."
+                )
+            )
 
 
     else:
 
         # ====================================================
-        # ARCHITECTURE
+        # PROVIDER ARCHITECTURE
         # ====================================================
 
         architecture_left, architecture_right = (
             st.columns(
-                [1.45, 1],
+                [
+                    1.35,
+                    1,
+                ],
                 gap="large",
             )
         )
@@ -2975,43 +3579,80 @@ with management_tab:
             ):
 
                 st.markdown(
-                    "### 🏢 Council Architecture"
+                    "### 🏢 Multi-Provider Architecture"
                 )
 
 
                 st.write(
-                    "Every manager receives the "
-                    "same analysis summary but "
-                    "uses department-specific "
-                    "instructions to interpret it."
+                    (
+                        "The department-level workload is "
+                        "distributed between OpenRouter "
+                        "Free and Ollama Cloud. Gemini is "
+                        "reserved for the final Executive "
+                        "Manager to reduce dependency on "
+                        "one provider and preserve Gemini "
+                        "quota for consolidation."
+                    )
+                )
+
+
+                st.markdown(
+                    """
+**Predictive AI**
+
+🧠 DistilBERT
+
+**Department AI**
+
+🌐 OpenRouter Free  
+🦙 Ollama Cloud
+
+**Executive AI**
+
+✨ Gemini
+"""
                 )
 
 
         with architecture_right:
 
+            architecture_rows = []
+
+
+            for (
+                manager_name,
+                provider,
+            ) in MANAGER_PROVIDERS.items():
+
+                architecture_rows.append(
+                    {
+
+                        "Manager":
+                            manager_name,
+
+                        "Provider":
+                            provider_display_name(
+                                provider
+                            ),
+                    }
+                )
+
+
+            architecture_rows.append(
+                {
+
+                    "Manager":
+                        "Executive Manager",
+
+                    "Provider":
+                        "Gemini",
+                }
+            )
+
+
             architecture_df = (
                 pd.DataFrame(
-                    [
-                        {
-                            "Manager":
-                                manager,
-
-                            "Provider":
-                                (
-                                    "Gemini"
-                                    if provider
-                                    == "gemini"
-                                    else
-                                    "OpenRouter Free"
-                                ),
-                        }
-
-                        for (
-                            manager,
-                            provider,
-                        )
-                        in MANAGER_PROVIDERS.items()
-                    ]
+                    architecture_rows
                 )
             )
 
@@ -3024,7 +3665,7 @@ with management_tab:
 
 
         # ====================================================
-        # PROGRESS
+        # MANAGEMENT PROGRESS
         # ====================================================
 
         completed_reports = len(
@@ -3041,7 +3682,8 @@ with management_tab:
 
         completion_ratio = (
             completed_reports
-            / total_managers
+            /
+            total_managers
         )
 
 
@@ -3050,7 +3692,10 @@ with management_tab:
 
         progress_column, progress_card = (
             st.columns(
-                [3, 1],
+                [
+                    3,
+                    1,
+                ],
                 gap="medium",
             )
         )
@@ -3085,17 +3730,17 @@ with management_tab:
                     f"{completed_reports}"
                     f"/{total_managers}"
                 ),
-                "Council completion",
+                "Department reports",
                 "kpi-purple",
             )
-
-
-        st.write("")
 
 
         # ====================================================
         # MANAGER TABS
         # ====================================================
+
+        st.write("")
+
 
         (
             technical_tab,
@@ -3134,7 +3779,7 @@ with management_tab:
 
 
         # ====================================================
-        # MANAGERS
+        # INDIVIDUAL MANAGERS
         # ====================================================
 
         for (
@@ -3158,26 +3803,12 @@ with management_tab:
                 )
 
 
-                if provider == "gemini":
-
-                    provider_label = (
-                        "✨ Gemini"
-                    )
-
-                    provider_class = (
-                        "provider-gemini"
-                    )
-
-
-                else:
-
-                    provider_label = (
-                        "🌐 OpenRouter Free"
-                    )
-
-                    provider_class = (
-                        "provider-openrouter"
-                    )
+                (
+                    provider_label,
+                    provider_class,
+                ) = provider_badge(
+                    provider
+                )
 
 
                 st.html(
@@ -3234,7 +3865,36 @@ with management_tab:
                     )
 
 
-                manager_button_key = (
+                existing_report = (
+                    st.session_state[
+                        "manager_reports"
+                    ].get(
+                        manager_name
+                    )
+                )
+
+
+                # ------------------------------------------------
+                # BUTTON TEXT
+                # ------------------------------------------------
+
+                if existing_report:
+
+                    button_label = (
+                        "🔄 Regenerate "
+                        f"{manager_name} Report"
+                    )
+
+
+                else:
+
+                    button_label = (
+                        "✨ Generate "
+                        f"{manager_name} Report"
+                    )
+
+
+                button_key = (
                     "generate_"
                     + manager_name
                     .lower()
@@ -3246,13 +3906,10 @@ with management_tab:
 
 
                 if st.button(
-                    (
-                        "✨ Generate "
-                        f"{manager_name} Report"
-                    ),
+                    button_label,
                     type="primary",
                     width="stretch",
-                    key=manager_button_key,
+                    key=button_key,
                 ):
 
                     try:
@@ -3263,28 +3920,37 @@ with management_tab:
                                 "analysing the evidence..."
                             ),
                             expanded=True,
-                        ) as status:
+                        ) as manager_status:
 
                             st.write(
-                                "📊 Reading reputation "
-                                "statistics..."
+                                (
+                                    "📊 Reading brand "
+                                    "reputation indicators..."
+                                )
                             )
 
 
                             st.write(
-                                "🔎 Reviewing relevant "
-                                "customer issues..."
+                                (
+                                    "🔎 Reviewing department-"
+                                    "relevant customer issues..."
+                                )
                             )
 
 
                             st.write(
-                                "🧠 Interpreting findings..."
+                                (
+                                    f"🤖 Connecting to "
+                                    f"{provider_display_name(provider)}..."
+                                )
                             )
 
 
                             st.write(
-                                "💡 Developing "
-                                "recommendations..."
+                                (
+                                    "💡 Developing grounded "
+                                    "management recommendations..."
+                                )
                             )
 
 
@@ -3303,8 +3969,8 @@ with management_tab:
                             ] = report
 
 
-                            # Old executive output
-                            # is now outdated.
+                            # Manager changed -> old
+                            # Executive Report is invalid.
                             st.session_state[
                                 "executive_report"
                             ] = None
@@ -3313,7 +3979,7 @@ with management_tab:
                             reset_report_exports()
 
 
-                            status.update(
+                            manager_status.update(
                                 label=(
                                     f"{manager_name} "
                                     "report completed."
@@ -3336,19 +4002,22 @@ with management_tab:
 
                         st.error(
                             (
-                                f"{manager_name} "
-                                "report generation failed."
+                                f"{manager_name} report "
+                                "generation failed."
                             )
                         )
 
-                        st.exception(
-                            error
+
+                        st.warning(
+                            clean_error_message(
+                                error
+                            )
                         )
 
 
-                # ============================================
-                # EXISTING REPORT
-                # ============================================
+                # ------------------------------------------------
+                # DISPLAY EXISTING REPORT
+                # ------------------------------------------------
 
                 manager_report = (
                     st.session_state[
@@ -3384,6 +4053,13 @@ with management_tab:
                         )
 
 
+                        requested_model = (
+                            manager_report.get(
+                                "requested_model"
+                            )
+                        )
+
+
                         st.html(
                             f"""
 <div class="bp-report-source">
@@ -3401,13 +4077,29 @@ with management_tab:
                         )
 
 
+                        if (
+                            requested_model
+                            and
+                            requested_model
+                            != report_model
+                        ):
+
+                            st.caption(
+                                (
+                                    "Requested route/model: "
+                                    f"{requested_model}"
+                                )
+                            )
+
+
                         st.write("")
 
 
                         st.markdown(
-                            manager_report[
-                                "content"
-                            ]
+                            manager_report.get(
+                                "content",
+                                "",
+                            )
                         )
 
 
@@ -3417,9 +4109,10 @@ with management_tab:
                             f"{manager_name} Report"
                         ),
                         data=(
-                            manager_report[
-                                "content"
-                            ]
+                            manager_report.get(
+                                "content",
+                                "",
+                            )
                         ),
                         file_name=(
                             manager_name
@@ -3450,10 +4143,28 @@ with management_tab:
                     ):
 
                         st.caption(
-                            "OpenRouter was requested "
-                            "through `openrouter/free`; "
-                            "the actual free model used "
-                            "is displayed above."
+                            (
+                                "OpenRouter was requested "
+                                "through `openrouter/free`. "
+                                "The actual free model "
+                                "returned by OpenRouter is "
+                                "shown above."
+                            )
+                        )
+
+
+                    if (
+                        report_provider
+                        == "Ollama"
+                    ):
+
+                        st.caption(
+                            (
+                                "This department report "
+                                "was generated through "
+                                "Ollama Cloud using the "
+                                "configured Ollama model."
+                            )
                         )
 
 
@@ -3484,7 +4195,7 @@ with management_tab:
 
     <div
         style="
-            max-width:850px;
+            max-width:880px;
             margin-top:9px;
             color:#97A5B7;
             font-size:13px;
@@ -3492,12 +4203,23 @@ with management_tab:
         "
     >
 
-        Gemini consolidates all five
-        department analyses into one
-        prioritised organisation-wide
-        brand reputation strategy.
+        Gemini is reserved for the final
+        consolidation stage. It receives the
+        structured reputation evidence together
+        with all five completed department reports
+        and produces one organisation-wide
+        executive strategy.
 
     </div>
+
+    <span
+        class="
+            bp-provider
+            provider-gemini
+        "
+    >
+        ✨ Gemini — Executive Only
+    </span>
 
 </div>
 """
@@ -3521,7 +4243,10 @@ with management_tab:
 
         readiness_left, readiness_right = (
             st.columns(
-                [2, 1],
+                [
+                    2,
+                    1,
+                ],
                 gap="medium",
             )
         )
@@ -3535,8 +4260,12 @@ with management_tab:
             ):
 
                 st.success(
-                    "✅ All five department "
-                    "reports are ready."
+                    (
+                        "✅ All five department "
+                        "reports are ready. Gemini "
+                        "can now perform the final "
+                        "Executive Manager call."
+                    )
                 )
 
 
@@ -3558,8 +4287,9 @@ with management_tab:
                 st.info(
                     (
                         f"**{len(missing_managers)}** "
-                        "department report(s) "
-                        "still need to be generated."
+                        "department report(s) are "
+                        "still required before "
+                        "Gemini is called."
                     )
                 )
 
@@ -3572,15 +4302,25 @@ with management_tab:
                         missing_managers
                     ):
 
+                        provider = (
+                            MANAGER_PROVIDERS[
+                                manager
+                            ]
+                        )
+
+
                         st.write(
-                            f"• {manager}"
+                            (
+                                f"• {manager} — "
+                                f"{provider_display_name(provider)}"
+                            )
                         )
 
 
         with readiness_right:
 
             kpi_card(
-                "EXECUTIVE READY",
+                "GEMINI READY",
                 (
                     "YES"
                     if report_count
@@ -3603,7 +4343,7 @@ with management_tab:
 
 
         # ====================================================
-        # GENERATE EXECUTIVE
+        # GENERATE EXECUTIVE REPORT
         # ====================================================
 
         if (
@@ -3611,11 +4351,31 @@ with management_tab:
             == total_managers
         ):
 
-            if st.button(
-                (
+            existing_executive = (
+                st.session_state[
+                    "executive_report"
+                ]
+            )
+
+
+            if existing_executive:
+
+                executive_button_label = (
+                    "🔄 Regenerate Executive "
+                    "Brand Reputation Report"
+                )
+
+
+            else:
+
+                executive_button_label = (
                     "👔 Generate Executive "
                     "Brand Reputation Report"
-                ),
+                )
+
+
+            if st.button(
+                executive_button_label,
                 type="primary",
                 width="stretch",
                 key="generate_executive",
@@ -3625,37 +4385,57 @@ with management_tab:
 
                     with st.status(
                         (
-                            "Executive Manager is "
-                            "consolidating intelligence..."
+                            "Gemini Executive Manager "
+                            "is consolidating intelligence..."
                         ),
                         expanded=True,
-                    ) as status:
+                    ) as executive_status:
 
                         st.write(
-                            "📚 Reading department "
-                            "reports..."
+                            (
+                                "📚 Reading all five "
+                                "department reports..."
+                            )
                         )
 
 
                         st.write(
-                            "🔗 Identifying "
-                            "cross-department issues..."
+                            (
+                                "📊 Reviewing core brand "
+                                "reputation evidence..."
+                            )
                         )
 
 
                         st.write(
-                            "🎯 Prioritising actions..."
+                            (
+                                "🔗 Identifying cross-"
+                                "department findings..."
+                            )
                         )
 
 
                         st.write(
-                            "📏 Consolidating KPIs..."
+                            (
+                                "🎯 Prioritising management "
+                                "actions..."
+                            )
                         )
 
 
                         st.write(
-                            "📝 Preparing the final "
-                            "executive strategy..."
+                            (
+                                "📏 Consolidating executive "
+                                "KPIs..."
+                            )
+                        )
+
+
+                        st.write(
+                            (
+                                "✨ Calling Gemini for "
+                                "final executive synthesis..."
+                            )
                         )
 
 
@@ -3675,10 +4455,10 @@ with management_tab:
                         reset_report_exports()
 
 
-                        status.update(
+                        executive_status.update(
                             label=(
-                                "Executive Brand "
-                                "Reputation Report completed."
+                                "Executive Brand Reputation "
+                                "Report completed."
                             ),
                             state="complete",
                             expanded=False,
@@ -3686,7 +4466,10 @@ with management_tab:
 
 
                     st.toast(
-                        "Executive report generated.",
+                        (
+                            "Executive report generated "
+                            "successfully."
+                        ),
                         icon="👔",
                     )
 
@@ -3694,12 +4477,27 @@ with management_tab:
                 except Exception as error:
 
                     st.error(
-                        "Executive report "
-                        "generation failed."
+                        (
+                            "Executive report generation "
+                            "failed."
+                        )
                     )
 
-                    st.exception(
-                        error
+
+                    st.warning(
+                        clean_error_message(
+                            error
+                        )
+                    )
+
+
+                    st.info(
+                        (
+                            "Your five department reports "
+                            "remain stored. You do not need "
+                            "to regenerate them before "
+                            "retrying the Executive Manager."
+                        )
                     )
 
 
@@ -3723,9 +4521,9 @@ with management_tab:
                 "FINAL MANAGEMENT OUTPUT",
                 "Executive Brand Reputation Report",
                 (
-                    "Organisation-wide synthesis "
-                    "of predictive analytics and "
-                    "department-level AI intelligence."
+                    "Organisation-wide synthesis of "
+                    "DistilBERT analytics and the five "
+                    "department-level AI reports."
                 ),
             )
 
@@ -3771,14 +4569,15 @@ with management_tab:
 
 
                 st.markdown(
-                    executive_report[
-                        "content"
-                    ]
+                    executive_report.get(
+                        "content",
+                        "",
+                    )
                 )
 
 
             # =================================================
-            # BASIC RAW EXPORTS
+            # RAW EXPORTS
             # =================================================
 
             raw_left, raw_right = (
@@ -3792,11 +4591,15 @@ with management_tab:
             with raw_left:
 
                 st.download_button(
-                    "⬇️ Download Executive Markdown",
+                    (
+                        "⬇️ Download Executive "
+                        "Markdown"
+                    ),
                     data=(
-                        executive_report[
-                            "content"
-                        ]
+                        executive_report.get(
+                            "content",
+                            "",
+                        )
                     ),
                     file_name=(
                         "executive_brand_"
@@ -3827,6 +4630,7 @@ with management_tab:
                         complete_package,
                         indent=2,
                         ensure_ascii=False,
+                        default=str,
                     )
                 )
 
@@ -3844,7 +4648,7 @@ with management_tab:
 
 
             # =================================================
-            # PROFESSIONAL DOCX + PDF EXPORT
+            # PROFESSIONAL REPORT CENTRE
             # =================================================
 
             st.write("")
@@ -3860,12 +4664,11 @@ with management_tab:
 
     <div class="bp-export-text">
 
-        Prepare both professional report
-        formats at the same time. The Word
-        document is suitable for editing and
-        academic submission preparation,
+        Create both professional report formats
+        from the same completed analysis. The
+        Microsoft Word version supports editing,
         while the PDF provides a fixed-format
-        version for presentation and sharing.
+        report for presentation and sharing.
 
     </div>
 
@@ -3879,7 +4682,10 @@ with management_tab:
 
             prepare_reports = (
                 st.button(
-                    "⚡ Prepare DOCX + PDF Reports",
+                    (
+                        "⚡ Prepare DOCX + "
+                        "PDF Reports"
+                    ),
                     type="primary",
                     width="stretch",
                     key="prepare_both_reports",
@@ -3904,14 +4710,18 @@ with management_tab:
                         # -------------------------------------
 
                         st.write(
-                            "📘 Creating Microsoft "
-                            "Word report..."
+                            (
+                                "📘 Creating Microsoft "
+                                "Word report..."
+                            )
                         )
 
 
                         docx_result = (
                             create_brandpulse_docx(
-                                analysis_summary=summary,
+                                analysis_summary=(
+                                    summary
+                                ),
                                 manager_reports=(
                                     manager_reports
                                 ),
@@ -3941,13 +4751,18 @@ with management_tab:
                         # -------------------------------------
 
                         st.write(
-                            "📕 Creating PDF report..."
+                            (
+                                "📕 Creating PDF "
+                                "report..."
+                            )
                         )
 
 
                         pdf_result = (
                             create_brandpulse_pdf(
-                                analysis_summary=summary,
+                                analysis_summary=(
+                                    summary
+                                ),
                                 manager_reports=(
                                     manager_reports
                                 ),
@@ -3984,17 +4799,14 @@ with management_tab:
 
                     st.toast(
                         (
-                            "Both professional "
-                            "reports are ready."
+                            "Both professional reports "
+                            "are ready."
                         ),
                         icon="📑",
                     )
 
 
                 except Exception as error:
-
-                    # Do not leave partial/stale
-                    # files after a failed build.
 
                     st.session_state[
                         "docx_export"
@@ -4007,18 +4819,22 @@ with management_tab:
 
 
                     st.error(
-                        "Professional report "
-                        "generation failed."
+                        (
+                            "Professional report "
+                            "generation failed."
+                        )
                     )
 
 
-                    st.exception(
-                        error
+                    st.warning(
+                        clean_error_message(
+                            error
+                        )
                     )
 
 
             # =================================================
-            # BOTH DOWNLOAD BUTTONS
+            # PROFESSIONAL DOWNLOADS
             # =================================================
 
             docx_data = (
@@ -4042,8 +4858,10 @@ with management_tab:
             ):
 
                 st.success(
-                    "✅ Both professional report "
-                    "formats are ready for download."
+                    (
+                        "✅ Both professional "
+                        "report formats are ready."
+                    )
                 )
 
 
@@ -4067,9 +4885,11 @@ with management_tab:
 
 
                         st.write(
-                            "Editable `.docx` version "
-                            "containing the complete "
-                            "BrandPulse analysis."
+                            (
+                                "Editable `.docx` report "
+                                "containing the complete "
+                                "BrandPulse analysis."
+                            )
                         )
 
 
@@ -4081,7 +4901,8 @@ with management_tab:
                             data=docx_data,
                             file_name=(
                                 "BrandPulse_AI_"
-                                "Brand_Reputation_Report.docx"
+                                "Brand_Reputation_"
+                                "Report.docx"
                             ),
                             mime=(
                                 "application/"
@@ -4106,9 +4927,11 @@ with management_tab:
 
 
                         st.write(
-                            "Fixed-format `.pdf` "
-                            "version containing the "
-                            "complete BrandPulse analysis."
+                            (
+                                "Fixed-format `.pdf` report "
+                                "containing the complete "
+                                "BrandPulse analysis."
+                            )
                         )
 
 
@@ -4120,9 +4943,28 @@ with management_tab:
                             data=pdf_data,
                             file_name=(
                                 "BrandPulse_AI_"
-                                "Brand_Reputation_Report.pdf"
+                                "Brand_Reputation_"
+                                "Report.pdf"
                             ),
                             mime="application/pdf",
                             width="stretch",
                             key="download_pdf",
                         )
+
+
+# ============================================================
+# FOOTER
+# ============================================================
+
+st.write("")
+
+st.divider()
+
+st.caption(
+    (
+        "BrandPulse AI · Academic Final Year Project Prototype · "
+        "DistilBERT sentiment prediction + Python reputation "
+        "analytics + OpenRouter/Ollama department intelligence "
+        "+ Gemini executive consolidation."
+    )
+)
